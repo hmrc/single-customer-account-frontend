@@ -23,7 +23,7 @@ import play.api.data.format.Formatter
 
 import scala.util.{Failure, Success, Try}
 
-private[mappings] class LocalDateFormatter(
+class LocalDateFormatter(
                                             invalidKey: String,
                                             allRequiredKey: String,
                                             twoRequiredKey: String,
