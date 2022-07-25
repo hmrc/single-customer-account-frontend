@@ -1,4 +1,4 @@
-service.name = single-customer-account-frontend
+service.name = SCA - Single Customer Account
 
 site.back = Back
 site.remove = Remove
@@ -35,9 +35,9 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = single-customer-account-frontend
-index.heading = single-customer-account-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+index.title = SCA - Single Customer Account
+index.heading = SCA - Single Customer Account
+index.guidance = Hello World
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
