@@ -12,7 +12,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
-import java.time.{Instant, ZoneOffset}
+import java.time.{Clock, Instant, ZoneId}
 import java.time.temporal.ChronoUnit
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -25,6 +25,9 @@ class SessionRepositorySpec
     with OptionValues
     with MockitoSugar {
 
+  private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
+  private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
+
   private val userAnswers = UserAnswers("id", Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
 
   private val mockAppConfig = mock[FrontendAppConfig]
@@ -32,13 +35,13 @@ class SessionRepositorySpec
 
   protected override val repository = new SessionRepository(
     mongoComponent = mongoComponent,
-    appConfig      = mockAppConfig
+    appConfig      = mockAppConfig,
+    clock          = stubClock
   )
 
   ".set" - {
 
     "must set the last updated time on the supplied user answers to `now`, and save them" in {
-      val instant = Instant.now.atOffset(ZoneOffset.UTC).withNano(0).toInstant
 
       val expectedResult = userAnswers copy (lastUpdated = instant)
 
@@ -55,7 +58,6 @@ class SessionRepositorySpec
     "when there is a record for this id" - {
 
       "must update the lastUpdated time and get the record" in {
-        val instant = Instant.now.atOffset(ZoneOffset.UTC).withNano(0).toInstant
 
         insert(userAnswers).futureValue
 
@@ -99,7 +101,6 @@ class SessionRepositorySpec
     "when there is a record for this id" - {
 
       "must update its lastUpdated to `now` and return true" in {
-        val instant = Instant.now.atOffset(ZoneOffset.UTC).withNano(0).toInstant
 
         insert(userAnswers).futureValue
 

@@ -25,20 +25,29 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
-import java.time.{Instant, ZoneOffset}
+import java.time.{Clock, Instant}
+import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SessionRepository @Inject()(
                                    mongoComponent: MongoComponent,
-                                   appConfig: FrontendAppConfig
+                                   appConfig: FrontendAppConfig,
+                                   clock: Clock
                                  )(implicit ec: ExecutionContext)
   extends PlayMongoRepository[UserAnswers](
     collectionName = "user-answers",
     mongoComponent = mongoComponent,
     domainFormat   = UserAnswers.format,
-    indexes        = Seq()
+    indexes        = Seq(
+      IndexModel(
+        Indexes.ascending("lastUpdated"),
+        IndexOptions()
+          .name("lastUpdatedIdx")
+          .expireAfter(appConfig.cacheTtl, TimeUnit.SECONDS)
+      )
+    )
   ) {
 
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
@@ -49,7 +58,7 @@ class SessionRepository @Inject()(
     collection
       .updateOne(
         filter = byId(id),
-        update = Updates.set("lastUpdated", Instant.now().atOffset(ZoneOffset.UTC).withNano(0).toInstant)
+        update = Updates.set("lastUpdated", Instant.now(clock))
       )
       .toFuture
       .map(_ => true)
@@ -64,7 +73,7 @@ class SessionRepository @Inject()(
 
   def set(answers: UserAnswers): Future[Boolean] = {
 
-    val updatedAnswers = answers copy (lastUpdated = Instant.now().atOffset(ZoneOffset.UTC).withNano(0).toInstant)
+    val updatedAnswers = answers copy (lastUpdated = Instant.now(clock))
 
     collection
       .replaceOne(
