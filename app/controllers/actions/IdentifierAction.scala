@@ -68,7 +68,7 @@ class SessionIdentifierAction @Inject()(
       case Some(session) =>
         block(IdentifierRequest(request, session.value))
       case None =>
-        Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+        Future.successful(Redirect(routes.IndexController.onPageLoad))
     }
   }
 }
