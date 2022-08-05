@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package models.response
 
-import com.google.inject.AbstractModule
-import controllers.actions._
+import play.api.libs.json.JsValue
+import uk.gov.hmrc.domain.SaUtr
 
-import java.time.{Clock, ZoneOffset}
+case class MatchingDetails(saUtr: Option[SaUtr])
 
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-
-    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[AuthActionX]).to(classOf[AuthAction]).asEagerSingleton()
-    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
-  }
+object MatchingDetails {
+  def fromJsonMatchingDetails(matchingDetails: JsValue): MatchingDetails =
+    MatchingDetails((matchingDetails \ "ids" \ "sautr").asOpt[String].map(SaUtr.apply))
 }

@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package config
+package utils
 
-import com.google.inject.AbstractModule
-import controllers.actions._
+import play.api.libs.json.{Reads, Writes}
 
-import java.time.{Clock, ZoneOffset}
+import java.time.LocalDate
 
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-
-    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[AuthActionX]).to(classOf[AuthAction]).asEagerSingleton()
-    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
-  }
+trait LocalDateFormat {
+  implicit val localDateReads: Reads[LocalDate] = Reads.DefaultLocalDateReads
+  implicit val localDateWrites: Writes[LocalDate] = Writes.DefaultLocalDateWrites
 }
