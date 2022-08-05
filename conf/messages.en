@@ -1,4 +1,4 @@
-service.name = SCA - Single Customer Account
+service.name = Single Customer Account
 
 site.back = Back
 site.remove = Remove
@@ -35,9 +35,9 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = SCA - Single Customer Account
-index.heading = SCA - Single Customer Account
-index.guidance = Hello World
+index.title = Account Home
+index.heading = Account Home
+index.guidance = John Smith
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
