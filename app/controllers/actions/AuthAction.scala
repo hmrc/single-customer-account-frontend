@@ -18,8 +18,9 @@ package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
+import controllers.{UnauthorisedController, routes}
 import models.requests.AuthenticatedRequest
-import play.api.mvc.Results.Redirect
+import play.api.mvc.Results.{Redirect, Unauthorized}
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -89,39 +90,15 @@ class AuthAction @Inject()(
         for {
           result <- block(authenticatedRequest)
         } yield result
+      case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
     }
   }
-//    .recover {
-//    case _: NoActiveSession =>
-//      def postSignInRedirectUrl(implicit request: Request[_]) =
-//        configDecorator.pertaxFrontendForAuthHost + controllers.routes.ApplicationController
-//          .uplift(Some(SafeRedirectUrl(configDecorator.pertaxFrontendForAuthHost + request.path)))
-//          .url
-//
-//      request.session.get(configDecorator.authProviderKey) match {
-//        case Some(configDecorator.authProviderVerify) =>
-//          lazy val idaSignIn = s"${configDecorator.citizenAuthHost}/ida/login"
-//          Redirect(idaSignIn).withSession(
-//            "loginOrigin"    -> configDecorator.defaultOrigin.origin,
-//            "login_redirect" -> postSignInRedirectUrl(request)
-//          )
-//        case Some(configDecorator.authProviderGG) =>
-//          lazy val ggSignIn = s"${configDecorator.basGatewayFrontendHost}/bas-gateway/sign-in"
-//          Redirect(
-//            ggSignIn,
-//            Map(
-//              "continue_url" -> Seq(postSignInRedirectUrl(request)),
-//              "accountType"  -> Seq("individual"),
-//              "origin"       -> Seq(configDecorator.defaultOrigin.origin)
-//            )
-//          )
-//        case _ => Redirect(configDecorator.authProviderChoice)
-//      }
-//
-//    case _: IncorrectCredentialStrength => Redirect(configDecorator.authProviderChoice)
-//
-//    case _: InsufficientEnrolments => throw InsufficientEnrolments("")
-//  }
+    .recover {
+    case authException =>
+      Redirect(
+      config.loginUrl,
+      Map("continue" -> Seq(config.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))
+  }
 }
 
 @ImplementedBy(classOf[AuthAction])
