@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-package utils
+package models.citizenDetails
 
-trait ModelGenerators {
+import play.api.libs.json.{Json, OFormat}
+
+case class Country(countryName: String)
+
+object Country {
+  implicit val formats: OFormat[Country] = Json.format[Country]
 }

@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.citizenDetails
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import play.api.libs.json.{Json, OFormat}
 
-class WithNameSpec extends AnyFreeSpec with Matchers {
+case class PersonDetails(
+                          person: Person,
+                          address: Option[Address],
+                          correspondenceAddress: Option[Address]
+                        )
 
-  object Foo extends WithName("bar")
-
-  ".toString" - {
-
-    "must return the correct string" in {
-      Foo.toString mustEqual "bar"
-    }
-  }
+object PersonDetails {
+  implicit val formats: OFormat[PersonDetails] = Json.format[PersonDetails]
 }

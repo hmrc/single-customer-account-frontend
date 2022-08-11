@@ -16,24 +16,22 @@
 
 package controllers
 
-import controllers.actions.AuthActionX
-import models.requests.AuthenticatedRequest
+import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IndexView
 
 import javax.inject.Inject
 
-class IndexController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 authAction: AuthActionX,
-                                 view: IndexView
+class HomeController @Inject()(
+                                val controllerComponents: MessagesControllerComponents,
+                                authenticate: AuthAction,
+                                view: IndexView
                                ) extends FrontendBaseController with I18nSupport {
 
-  private val authenticate: ActionBuilder[AuthenticatedRequest, AnyContent] = authAction
-
   def onPageLoad: Action[AnyContent] = authenticate { implicit request =>
-    Ok(view("name"))
+    val name = request.name.fold("John Smith"){name => name.name.getOrElse("") + " " + name.lastName.getOrElse("")}
+    Ok(view(name))
   }
 }

@@ -18,25 +18,25 @@ package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import controllers.{UnauthorisedController, routes}
-import models.requests.AuthenticatedRequest
-import play.api.mvc.Results.{Redirect, Unauthorized}
+import controllers.routes
+import models.auth
+import models.auth.AuthenticatedRequest
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction @Inject()(
-                            override val authConnector: AuthConnector,
-                            config: FrontendAppConfig,
-                            val parser: BodyParsers.Default)
-                          (implicit val executionContext: ExecutionContext) extends AuthorisedFunctions with AuthActionX {
+class AuthActionImpl @Inject()(
+                                override val authConnector: AuthConnector,
+                                appConfig: FrontendAppConfig,
+                                val parser: BodyParsers.Default)
+                              (implicit val executionContext: ExecutionContext) extends AuthorisedFunctions with AuthAction {
 
   object LT200 {
     def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
@@ -63,7 +63,8 @@ class AuthAction @Inject()(
         Retrievals.trustedHelper and
         Retrievals.profile
     ) {
-      case nino ~ _ ~ Enrolments(enrolments) ~ Some(credentials) ~ Some(CredentialStrength.strong) ~ GTOE200(confidenceLevel) ~ name ~ trustedHelper ~ profile =>
+      case nino ~ _ ~ Enrolments(enrolments) ~ Some(credentials) ~ Some(CredentialStrength.strong) ~
+        GTOE200(confidenceLevel) ~ name ~ trustedHelper ~ profile =>
         val trimmedRequest: Request[A] = request
           .map {
             case AnyContentAsFormUrlEncoded(data) =>
@@ -74,7 +75,7 @@ class AuthAction @Inject()(
           }
           .asInstanceOf[Request[A]]
 
-        val authenticatedRequest = AuthenticatedRequest[A](
+        val authenticatedRequest = auth.AuthenticatedRequest[A](
           trustedHelper.fold(nino.map(domain.Nino))(helper => Some(domain.Nino(helper.principalNino))),
           credentials,
           confidenceLevel,
@@ -92,15 +93,15 @@ class AuthAction @Inject()(
         } yield result
       case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
     }
-  }
-    .recover {
+  }.recover {
     case authException =>
       Redirect(
-      config.loginUrl,
-      Map("continue" -> Seq(config.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))
+      appConfig.loginUrl,
+      Map("continue" -> Seq(appConfig.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))
   }
 }
 
-@ImplementedBy(classOf[AuthAction])
-trait AuthActionX
-  extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
+@ImplementedBy(classOf[AuthActionImpl])
+trait AuthAction
+  extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest] {
+}

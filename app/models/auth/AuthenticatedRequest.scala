@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.auth
 
 import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper

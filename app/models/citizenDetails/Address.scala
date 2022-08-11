@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.response
+package models.citizenDetails
 
 import play.api.Logging
 import play.api.libs.functional.syntax._

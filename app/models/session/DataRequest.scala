@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package models.session
 
-class WithName(string: String) {
-  override val toString: String = string
-}
+import play.api.mvc.{Request, WrappedRequest}
+
+case class OptionalDataRequest[A] (request: Request[A], internalId: String, cache: Option[Session]) extends WrappedRequest[A](request)
+
+case class DataRequest[A] (request: Request[A], internalId: String, cache: Session) extends WrappedRequest[A](request)

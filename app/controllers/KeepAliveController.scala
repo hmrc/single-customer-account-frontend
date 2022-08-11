@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{AuthActionX, DataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -26,10 +26,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class KeepAliveController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
-                                     identify: AuthActionX,
-                                     getData: DataRetrievalAction,
-                                     sessionRepository: SessionRepository
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController {
+                                     authenticate: AuthAction)
+                                   (implicit ec: ExecutionContext) extends FrontendBaseController {
 
-  def keepAlive: Action[AnyContent] = Action.async { implicit request => Future.successful(Ok)}
+  def keepAlive: Action[AnyContent] = authenticate.async { implicit request => Future.successful(Ok)}
 }

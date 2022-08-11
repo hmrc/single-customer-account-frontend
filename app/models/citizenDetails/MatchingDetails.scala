@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.response
+package models.citizenDetails
 
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.SaUtr

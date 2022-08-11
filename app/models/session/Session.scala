@@ -14,7 +14,18 @@
  * limitations under the License.
  */
 
-package utils
+package models.session
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+import play.api.libs.json.{Json, OFormat}
+
+import java.time.LocalDateTime
+
+case class Session(
+                  id: String,
+                  expiresAt: LocalDateTime,
+                  test: Option[String]
+                  )
+
+object Session {
+  implicit lazy val format: OFormat[Session] = Json.format[Session]
 }

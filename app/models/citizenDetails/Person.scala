@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.response
+package models.citizenDetails
 
 import play.api.libs.json._
 import uk.gov.hmrc.auth.core.Nino

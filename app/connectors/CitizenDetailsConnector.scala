@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import com.kenshoo.play.metrics.Metrics
-import models.response.{MatchingDetails, PersonDetails}
+import models.citizenDetails.{MatchingDetails, PersonDetails}
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.ws.WSClient
