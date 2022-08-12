@@ -17,7 +17,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import models.UserAnswers
+import models.session.Session
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model._
 import play.api.libs.json.Format
@@ -34,12 +34,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class SessionRepository @Inject()(
                                    mongoComponent: MongoComponent,
                                    appConfig: FrontendAppConfig,
-                                   clock: Clock
-                                 )(implicit ec: ExecutionContext)
-  extends PlayMongoRepository[UserAnswers](
-    collectionName = "user-answers",
+                                   clock: Clock)
+                                 (implicit ec: ExecutionContext) extends PlayMongoRepository[Session](
+    collectionName = "session",
     mongoComponent = mongoComponent,
-    domainFormat   = UserAnswers.format,
+    domainFormat   = Session.format,
     indexes        = Seq(
       IndexModel(
         Indexes.ascending("lastUpdated"),
@@ -63,7 +62,7 @@ class SessionRepository @Inject()(
       .toFuture
       .map(_ => true)
 
-  def get(id: String): Future[Option[UserAnswers]] =
+  def get(id: String): Future[Option[Session]] =
     keepAlive(id).flatMap {
       _ =>
         collection
@@ -71,14 +70,12 @@ class SessionRepository @Inject()(
           .headOption
     }
 
-  def set(answers: UserAnswers): Future[Boolean] = {
-
-    val updatedAnswers = answers copy (lastUpdated = Instant.now(clock))
+  def set(session: Session): Future[Boolean] = {
 
     collection
       .replaceOne(
-        filter      = byId(updatedAnswers.id),
-        replacement = updatedAnswers,
+        filter      = byId(session.id),
+        replacement = session,
         options     = ReplaceOptions().upsert(true)
       )
       .toFuture

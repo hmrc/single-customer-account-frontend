@@ -17,7 +17,7 @@
 package controllers.auth
 
 import config.FrontendAppConfig
-import controllers.actions.IdentifierAction
+import controllers.actions.CitizenDetailsActionImpl
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -31,26 +31,26 @@ class AuthController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 config: FrontendAppConfig,
                                 sessionRepository: SessionRepository,
-                                identify: IdentifierAction
+                                authAction: CitizenDetailsActionImpl
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def signOut(): Action[AnyContent] = identify.async {
+  def signOut(): Action[AnyContent] = Action.async {
     implicit request =>
       sessionRepository
-        .clear(request.userId)
+        .clear("x")
         .map {
           _ =>
-            Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
+            Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl))).withNewSession
       }
   }
 
-  def signOutNoSurvey(): Action[AnyContent] = identify.async {
+  def signOutNoSurvey(): Action[AnyContent] = Action.async {
     implicit request =>
     sessionRepository
-      .clear(request.userId)
+      .clear("x")
       .map {
         _ =>
-        Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url)))
+        Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url))).withNewSession
       }
   }
 }
