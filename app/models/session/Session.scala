@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package models.session
 
-import com.google.inject.AbstractModule
-import controllers.actions._
+import play.api.libs.json.{Json, OFormat}
 
-import java.time.{Clock, ZoneOffset}
+import java.time.LocalDateTime
 
-class Module extends AbstractModule {
+case class Session(
+                  id: String,
+                  expiresAt: LocalDateTime,
+                  test: Option[String]
+                  )
 
-  override def configure(): Unit = {
-
-    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[AuthAction]).to(classOf[AuthActionImpl]).asEagerSingleton()
-    bind(classOf[CitizenDetailsAction]).to(classOf[CitizenDetailsActionImpl]).asEagerSingleton()
-    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
-  }
+object Session {
+  implicit lazy val format: OFormat[Session] = Json.format[Session]
 }

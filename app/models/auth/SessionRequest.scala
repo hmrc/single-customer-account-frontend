@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-package config
+package models.auth
 
-import com.google.inject.AbstractModule
-import controllers.actions._
+import play.api.mvc.{Request, WrappedRequest}
 
-import java.time.{Clock, ZoneOffset}
-
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-
-    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[AuthAction]).to(classOf[AuthActionImpl]).asEagerSingleton()
-    bind(classOf[CitizenDetailsAction]).to(classOf[CitizenDetailsActionImpl]).asEagerSingleton()
-    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
-  }
-}
+case class SessionRequest[A](request: Request[A], userId: String) extends WrappedRequest[A](request)
