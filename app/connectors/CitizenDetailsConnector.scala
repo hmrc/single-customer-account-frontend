@@ -22,7 +22,7 @@ import models.citizenDetails.{MatchingDetails, PersonDetails}
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.ws.WSClient
-import uk.gov.hmrc.auth.core.Nino
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -37,18 +37,23 @@ class CitizenDetailsConnector @Inject()(
 
   lazy val citizenDetailsUrl: String = servicesConfig.baseUrl("citizen-details")
 
-  def personDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[Either[String, PersonDetails]] = {
-    wsClient.url(s"$citizenDetailsUrl/citizen-details/$nino/designatory-details").get().map {
-      case response if response.status >= OK && response.status < 300 => Right(response.json.as[PersonDetails])
-      case response if response.status== LOCKED => Left("") //personal details record hidden
-      case response if response.status == NOT_FOUND => Left("")
-      case response => Left("")
-    }.recover {
-      case ex: Exception => Left("")
+  def getPersonDetails(nino: Option[Nino])(implicit hc: HeaderCarrier): Future[Option[PersonDetails]] = {
+    nino match {
+      case None => Future.successful(None)
+      case Some(ninoString) => {
+        wsClient.url(s"$citizenDetailsUrl/citizen-details/$ninoString/designatory-details").get().map {
+          case response if response.status >= OK && response.status < 300 => response.json.asOpt[PersonDetails]
+          case response if response.status== LOCKED => None //personal details record hidden
+          case response if response.status == NOT_FOUND => None
+          case response => None
+        }.recover {
+          case ex: Exception => None
+        }
+      }
     }
   }
 
-  def getMatchingDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[Either[String,MatchingDetails]] = {
+  def getMatchingDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[Either[String, MatchingDetails]] = {
     wsClient.url(s"$citizenDetailsUrl/citizen-details/nino/$nino").get().map {
       case response if response.status >= OK && response.status < 300 => Right(MatchingDetails.fromJsonMatchingDetails(response.json))
       case response if response.status == NOT_FOUND => Left("")

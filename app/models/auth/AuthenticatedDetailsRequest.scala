@@ -16,6 +16,9 @@
 
 package models.auth
 
-import play.api.mvc.{Request, WrappedRequest}
+import models.citizenDetails.PersonDetails
+import play.api.mvc.WrappedRequest
 
-case class IdentifierRequest[A](request: Request[A], userId: String) extends WrappedRequest[A](request)
+case class AuthenticatedDetailsRequest[A](
+                           authenticatedRequest: AuthenticatedRequest[A],
+                           personDetails: Option[PersonDetails]) extends WrappedRequest[A](authenticatedRequest)

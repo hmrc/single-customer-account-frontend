@@ -90,18 +90,22 @@ class AuthActionImpl @Inject()(
 
         for {
           result <- block(authenticatedRequest)
-        } yield result
+        } yield {
+          result
+        }
       case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
     }
   }.recover {
     case authException =>
+      println(authException.getMessage)
+      println(authException.toString)
       Redirect(
       appConfig.loginUrl,
       Map("continue" -> Seq(appConfig.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))
   }
 }
 
-@ImplementedBy(classOf[AuthActionImpl])
+@ImplementedBy(classOf[CitizenDetailsActionImpl])
 trait AuthAction
   extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest] {
 }
