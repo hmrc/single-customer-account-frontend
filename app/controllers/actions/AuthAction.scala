@@ -105,7 +105,7 @@ class AuthActionImpl @Inject()(
   }
 }
 
-@ImplementedBy(classOf[CitizenDetailsActionImpl])
+@ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction
   extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest] {
 }

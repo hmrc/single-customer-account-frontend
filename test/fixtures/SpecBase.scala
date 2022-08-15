@@ -18,37 +18,61 @@ package fixtures
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import controllers.actions.{AuthAction, CitizenDetailsAction, DataRetrievalAction}
+import config.FrontendAppConfig
+import controllers.actions.{AuthAction, CitizenDetailsAction}
+import handlers.ErrorHandler
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.play.BaseOneAppPerTest
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
+import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.{FakeRequest, Injecting}
-import repositories.SessionRepository
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.{FiniteDuration, _}
 
 trait SpecBase
-  extends AnyFreeSpec
+  extends PlaySpec
     with Matchers
     with ScalaFutures
     with IntegrationPatience
     with Injecting
-    with BaseOneAppPerTest {
+    with MockitoSugar
+    with GuiceOneAppPerSuite {
+
+  override lazy val app: Application = applicationBuilder().build()
+  implicit val system: ActorSystem = ActorSystem("Test")
+  implicit val materializer: Materializer = Materializer(system)
+  lazy val injector: Injector = app.injector
+
+  implicit val defaultTimeout: FiniteDuration = 5.seconds
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "").withSession(
+    SessionKeys.sessionId -> "foo").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+
+  implicit val frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  implicit val ec: ExecutionContext = injector.instanceOf[ExecutionContext]
+  implicit val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  implicit val messages: Messages = messagesApi.preferred(fakeRequest)
+  implicit val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
+  lazy val messagesControllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
+  implicit val authAction: AuthAction = injector.instanceOf[AuthAction]
+  implicit val citizenDetailsAction: CitizenDetailsAction = injector.instanceOf[CitizenDetailsAction]
 
   protected def applicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[AuthAction].to[FakeIdentifierAction],
-        bind[CitizenDetailsAction].to[FakeAuthAction]
+        bind[CitizenDetailsAction].to[FakeCitizenDetailsAction],
+        bind[AuthAction].to[FakeAuthAction]
       )
-  override lazy val app: Application = applicationBuilder().build()
 
-  implicit val system: ActorSystem = ActorSystem("Sys")
-  implicit val materializer: Materializer = Materializer(system)
-  lazy val injector: Injector = app.injector
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 }

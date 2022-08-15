@@ -17,20 +17,21 @@
 package fixtures
 
 import config.FrontendAppConfig
-import controllers.actions.AuthActionImpl
-import models.auth.AuthenticatedRequest
+import connectors.CitizenDetailsConnector
+import controllers.actions.CitizenDetailsActionImpl
+import models.auth.{AuthenticatedDetailsRequest, AuthenticatedRequest}
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeAuthAction @Inject()(override val authConnector: AuthConnector,
-                               config: FrontendAppConfig,
-                               override val parser: BodyParsers.Default)(implicit ec: ExecutionContext) extends AuthActionImpl(authConnector, config, parser) {
+class FakeCitizenDetailsAction @Inject()(override val citizenDetailsConnector: CitizenDetailsConnector,
+                                         config: FrontendAppConfig,
+                                         override val parser: BodyParsers.Default)
+                                        (implicit ec: ExecutionContext) extends CitizenDetailsActionImpl(citizenDetailsConnector, config, parser) {
 
-  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-    block(TestData.Requests.authenticatedRequest(request))
+  override protected def transform[A](request: AuthenticatedRequest[A]): Future[AuthenticatedDetailsRequest[A]] = {
+    Future.successful(TestData.Requests.authenticatedDetailsRequest(request))
   }
 }
 

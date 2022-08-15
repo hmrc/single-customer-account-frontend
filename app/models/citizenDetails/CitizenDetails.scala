@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.ptafrontend.views.html._
-@import uk.gov.hmrc.ptafrontend.viewmodels.attorneybanner.AttorneyBanner
-@import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
+package models.citizenDetails
 
-@this(
-  ptaAttorneyBanner: PtaAttorneyBanner
-)
+import play.api.libs.json.{Json, OFormat}
 
-@(helper: TrustedHelper)(implicit messages: Messages)
+case class CitizenDetails(
+                          person: Person,
+                          address: Option[Address],
+                          correspondenceAddress: Option[Address]
+                        )
 
-  @ptaAttorneyBanner(AttorneyBanner(name = helper.principalName, classes = "govuk-!-margin-top-2", accountUrl = helper.returnLinkUrl))
-
+object CitizenDetails {
+  implicit val formats: OFormat[CitizenDetails] = Json.format[CitizenDetails]
+}

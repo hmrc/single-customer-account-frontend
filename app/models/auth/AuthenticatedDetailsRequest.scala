@@ -14,25 +14,11 @@
  * limitations under the License.
  */
 
-<<<<<<< HEAD:app/models/auth/AuthenticatedDetailsRequest.scala
 package models.auth
 
-import models.citizenDetails.PersonDetails
+import models.citizenDetails.CitizenDetails
 import play.api.mvc.WrappedRequest
 
 case class AuthenticatedDetailsRequest[A](
                            authenticatedRequest: AuthenticatedRequest[A],
-                           personDetails: Option[PersonDetails]) extends WrappedRequest[A](authenticatedRequest)
-=======
-package models.citizenDetails
-
-import play.api.libs.json.JsValue
-import uk.gov.hmrc.domain.SaUtr
-
-case class MatchingDetails(saUtr: Option[SaUtr])
-
-object MatchingDetails {
-  def fromJsonMatchingDetails(matchingDetails: JsValue): MatchingDetails =
-    MatchingDetails((matchingDetails \ "ids" \ "sautr").asOpt[String].map(SaUtr.apply))
-}
->>>>>>> 4f7f55e2b42ed8918801d3fa14f717e1d6b6daac:app/models/citizenDetails/MatchingDetails.scala
+                           citizenDetails: Option[CitizenDetails]) extends WrappedRequest[A](authenticatedRequest)
