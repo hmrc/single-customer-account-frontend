@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import com.kenshoo.play.metrics.Metrics
-import models.citizenDetails.{MatchingDetails, PersonDetails}
+import models.citizenDetails.{MatchingDetails, CitizenDetails}
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.ws.WSClient
@@ -37,12 +37,12 @@ class CitizenDetailsConnector @Inject()(
 
   lazy val citizenDetailsUrl: String = servicesConfig.baseUrl("citizen-details")
 
-  def getPersonDetails(nino: Option[Nino])(implicit hc: HeaderCarrier): Future[Option[PersonDetails]] = {
+  def getPersonDetails(nino: Option[Nino])(implicit hc: HeaderCarrier): Future[Option[CitizenDetails]] = {
     nino match {
       case None => Future.successful(None)
       case Some(ninoString) => {
         wsClient.url(s"$citizenDetailsUrl/citizen-details/$ninoString/designatory-details").get().map {
-          case response if response.status >= OK && response.status < 300 => response.json.asOpt[PersonDetails]
+          case response if response.status >= OK && response.status < 300 => response.json.asOpt[CitizenDetails]
           case response if response.status== LOCKED => None //personal details record hidden
           case response if response.status == NOT_FOUND => None
           case response => None
@@ -53,7 +53,7 @@ class CitizenDetailsConnector @Inject()(
     }
   }
 
-  def getMatchingDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[Either[String, MatchingDetails]] = {
+  def getMatchingDetails(nino: Nino): Future[Either[String, MatchingDetails]] = {
     wsClient.url(s"$citizenDetailsUrl/citizen-details/nino/$nino").get().map {
       case response if response.status >= OK && response.status < 300 => Right(MatchingDetails.fromJsonMatchingDetails(response.json))
       case response if response.status == NOT_FOUND => Left("")

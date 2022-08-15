@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package models.citizenDetails
+package controllers
 
-import play.api.libs.json.{Json, OFormat}
+import fixtures.SpecBase
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import views.html.IndexView
 
-case class PersonDetails(
-                          person: Person,
-                          address: Option[Address],
-                          correspondenceAddress: Option[Address]
-                        )
+class HomeControllerSpec extends SpecBase {
 
-object PersonDetails {
-  implicit val formats: OFormat[PersonDetails] = Json.format[PersonDetails]
+  lazy val indexView: IndexView = injector.instanceOf[IndexView]
+  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authAction, citizenDetailsAction, indexView)
+
+  "HomeController" must {
+    "Return the Home page" in {
+
+      whenReady(controller.onPageLoad(fakeRequest)) { result =>
+        result.header.status shouldBe 200
+      }
+    }
+  }
+
 }
