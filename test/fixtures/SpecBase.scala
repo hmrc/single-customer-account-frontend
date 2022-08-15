@@ -14,25 +14,41 @@
  * limitations under the License.
  */
 
-package base
+package fixtures
 
+import akka.actor.ActorSystem
+import akka.stream.Materializer
+import controllers.actions.{AuthAction, CitizenDetailsAction, DataRetrievalAction}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, TryValues}
+import org.scalatestplus.play.BaseOneAppPerTest
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.FakeRequest
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.{Injector, bind}
+import play.api.test.{FakeRequest, Injecting}
+import repositories.SessionRepository
 
 trait SpecBase
   extends AnyFreeSpec
     with Matchers
-    with TryValues
-    with OptionValues
     with ScalaFutures
-    with IntegrationPatience {
+    with IntegrationPatience
+    with Injecting
+    with BaseOneAppPerTest {
 
-  val userAnswersId: String = "id"
+  protected def applicationBuilder(): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[AuthAction].to[FakeIdentifierAction],
+        bind[CitizenDetailsAction].to[FakeAuthAction]
+      )
+  override lazy val app: Application = applicationBuilder().build()
+
+  implicit val system: ActorSystem = ActorSystem("Sys")
+  implicit val materializer: Materializer = Materializer(system)
+  lazy val injector: Injector = app.injector
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 }
