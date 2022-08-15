@@ -19,29 +19,22 @@ package controllers.actions
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import connectors.CitizenDetailsConnector
-import controllers.routes
-import models.auth
 import models.auth.{AuthenticatedDetailsRequest, AuthenticatedRequest}
-import play.api.mvc.Results.Redirect
 import play.api.mvc._
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
-import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class CitizenDetailsActionImpl @Inject()(
-                                          val connector: CitizenDetailsConnector,
+                                          val citizenDetailsConnector: CitizenDetailsConnector,
                                           appConfig: FrontendAppConfig,
                                           val parser: BodyParsers.Default)
                                         (implicit val executionContext: ExecutionContext) extends CitizenDetailsAction {
 
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[AuthenticatedDetailsRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    connector.getPersonDetails(request.nino).map { personDetails =>
+    citizenDetailsConnector.getPersonDetails(request.nino).map { personDetails =>
       AuthenticatedDetailsRequest[A](request, personDetails)
     }
   }

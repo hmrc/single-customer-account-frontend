@@ -33,7 +33,7 @@ class HomeController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.authenticatedRequest.name.fold("null"){name => name.name.getOrElse("") + " " + name.lastName.getOrElse("")}
-    val cdName = request.personDetails.fold("null"){pd => pd.person.fullName}
+    val cdName = request.citizenDetails.fold("null"){pd => pd.person.fullName}
     Ok(view(name, cdName))
   }
 }
