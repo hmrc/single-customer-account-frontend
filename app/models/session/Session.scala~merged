@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-<<<<<<< HEAD:app/models/auth/AuthenticatedDetailsRequest.scala
-package models.auth
-
-import models.citizenDetails.PersonDetails
-import play.api.mvc.WrappedRequest
-
-case class AuthenticatedDetailsRequest[A](
-                           authenticatedRequest: AuthenticatedRequest[A],
-                           personDetails: Option[PersonDetails]) extends WrappedRequest[A](authenticatedRequest)
+<<<<<<< HEAD
 =======
+<<<<<<< HEAD:app/models/citizenDetails/MatchingDetails.scala
 package models.citizenDetails
 
 import play.api.libs.json.JsValue
@@ -34,5 +27,24 @@ case class MatchingDetails(saUtr: Option[SaUtr])
 object MatchingDetails {
   def fromJsonMatchingDetails(matchingDetails: JsValue): MatchingDetails =
     MatchingDetails((matchingDetails \ "ids" \ "sautr").asOpt[String].map(SaUtr.apply))
+=======
+>>>>>>> 4f7f55e2b42ed8918801d3fa14f717e1d6b6daac
+package models.session
+
+import play.api.libs.json.{Json, OFormat}
+
+import java.time.LocalDateTime
+
+case class Session(
+                  id: String,
+                  expiresAt: LocalDateTime,
+                  test: Option[String]
+                  )
+
+object Session {
+  implicit lazy val format: OFormat[Session] = Json.format[Session]
+<<<<<<< HEAD
+=======
+>>>>>>> 4f7f55e2b42ed8918801d3fa14f717e1d6b6daac:app/models/session/Session.scala
+>>>>>>> 4f7f55e2b42ed8918801d3fa14f717e1d6b6daac
 }
->>>>>>> 4f7f55e2b42ed8918801d3fa14f717e1d6b6daac:app/models/citizenDetails/MatchingDetails.scala
