@@ -21,11 +21,11 @@ import controllers.actions.{AuthAction, CitizenDetailsAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.IndexView
+import views.html.{IndexView, MainView}
 
 import javax.inject.Inject
 
-class HomeController @Inject()(
+class PTAController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 authenticate: AuthAction,
                                 getUserDetails: CitizenDetailsAction,
