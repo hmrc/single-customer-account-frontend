@@ -1,4 +1,5 @@
 service.name = Single Customer Account
+home.name = Account Home
 
 site.back = Back
 site.remove = Remove

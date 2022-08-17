@@ -14,19 +14,20 @@
  * limitations under the License.
  *@
 
-@this(
-    layout: templates.Layout
-)
+@import config.FrontendAppConfig
+@import models.auth.AuthenticatedDetailsRequest
 
-@(name: String, cdName: String)(implicit request: Request[_], messages: Messages)
+@this(
+    layout: MainView
+)
+@(name: String, cdName: String)(implicit request: AuthenticatedDetailsRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(
-    pageTitle    = titleNoForm(messages("index.title")),
+    pageTitle    = messages("service.name"),
     showBackLink = false
 ) {
 
     <p class="hmrc-caption govuk-caption-xl">@messages("index.heading")</p>
     <h1 class="govuk-heading-xl">Auth name: @name</h1>
-    <h1 class="govuk-heading-xl">Citizen Details name: @name</h1>
-
+    <h1 class="govuk-heading-xl">Citizen Details name: @cdName</h1>
 }
