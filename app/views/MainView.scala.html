@@ -31,7 +31,6 @@
         govukPhaseBanner: GovukPhaseBanner,
         link: Link,
         backLink: backLink,
-        hmrcAccountMenu: HmrcAccountMenu,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
         hmrcHead: HmrcHead,
         alphaBanner: StandardAlphaBanner
@@ -55,44 +54,8 @@
         timeout: Boolean = true
 )(content: Html)(implicit request: AuthenticatedDetailsRequest[_], messages: Messages, appConfig: FrontendAppConfig, requestHeader: RequestHeader)
 
-@headBlock = {
-    <meta name="format-detection" content="telephone=no" />
-    <link rel="stylesheet" href='@controllers.routes.Assets.versioned("stylesheets/pertaxMain.css")'/>
-
-@stylesheets
-}
-
-
-@beforeContent = {
-@if(!hideAccountMenu && true) { @accountMenu }
-
-@if(showBackLink){
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-        @backLink(backLinkUrl, backLinkID)
-        </div>
-        <div class="govuk-grid-column-one-half">
-        @hmrcLanguageSelectHelper()
-        </div>
-    </div>
-} else {
-    @hmrcLanguageSelectHelper()
-}
-
 @if(beforeContentHtml.isDefined){
     @beforeContentHtml
-}
-}
-
-@accountMenu = @{
-    hmrcAccountMenu(AccountMenu(
-        signOut = SignOut(href = controllers.auth.routes.AuthController.signOut.url),
-        language = if(messages.lang.code == "cy") Cy else En,
-        businessTaxAccount = None,
-        accountHome = AccountHome(active = accountHome, href = controllers.routes.HomeController.onPageLoad.url),
-        messages = AccountMessages(active = messagesActive, messageCount = None),
-        yourProfile = YourProfile(active = yourProfileActive)
-    ))
 }
 
 @contentBlock = {
@@ -104,6 +67,35 @@
 
 @fullPageTitle = @{
     s"""${messages(pageTitle)}"""
+}
+
+@header = {
+    <div class="govuk-width-container">
+            <!-- ACCOUNT MENU -->
+        <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
+
+                <a id="nav-home" href="@routes.HomeController.onPageLoad.url" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
+                    <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
+                </a>
+
+            <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
+
+            <ul class="hmrc-account-menu__main js-hidden">
+                    <li>
+                        <a id="nav-client" href="#" class="hmrc-account-menu__link">@messages("nav.your_details")</a>
+                    </li>
+
+                    <li>
+                        <a id="nav-year" href="#" class="hmrc-account-menu__link">@messages("nav.account_settings")</a>
+                    </li>
+
+                <li>
+                    <a id="nav-year" href="#" class="hmrc-account-menu__link">@messages("nav.messages")</a>
+                </li>
+            </ul>
+        </nav>
+            <!-- END ACCOUNT MENU -->
+    </div>
 }
 
 @hmrcHead(
@@ -129,8 +121,7 @@
     isWelshTranslationAvailable = true,
     accessibilityStatementUrl = Some(appConfig.accessibilityStatementUrl(request.uri)),
     displayHmrcBanner = false,
-    additionalHeadBlock = Some(headBlock),
-    beforeContentBlock = Some(beforeContent),
+    additionalHeadBlock = None,
     additionalScriptsBlock = None,
     additionalBannersBlock = None,
     mainContentLayout = Some(sidebarContent match {
@@ -142,5 +133,7 @@
                 twoThirdsMainContent(_)
             }
     }),
-    phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
+    beforeContentBlock = Some(header),
+    phaseBanner = Some(alphaBanner(appConfig.feedbackUrl)),
+    signOutUrl = Some(controllers.auth.routes.AuthController.signOut.url)
 )(contentBlock)

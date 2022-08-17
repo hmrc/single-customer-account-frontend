@@ -40,6 +40,11 @@ index.title = Account Home
 index.heading = Account Home
 index.guidance = Account Home
 
+nav.home = Account Home
+nav.your_details = Your Details
+nav.account_settings = Account Settings
+nav.messages = Messages
+
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
 
