@@ -70,8 +70,10 @@
 }
 
 @header = {
+
     <div class="govuk-width-container">
-            <!-- ACCOUNT MENU -->
+
+        <!-- ACCOUNT MENU -->
         <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
 
                 <a id="nav-home" href="@routes.HomeController.onPageLoad.url" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
@@ -95,6 +97,8 @@
             </ul>
         </nav>
             <!-- END ACCOUNT MENU -->
+        @hmrcLanguageSelectHelper()
+
     </div>
 }
 
