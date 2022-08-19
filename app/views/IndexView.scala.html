@@ -20,7 +20,7 @@
 @this(
     layout: MainView
 )
-@(name: String, cdName: String)(implicit request: AuthenticatedDetailsRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(name: String, cdName: Option[String])(implicit request: AuthenticatedDetailsRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(
     pageTitle    = messages("service.name"),
@@ -31,6 +31,7 @@
 
     <h1 class="govuk-heading-xl" id="name">@name</h1>
 
-    <h1 class="govuk-heading-xl">Auth name: @name</h1>
-    <h1 class="govuk-heading-xl">Citizen Details name: @cdName</h1>
+    @if(cdName.isDefined){
+        <h1 class="govuk-heading-xl">Citizen Details name: @cdName</h1>
+    }
 }

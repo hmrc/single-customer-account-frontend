@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, CitizenDetailsAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.{IndexView, MainView}
+import views.html.IndexView
 
 import javax.inject.Inject
 
@@ -35,6 +35,6 @@ class PTAController @Inject()(
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.authenticatedRequest.name.fold("null"){name => name.name.getOrElse("") + " " + name.lastName.getOrElse("")}
     val cdName = request.citizenDetails.fold("null"){pd => pd.person.fullName}
-    Ok(view(name, cdName))
+    Ok(view(name, Some(cdName)))
   }
 }
