@@ -18,27 +18,30 @@ package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import connectors.CitizenDetailsConnector
-import models.auth.{AuthenticatedDetailsRequest, AuthenticatedRequest}
+import connectors.IFConnector
+import models.auth.{AuthenticatedIFRequest, AuthenticatedRequest, IFData}
 import play.api.mvc._
+import services.IFService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CitizenDetailsActionImpl @Inject()(
-                                          val citizenDetailsConnector: CitizenDetailsConnector,
-                                          appConfig: FrontendAppConfig,
-                                          val parser: BodyParsers.Default)
-                                        (implicit val executionContext: ExecutionContext) extends CitizenDetailsAction {
+class IFActionImpl @Inject()(
+                              val ifService: IFService,
+                              appConfig: FrontendAppConfig,
+                              val parser: BodyParsers.Default)
+                            (implicit val executionContext: ExecutionContext) extends IFAction {
 
-  override protected def transform[A](request: AuthenticatedRequest[A]): Future[AuthenticatedDetailsRequest[A]] = {
+  override protected def transform[A](request: AuthenticatedRequest[A]): Future[AuthenticatedIFRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    citizenDetailsConnector.getPersonDetails(request.nino).map { personDetails =>
-      AuthenticatedDetailsRequest[A](request, personDetails)
+    ifService.getPersonalDetails(request.nino).map { res =>
+      AuthenticatedIFRequest[A](request, res)
+    }.recoverWith {
+      case ex: Exception => Future.failed(ex)
     }
   }
 }
 
-@ImplementedBy(classOf[CitizenDetailsActionImpl])
-trait CitizenDetailsAction extends ActionTransformer[AuthenticatedRequest, AuthenticatedDetailsRequest]
+@ImplementedBy(classOf[IFActionImpl])
+trait IFAction extends ActionTransformer[AuthenticatedRequest, AuthenticatedIFRequest]

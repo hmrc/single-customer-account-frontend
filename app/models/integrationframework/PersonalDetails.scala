@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package models.citizenDetails
+package models.integrationframework
 
-import play.api.libs.json.JsValue
-import uk.gov.hmrc.domain.SaUtr
+import play.api.libs.json.{Json, OFormat}
 
-case class MatchingDetails(saUtr: Option[SaUtr])
+case class PersonalDetails(  name: Option[Name] = None,
+                             requestedName: Option[String] = None,
+                             maritalStatus: Option[Int] = None )
 
-object MatchingDetails {
-  def fromJsonMatchingDetails(matchingDetails: JsValue): MatchingDetails =
-    MatchingDetails((matchingDetails \ "ids" \ "sautr").asOpt[String].map(SaUtr.apply))
+object PersonalDetails {
+  implicit val format: OFormat[PersonalDetails] = Json.format[PersonalDetails]
 }
