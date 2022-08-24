@@ -16,8 +16,8 @@
 
 package fixtures
 
-import models.auth.{AuthenticatedDetailsRequest, AuthenticatedRequest}
-import models.citizenDetails.{Address, CitizenDetails, Person}
+import models.auth.{AuthenticatedIFRequest, AuthenticatedRequest}
+import models.integrationframework.{Address, CitizenDetails, Person}
 import play.api.mvc.Request
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
@@ -43,9 +43,9 @@ object TestData {
       request = request
     )
 
-    def authenticatedDetailsRequest[A](authenticatedRequest: AuthenticatedRequest[A]): AuthenticatedDetailsRequest[A] = AuthenticatedDetailsRequest(
+    def authenticatedDetailsRequest[A](authenticatedRequest: AuthenticatedRequest[A]): AuthenticatedIFRequest[A] = AuthenticatedIFRequest(
       authenticatedRequest = authenticatedRequest,
-      citizenDetails = Some(CitizenDetailsData.citizenDetails)
+      ifData = Some(CitizenDetailsData.citizenDetails)
     )
   }
 

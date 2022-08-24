@@ -28,11 +28,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
 
-  private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "single-customer-account-frontend"
-
+  private val contactBaseUrl: String = configuration.get[Service]("microservice.services.contact-frontend").baseUrl
   def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
+    s"$contactBaseUrl/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
@@ -80,8 +79,16 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     "https://docs.google.com/forms/d/e/1FAIpQLSegbiz4ClGW0XkC1pY3B02ltiY1V79V7ha0jZinECIz_FvSyg/viewform"
   )
   def betaFeedbackUnauthenticatedUrl(aDeskproToken: String) =
-    s"$contactHost/contact/beta-feedback-unauthenticated?service=$aDeskproToken"
+    s"$contactBaseUrl/contact/beta-feedback-unauthenticated?service=$aDeskproToken"
 
   lazy val deskproToken = "SCA"
+
+  val integrationFrameworkProtocol: String = configuration.get[String]("microservice.services.integration-framework.protocol")
+  val integrationFrameworkHost: String = configuration.get[String]("microservice.services.integration-framework.host")
+  val integrationFrameworkPort: Int = configuration.get[Int]("microservice.services.integration-framework.port")
+  val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
+  val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
+  val ifBaseUrl = s"$integrationFrameworkProtocol://$integrationFrameworkHost:$integrationFrameworkPort"
+
 
 }

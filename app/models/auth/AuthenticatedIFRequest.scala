@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package models.citizenDetails
+package models.auth
 
-import play.api.libs.json.{Json, OFormat}
+import models.integrationframework.PersonalDetailsResponse
+import play.api.mvc.WrappedRequest
 
-case class Country(countryName: String)
-
-object Country {
-  implicit val formats: OFormat[Country] = Json.format[Country]
-}
+case class AuthenticatedIFRequest[A](
+                                      authenticatedRequest: AuthenticatedRequest[A],
+                                      ifData: PersonalDetailsResponse) extends WrappedRequest[A](authenticatedRequest)

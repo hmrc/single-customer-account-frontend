@@ -19,7 +19,7 @@ package fixtures
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import config.FrontendAppConfig
-import controllers.actions.{AuthAction, CitizenDetailsAction}
+import controllers.actions.{AuthAction, IFAction}
 import handlers.ErrorHandler
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
@@ -64,12 +64,12 @@ trait SpecBase
   implicit val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
   lazy val messagesControllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
   implicit val authAction: AuthAction = injector.instanceOf[AuthAction]
-  implicit val citizenDetailsAction: CitizenDetailsAction = injector.instanceOf[CitizenDetailsAction]
+  implicit val citizenDetailsAction: IFAction = injector.instanceOf[IFAction]
 
   protected def applicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[CitizenDetailsAction].to[FakeCitizenDetailsAction],
+        bind[IFAction].to[FakeIFAction],
         bind[AuthAction].to[FakeAuthAction]
       )
 

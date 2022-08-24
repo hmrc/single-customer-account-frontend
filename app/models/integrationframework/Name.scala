@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package models.auth
+package models.integrationframework
 
-import models.citizenDetails.CitizenDetails
-import play.api.mvc.WrappedRequest
+import play.api.libs.json.{Json, OFormat}
 
-case class AuthenticatedDetailsRequest[A](
-                           authenticatedRequest: AuthenticatedRequest[A],
-                           citizenDetails: Option[CitizenDetails]) extends WrappedRequest[A](authenticatedRequest)
+case class Name( firstForename: Option[String] = None,
+                 secondForename: Option[String] = None,
+                 surname: Option[String] = None,
+                 title: Option[Int] = None)
+
+object Name {
+
+  implicit val format: OFormat[Name] = Json.format[Name]
+
+  def apply(name: IfName): Name = new Name(
+    firstForename = name.firstForename,
+    secondForename = name.secondForename,
+    surname = name.surname,
+    title = name.titleType
+  )
+}
