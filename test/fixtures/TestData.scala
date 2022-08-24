@@ -17,13 +17,11 @@
 package fixtures
 
 import models.auth.{AuthenticatedIFRequest, AuthenticatedRequest}
-import models.integrationframework.{Address, CitizenDetails, Person}
+import models.integrationframework.{IfName, Name, PersonalDetails, PersonalDetailsResponse}
 import play.api.mvc.Request
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier}
-
-import java.time.LocalDate
 
 object TestData {
 
@@ -36,7 +34,7 @@ object TestData {
         "providerType"
       ),
       confidenceLevel = ConfidenceLevel.L250,
-      name = Some(Name(Some("John"), Some("Smith"))),
+      name = Some(uk.gov.hmrc.auth.core.retrieve.Name(Some("John"), Some("Smith"))),
       trustedHelper = Some(TrustedHelper("principalName", "attorneyName", "returnLinkUrl", "principalNino")),
       profile = Some("profile"),
       enrolments = Set(Enrolment("key", Seq(EnrolmentIdentifier("key", "value")), "state", None)),
@@ -45,41 +43,15 @@ object TestData {
 
     def authenticatedDetailsRequest[A](authenticatedRequest: AuthenticatedRequest[A]): AuthenticatedIFRequest[A] = AuthenticatedIFRequest(
       authenticatedRequest = authenticatedRequest,
-      ifData = Some(CitizenDetailsData.citizenDetails)
+      ifData = IFData.personalDetailsResponse
     )
   }
 
-  object CitizenDetailsData {
-
-    def citizenDetails: CitizenDetails = CitizenDetails(
-      person = person,
-      address = Some(address1),
-      correspondenceAddress = Some(address1))
-
-    val person: Person = Person(
-      firstName = Some("John"),
-      lastName = Some("Smith"),
-      middleName = Some("Andrew"),
-      initials = Some("J.S"),
-      title = Some("Mr"),
-      honours = Some("honours"),
-      sex = Some("male"),
-      dateOfBirth = Some(LocalDate.of(1990, 1, 1)),
-      nino = Some(uk.gov.hmrc.auth.core.Nino(hasNino = true, Some("AA111111A")))
-    )
-
-    val address1: Address = Address(
-      line1 = Some("1 test road"),
-      line2 = Some("test town"),
-      line3 = Some("test city"),
-      line4 = Some("test county"),
-      line5 = Some("test"),
-      postcode = Some("TEST10"),
-      country = Some("UK"),
-      startDate = Some(LocalDate.of(2000, 1, 1)),
-      endDate = None,
-      `type` = Some("type"),
-      isRls = true
+  object IFData {
+    val personalDetailsResponse: PersonalDetailsResponse = PersonalDetailsResponse(
+      details = PersonalDetails(
+        name = Some(Name(IfName(firstForename = Some("chaz"), surname = Some("dingle"))))
+      )
     )
   }
 
