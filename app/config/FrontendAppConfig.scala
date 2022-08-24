@@ -29,7 +29,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val appName: String = configuration.get[String]("appName")
 
   private val contactFormServiceIdentifier = "single-customer-account-frontend"
-  private val contactBaseUrl: String = configuration.get[Service]("microservice.services.contact-frontend").baseUrl
+  private val contactBaseHost: String = configuration.get[String]("microservice.services.contact-frontend.host")
+  private val contactBasePort: String = configuration.get[String]("microservice.services.contact-frontend.port")
+  private val contactBaseProtocol: String = configuration.get[String]("microservice.services.contact-frontend.protocol")
+  private val contactBaseUrl: String = s"$contactBaseProtocol://$contactBaseHost:$contactBasePort"
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactBaseUrl/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
