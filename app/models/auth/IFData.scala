@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-package config
+package models.auth
 
-import com.google.inject.AbstractModule
-import controllers.actions._
+import models.integrationframework.{IFContactDetails, IfDesignatoryDetails}
 
-import java.time.{Clock, ZoneOffset}
-
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-
-    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[AuthAction]).to(classOf[AuthActionImpl]).asEagerSingleton()
-    bind(classOf[IFAction]).to(classOf[IFActionImpl]).asEagerSingleton()
-    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
-  }
-}
+case class IFData(ifDesignatoryDetails: IfDesignatoryDetails, ifContactDetails: IFContactDetails)

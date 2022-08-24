@@ -3,7 +3,7 @@
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 
 GET         /                                            controllers.HomeController.onPageLoad
-GET         /pta                                         controllers.PTAController.onPageLoad
+GET         /test                                        controllers.TestController.onPageLoad
 
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 

@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package config
+package models.integrationframework
 
-import com.google.inject.AbstractModule
-import controllers.actions._
+import play.api.libs.json.{Json, OFormat}
 
-import java.time.{Clock, ZoneOffset}
+case class ContactDetails( email: Option[String] = None,
+                           phoneNumber: Option[String] = None)
 
-class Module extends AbstractModule {
+object ContactDetails {
 
-  override def configure(): Unit = {
+  implicit val format: OFormat[ContactDetails] = Json.format[ContactDetails]
 
-    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[AuthAction]).to(classOf[AuthActionImpl]).asEagerSingleton()
-    bind(classOf[IFAction]).to(classOf[IFActionImpl]).asEagerSingleton()
-    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
-  }
 }

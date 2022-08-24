@@ -16,7 +16,7 @@
 
 @import components.{FullWidthMainContent, Link, backLink}
 @import views.html.helper.CSPNonce
-@import models.auth.AuthenticatedDetailsRequest
+@import models.auth.AuthenticatedIFRequest
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.accountmenu.YourProfile
 
@@ -52,7 +52,7 @@
         showChildBenefitBanner: Boolean = false,
         showUserResearchBanner: Boolean = false,
         timeout: Boolean = true
-)(content: Html)(implicit request: AuthenticatedDetailsRequest[_], messages: Messages, appConfig: FrontendAppConfig, requestHeader: RequestHeader)
+)(content: Html)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig, requestHeader: RequestHeader)
 
 @if(beforeContentHtml.isDefined){
     @beforeContentHtml

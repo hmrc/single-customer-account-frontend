@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package models.citizenDetails
+package models.integrationframework
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
-case class CitizenDetails(
-                          person: Person,
-                          address: Option[Address],
-                          correspondenceAddress: Option[Address]
-                        )
+case class IFContactDetails(contactDetails: Option[Seq[IFContactDetail]])
 
-object CitizenDetails {
-  implicit val formats: OFormat[CitizenDetails] = Json.format[CitizenDetails]
+object IFContactDetails {
+
+  implicit val format: Format[IFContactDetails] = Json.format[IFContactDetails]
+
 }
+
