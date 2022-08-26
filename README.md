@@ -1,7 +1,7 @@
 
 # single-customer-account-frontend
 
-This is a placeholder README.md for a new repository
+Refer to the [single-customer-account-stub](https://github.com/hmrc/single-customer-account-stub#single-customer-account-stub) for test data
 
 ### License
 
