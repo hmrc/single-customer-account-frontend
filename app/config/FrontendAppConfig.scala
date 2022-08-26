@@ -29,20 +29,16 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val appName: String = configuration.get[String]("appName")
 
   private val contactFormServiceIdentifier = "single-customer-account-frontend"
-  private val contactBaseHost: String = configuration.get[String]("microservice.services.contact-frontend.host")
-  private val contactBasePort: String = configuration.get[String]("microservice.services.contact-frontend.port")
-  private val contactBaseProtocol: String = configuration.get[String]("microservice.services.contact-frontend.protocol")
-  private val contactBaseUrl: String = s"$contactBaseProtocol://$contactBaseHost:$contactBasePort"
+  private val contactBaseUrl: String = configuration.get[String]("microservice.services.contact-frontend.url")
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactBaseUrl/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
+
+  private val exitSurveyBaseUrl: String = configuration.get[String]("microservice.services.feedback-frontend.url")
+  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
 
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
-
-
-  private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")
