@@ -1,6 +1,16 @@
 service.name = Single Customer Account
 home.name = Account Home
 
+ytab.title = Your taxes and benefits
+ytab.sa = Self Assessment
+ytab.sa.description = View and manage your Self Assessment tax return.
+ytab.paye = Pay As You Earn (PAYE)
+ytab.paye.description = Check or update the employment, pension or other income information used to work out your PAYE Income Tax and tax codes.
+ytab.ni = National Insurance
+ytab.ni.description = View your National Insurance letter. Check gaps in your record.
+ytab.sp = State Pension
+ytab.sp.description = View your State Pension forecast.
+
 site.back = Back
 site.remove = Remove
 site.change = Change
@@ -44,16 +54,9 @@ nav.home = Account Home
 nav.your_details = Your Details
 nav.account_settings = Account Settings
 nav.messages = Messages
-
+nav.taxes_and_benefits = Your Taxes and Benefits
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
-
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
-journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
-journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
