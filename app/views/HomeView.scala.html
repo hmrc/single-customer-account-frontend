@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,26 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package controllers
+@import config.FrontendAppConfig
+@import models.auth.AuthenticatedIFRequest
+@import models.integrationframework.PersonalDetailsResponse
 
-import fixtures.SpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import views.html.HomeView
+@this(
+    layout: MainView
+)
+@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-class HomeControllerSpec extends SpecBase {
+@layout(
+    pageTitle    = messages("service.name"),
+    showBackLink = false
+) {
 
-  lazy val homeView: HomeView = injector.instanceOf[HomeView]
-  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authAction, citizenDetailsAction, homeView)
+    <p class="hmrc-caption govuk-caption-xl">@messages("index.heading")</p>
+    <h1 class="govuk-heading-xl" id="name">@name</h1>
 
-  "HomeController" must {
-    "Return the Home page" in {
-
-      whenReady(controller.onPageLoad(fakeRequest)) { result =>
-        result.header.status shouldBe 200
-      }
-    }
-  }
 
 }

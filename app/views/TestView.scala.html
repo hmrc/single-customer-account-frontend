@@ -19,7 +19,7 @@
 @import models.integrationframework.PersonalDetailsResponse
 
 @this(
-    layout: MainView
+        layout: MainView
 )
 @(name: String, personalDetailsResponse: Option[PersonalDetailsResponse])(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
@@ -43,9 +43,9 @@
         }
 
         @if(details.contactDetails.isDefined){
-                    <h1 class="govuk-heading-xl">Phone number: @details.contactDetails.get.phoneNumber.getOrElse("null")</h1>
-                    <h1 class="govuk-heading-xl">Email: @details.contactDetails.get.email.getOrElse("null")</h1>
-                }
+            <h1 class="govuk-heading-xl">Phone number: @details.contactDetails.get.phoneNumber.getOrElse("null")</h1>
+            <h1 class="govuk-heading-xl">Email: @details.contactDetails.get.email.getOrElse("null")</h1>
+        }
         @if(details.residentialAddress.isDefined){
             <h1 class="govuk-heading-xl">address1: @details.residentialAddress.get.addressLine1.getOrElse("null")</h1>
             <h1 class="govuk-heading-xl">address2: @details.residentialAddress.get.addressLine2.getOrElse("null")</h1>
