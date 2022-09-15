@@ -30,10 +30,11 @@
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
-    alphaBanner: StandardAlphaBanner
+    alphaBanner: StandardAlphaBanner,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper
 )
 
-@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, showBackLink: Boolean = false, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @head = {
 
@@ -60,17 +61,28 @@
 
 @beforeContent = {
 
-    @if(appConfig.languageTranslationEnabled) {
-        @hmrcLanguageSelect(LanguageSelect(
-            if (messages.lang.code == "cy") Cy else En,
-            (En, routes.LanguageSwitchController.switchToLanguage("en").url),
-            (Cy, routes.LanguageSwitchController.switchToLanguage("cy").url)
-        ))
-    }
-
     @if(showBackLink) {
         @govukBackLink(BackLinkViewModel(href = "#"))
     }
+
+@defining(request.uri) { uri =>
+    <div class="govuk-width-container">
+            <!-- ACCOUNT MENU -->
+        <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
+            <a id="nav-home" href="@routes.HomeController.onPageLoad.url" class="hmrc-account-menu__link hmrc-account-menu__link--home @if(uri == "/single-customer-account"){hmrc-account-menu__link--active}">
+                <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span></a>
+            <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
+            <ul class="hmrc-account-menu__main js-hidden">
+                <li><a id="nav-taxes-and-benefits" href="@routes.YourTaxesAndBenefitsController.onPageLoad.url" class="hmrc-account-menu__link @if(uri == "/single-customer-account/taxes-and-benefits"){hmrc-account-menu__link--active}">@messages("nav.taxes_and_benefits")</a></li>
+                <li><a id="nav-messages" href="#" class="hmrc-account-menu__link">@messages("nav.messages")</a></li>
+                <li><a id="nav-details" href="#" class="hmrc-account-menu__link">@messages("nav.your_details")</a></li>
+                <li><a id="nav-signout" href="@controllers.auth.routes.AuthController.signOut.url" class="hmrc-account-menu__link">@messages("nav.signout")</a></li>
+            </ul>
+        </nav>
+            <!-- END ACCOUNT MENU -->
+        @hmrcLanguageSelectHelper()
+    </div>
+}
 }
 
 @content = {
@@ -86,7 +98,7 @@
     headBlock   = Some(head),
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(routes.HomeController.onPageLoad.url),
-        signOutUrl  = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut.url) else None,
+        signOutUrl  = None,
         phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
     )),
     beforeContentBlock = Some(beforeContent),
