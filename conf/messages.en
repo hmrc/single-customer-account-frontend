@@ -50,13 +50,12 @@ index.title = Account Home
 index.heading = Account Home
 index.guidance = Account Home
 
-nav.home = Account Home
-nav.your_details = Your Details
+nav.home = Home
+nav.your_details = Your details
 nav.account_settings = Account Settings
 nav.messages = Messages
-nav.taxes_and_benefits = Your Taxes and Benefits
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
+nav.taxes_and_benefits = Your taxes and benefits
+nav.signout = Sign out
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
