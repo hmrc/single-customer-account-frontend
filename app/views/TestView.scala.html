@@ -17,9 +17,10 @@
 @import config.FrontendAppConfig
 @import models.auth.AuthenticatedIFRequest
 @import models.integrationframework.PersonalDetailsResponse
+@import views.html.templates.Layout
 
 @this(
-        layout: MainView
+        layout: Layout
 )
 @(name: String, personalDetailsResponse: Option[PersonalDetailsResponse])(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
