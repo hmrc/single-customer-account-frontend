@@ -18,6 +18,7 @@ package controllers
 
 import fixtures.SpecBase
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import views.html.YourTaxesAndBenefits
 
@@ -25,7 +26,8 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
 
   lazy val view: YourTaxesAndBenefits = injector.instanceOf[YourTaxesAndBenefits]
   lazy val controller: YourTaxesAndBenefitsController = new YourTaxesAndBenefitsController(messagesControllerComponents, authAction, citizenDetailsAction, view)
-  override lazy val fakeRequest = FakeRequest("GET", "/taxes-and-benefits")
+  override lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/taxes-and-benefits")
+
   "YourTaxesAndBenefitsController" must {
     "Return the Tax and Benefit Page" in {
 
