@@ -38,6 +38,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val chocsBaseUrl: String = configuration.get[String]("microservice.services.sca-change-of-circumstances-frontend.url")
 
+  private val selfAssessmentBaseUrl: String = configuration.get[String]("microservice.services.self-assessment.url")
+  def selfAssessmentLink(utr: String): String = s"$selfAssessmentBaseUrl/self-assessment/ind/$utr"
+
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")

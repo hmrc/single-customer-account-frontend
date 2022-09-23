@@ -22,7 +22,7 @@
 @this(
     layout: Layout
 )
-@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(name: String, utr: Option[String])(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(
     pageTitle    = messages("service.name"),
@@ -32,8 +32,10 @@
  <p class="hmrc-caption govuk-caption-xl">@name</p>
  <h1 class="govuk-heading-xl" id="name">@messages("ytab.title")</h1>
 
- <h1 class="govuk-heading-m" id="sa"><a class="govuk-link" href="#">@messages("ytab.sa")</a></h1>
- <p class="govuk-body">@messages("ytab.sa.description")</p>
+ @if(utr.isDefined) {
+  <h1 class="govuk-heading-m" id="sa"><a class="govuk-link" href="@utr.get">@messages("ytab.sa")</a></h1>
+  <p class="govuk-body">@messages("ytab.sa.description")</p>
+ }
 
  <h1 class="govuk-heading-m" id="paye"><a class="govuk-link" href="#">@messages("ytab.paye")</a></h1>
  <p class="govuk-body">@messages("ytab.paye.description")</p>
