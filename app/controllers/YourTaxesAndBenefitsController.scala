@@ -36,10 +36,6 @@ class YourTaxesAndBenefitsController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.ifData.details.name.fold("null"){ name => s"${name.firstForename.getOrElse("null")} ${name.surname.getOrElse("null")}"}
-//    val saEnrolment: Option[Enrolment] = request.authenticatedRequest.enrolments.find(_.key == "IR-SA")
-//    val utr = saEnrolment.fold(){ x => x.getIdentifier("UTR")}
-//    val saLink = frontendAppConfig.selfAssessmentLink()
-
     val utr =  request.authenticatedRequest.enrolments.collectFirst {
       case Enrolment("IR-SA", Seq(identifier), "Activated", _) => frontendAppConfig.selfAssessmentLink(SaUtr(identifier.value).value)
     }
