@@ -20,6 +20,8 @@ import config.FrontendAppConfig
 import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.Enrolment
+import uk.gov.hmrc.domain.SaUtr
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.YourTaxesAndBenefits
 
@@ -34,6 +36,13 @@ class YourTaxesAndBenefitsController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.ifData.details.name.fold("null"){ name => s"${name.firstForename.getOrElse("null")} ${name.surname.getOrElse("null")}"}
-    Ok(view(name))
+//    val saEnrolment: Option[Enrolment] = request.authenticatedRequest.enrolments.find(_.key == "IR-SA")
+//    val utr = saEnrolment.fold(){ x => x.getIdentifier("UTR")}
+//    val saLink = frontendAppConfig.selfAssessmentLink()
+
+    val utr =  request.authenticatedRequest.enrolments.collectFirst {
+      case Enrolment("IR-SA", Seq(identifier), "Activated", _) => frontendAppConfig.selfAssessmentLink(SaUtr(identifier.value).value)
+    }
+    Ok(view(name, utr))
   }
 }
