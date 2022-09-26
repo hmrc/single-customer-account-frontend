@@ -16,23 +16,75 @@
 
 package controllers
 
+import controllers.actions.AuthActionImpl
+import fixtures.RetrievalOps._
 import fixtures.SpecBase
+import org.mockito.ArgumentMatchers.{any, endsWith}
+import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
+import uk.gov.hmrc.auth.core.{AuthConnector, ConfidenceLevel, CredentialStrength, Enrolments}
 import views.html.YourTaxesAndBenefits
+
+import scala.concurrent.Future
 
 class YourTaxesAndBenefitsControllerSpec extends SpecBase {
 
+  lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  lazy val authAction = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
   lazy val view: YourTaxesAndBenefits = injector.instanceOf[YourTaxesAndBenefits]
-  lazy val controller: YourTaxesAndBenefitsController = new YourTaxesAndBenefitsController(messagesControllerComponents, authAction, citizenDetailsAction, view)
-  override lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/taxes-and-benefits")
+  lazy val controller: YourTaxesAndBenefitsController = new YourTaxesAndBenefitsController(messagesControllerComponents, authAction, ifActionInstance, view)
+  val nino = "AA999999A"
 
   "YourTaxesAndBenefitsController" must {
     "Return the Tax and Benefit Page" in {
+      when(mockAuthConnector.authorise[AuthRetrievals](any(),any())(any(), any())) thenReturn Future.successful(
+        Some(nino) ~
+          Individual ~
+          Enrolments(fakeSaEnrolments("11111111")) ~
+          Some(Credentials("id", "type")) ~
+          Some(CredentialStrength.strong) ~
+          ConfidenceLevel.L200 ~
+          Some(Name(Some("chaz"), Some("dingle"))) ~
+          Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
+          Some("profileUrl")
+      )
 
-      whenReady(controller.onPageLoad(fakeRequest)) { result =>
-        result.header.status shouldBe 200
+      val result = controller.onPageLoad(FakeRequest().withSession("sessionId" -> "FAKE_SESSION_ID"))
+
+      contentAsString(result) should include("Your taxes and benefits")
+      whenReady(result) { res =>
+        res.header.status shouldBe 200
+      }
+    }
+
+    //TODO tests for the SA link, if there is no SA enrolment then there shouldn't be a link,
+    //TODO if SA enrolment exists, search for a link like this: contentAsString(result) should include("Self assessment")
+    //TODO test for SA enrolment that is not activated, and any other tests you think might be good
+
+    "Return the Unauthorised Page given weak credentials" in {
+      when(mockAuthConnector.authorise[AuthRetrievals](any(),any())(any(), any())) thenReturn Future.successful(
+        Some(nino) ~
+          Individual ~
+          Enrolments(fakeSaEnrolments("11111111")) ~
+          Some(Credentials("id", "type")) ~
+          Some(CredentialStrength.weak) ~
+          ConfidenceLevel.L200 ~
+          Some(Name(Some("chaz"), Some("dingle"))) ~
+          Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
+          Some("profileUrl")
+      )
+
+      val result = controller.onPageLoad(FakeRequest().withSession("sessionId" -> "FAKE_SESSION_ID"))
+
+      redirectLocation(result).get should endWith("/single-customer-account/unauthorised")
+      whenReady(result) { res =>
+        res.header.status shouldBe 303
       }
     }
   }

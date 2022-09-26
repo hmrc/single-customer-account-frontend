@@ -39,6 +39,7 @@ class YourTaxesAndBenefitsController @Inject()(
     val utr =  request.authenticatedRequest.enrolments.collectFirst {
       case Enrolment("IR-SA", Seq(identifier), "Activated", _) => frontendAppConfig.selfAssessmentLink(SaUtr(identifier.value).value)
     }
+    //TODO utr to be renamed saUrl
     Ok(view(name, utr))
   }
 }
