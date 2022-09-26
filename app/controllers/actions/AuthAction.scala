@@ -38,9 +38,9 @@ class AuthActionImpl @Inject()(
                                 val parser: BodyParsers.Default)
                               (implicit val executionContext: ExecutionContext) extends AuthorisedFunctions with AuthAction {
 
-  object LT200 {
+  object GTOE50 {
     def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
-      if (confLevel.level < ConfidenceLevel.L200.level) Some(confLevel) else None
+      if (confLevel.level >= ConfidenceLevel.L50.level) Some(confLevel) else None
   }
 
   object GTOE200 {
@@ -64,7 +64,7 @@ class AuthActionImpl @Inject()(
         Retrievals.profile
     ) {
       case nino ~ _ ~ Enrolments(enrolments) ~ Some(credentials) ~ Some(CredentialStrength.strong) ~
-        GTOE200(confidenceLevel) ~ name ~ trustedHelper ~ profile =>
+        GTOE50(confidenceLevel) ~ name ~ trustedHelper ~ profile =>
         val trimmedRequest: Request[A] = request
           .map {
             case AnyContentAsFormUrlEncoded(data) =>
@@ -97,6 +97,7 @@ class AuthActionImpl @Inject()(
     }
   }.recover {
     case authException =>
+      println(authException.getMessage)
       Redirect(
       appConfig.loginUrl,
       Map("continue" -> Seq(appConfig.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))

@@ -34,6 +34,7 @@ class YourTaxesAndBenefitsController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.ifData.details.name.fold("null"){ name => s"${name.firstForename.getOrElse("null")} ${name.surname.getOrElse("null")}"}
-    Ok(view(name))
+    val nino = request.authenticatedRequest.nino
+    Ok(view(name, nino))
   }
 }
