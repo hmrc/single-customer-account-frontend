@@ -36,10 +36,9 @@ class YourTaxesAndBenefitsController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.ifData.details.name.fold("null"){ name => s"${name.firstForename.getOrElse("null")} ${name.surname.getOrElse("null")}"}
-    val utr =  request.authenticatedRequest.enrolments.collectFirst {
+    val saUrl =  request.authenticatedRequest.enrolments.collectFirst {
       case Enrolment("IR-SA", Seq(identifier), "Activated", _) => frontendAppConfig.selfAssessmentLink(SaUtr(identifier.value).value)
     }
-    //TODO utr to be renamed saUrl
-    Ok(view(name, utr))
+    Ok(view(name, saUrl))
   }
 }
