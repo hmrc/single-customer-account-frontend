@@ -46,7 +46,7 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
       when(mockAuthConnector.authorise[AuthRetrievals](any(),any())(any(), any())) thenReturn Future.successful(
         Some(nino) ~
           Individual ~
-          Enrolments(fakeSaEnrolments("11111111")) ~
+          Enrolments(fakeSaEnrolments("11111111","Activated")) ~
           Some(Credentials("id", "type")) ~
           Some(CredentialStrength.strong) ~
           ConfidenceLevel.L200 ~
@@ -58,6 +58,7 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
       val result = controller.onPageLoad(FakeRequest().withSession("sessionId" -> "FAKE_SESSION_ID"))
 
       contentAsString(result) should include("Your taxes and benefits")
+      contentAsString(result) should include("Self Assessment")
       whenReady(result) { res =>
         res.header.status shouldBe 200
       }
@@ -69,9 +70,10 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
 
     "Return the Unauthorised Page given weak credentials" in {
       when(mockAuthConnector.authorise[AuthRetrievals](any(),any())(any(), any())) thenReturn Future.successful(
+
         Some(nino) ~
           Individual ~
-          Enrolments(fakeSaEnrolments("11111111")) ~
+          Enrolments(fakeSaEnrolments("11111111", "Activated")) ~
           Some(Credentials("id", "type")) ~
           Some(CredentialStrength.weak) ~
           ConfidenceLevel.L200 ~
@@ -87,6 +89,51 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
         res.header.status shouldBe 303
       }
     }
+
+    "Return the Tax and Benefit with no SA link when SA not enrolled" in {
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(
+
+        Some(nino) ~
+          Individual ~
+          Enrolments(Set.empty) ~
+          Some(Credentials("id", "type")) ~
+          Some(CredentialStrength.strong) ~
+          ConfidenceLevel.L200 ~
+          Some(Name(Some("chaz"), Some("dingle"))) ~
+          Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
+          Some("profileUrl")
+      )
+
+      val result = controller.onPageLoad(FakeRequest().withSession("sessionId" -> "FAKE_SESSION_ID"))
+
+      contentAsString(result) should not include("Self Assessment")
+      whenReady(result) { res =>
+        res.header.status shouldBe 200
+      }
+    }
+
+    "Return the Tax and Benefit with no SA link when SA not activated" in {
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(
+
+        Some(nino) ~
+          Individual ~
+          Enrolments(fakeSaEnrolments("11111111","NotYetActivated")) ~
+          Some(Credentials("id", "type")) ~
+          Some(CredentialStrength.strong) ~
+          ConfidenceLevel.L200 ~
+          Some(Name(Some("chaz"), Some("dingle"))) ~
+          Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
+          Some("profileUrl")
+      )
+
+      val result = controller.onPageLoad(FakeRequest().withSession("sessionId" -> "FAKE_SESSION_ID"))
+
+      contentAsString(result) should not include ("Self Assessment")
+      whenReady(result) { res =>
+        res.header.status shouldBe 200
+      }
+    }
+
   }
 
 }
