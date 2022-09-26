@@ -97,7 +97,6 @@ class AuthActionImpl @Inject()(
     }
   }.recover {
     case authException =>
-      println(authException.getMessage)
       Redirect(
       appConfig.loginUrl,
       Map("continue" -> Seq(appConfig.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))

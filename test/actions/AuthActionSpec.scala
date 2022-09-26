@@ -85,7 +85,7 @@ class AuthActionSpec extends SpecBase {
     }
 
     "extract an SA UTR" in {
-      val controller = retrievals(nino = Some(nino), enrolments = Enrolments(fakeSaEnrolments("11111111")))
+      val controller = retrievals(nino = Some(nino), enrolments = Enrolments(fakeSaEnrolments("11111111", "Activated")))
       val result = controller.onPageLoad()(fakeRequest)
 
       contentAsString(result) must include("11111111")
