@@ -64,10 +64,6 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
       }
     }
 
-    //TODO tests for the SA link, if there is no SA enrolment then there shouldn't be a link,
-    //TODO if SA enrolment exists, search for a link like this: contentAsString(result) should include("Self assessment")
-    //TODO test for SA enrolment that is not activated, and any other tests you think might be good
-
     "Return the Unauthorised Page given weak credentials" in {
       when(mockAuthConnector.authorise[AuthRetrievals](any(),any())(any(), any())) thenReturn Future.successful(
 
