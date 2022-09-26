@@ -17,31 +17,78 @@
 package actions
 
 import controllers.actions.{AuthAction, AuthActionImpl}
-import fixtures.{SpecBase, TestData}
+import fixtures.RetrievalOps._
+import fixtures.SpecBase
 import models.auth.AuthenticatedRequest
-import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, BodyParser, BodyParsers, EssentialAction, Request, Result}
-import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.govukfrontend.views.viewmodels.cookiebanner.Action
-import views.html.YourTaxesAndBenefits
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import play.api.mvc._
+import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
+import uk.gov.hmrc.auth.core._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
+import scala.language.postfixOps
+
 
 class AuthActionSpec extends SpecBase {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  val mockBodyParser: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
+  val nino = "AA999999A"
 
-  lazy val action = new AuthActionImpl(mockAuthConnector, frontendAppConfig, mockBodyParser)
+  class Harness(authAction: AuthAction) extends InjectedController {
+    def onPageLoad: Action[AnyContent] = authAction { request: AuthenticatedRequest[AnyContent] =>
+      Ok(
+        s"Nino: ${request.nino.getOrElse("fail").toString}, Enrolments: ${request.enrolments.toString}," +
+          s"trustedHelper: ${request.trustedHelper}, profileUrl: ${request.profile}"
+      )
+    }
+  }
 
-  val action:
+  def retrievals(
+                  nino: Option[String] = None,
+                  affinityGroup: AffinityGroup = Individual,
+                  enrolments: Enrolments = Enrolments(Set.empty),
+                  credentials: Option[Credentials] = Some(Credentials("id","type")),
+                  credentialStrength: Option[String] = Some(CredentialStrength.strong),
+                  confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200,
+                  name: Option[Name] = None,
+                  trustedHelper: Option[TrustedHelper] = None,
+                  profileUrl: Option[String] = None
+                ): Harness = {
 
-  "x" must {
-    "y" in {
+    when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(
+        nino ~
+        affinityGroup ~
+        enrolments ~
+        credentials ~
+        credentialStrength ~
+        confidenceLevel ~
+        name ~
+        trustedHelper ~
+        profileUrl
+    )
 
+    val action = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
+
+    new Harness(action)
+  }
+
+  "AuthAction" must {
+    "allow an authenticated user into SCA with a NINO and Confidence Level 200" in {
+      val controller = retrievals(nino = Some(nino))
+      val result = controller.onPageLoad()(fakeRequest)
+
+      status(result) mustBe OK
+    }
+
+    "extract an SA UTR" in {
+      val controller = retrievals(nino = Some(nino), enrolments = Enrolments(fakeSaEnrolments("11111111")))
+      val result = controller.onPageLoad()(fakeRequest)
+
+      contentAsString(result) must include("11111111")
     }
   }
 

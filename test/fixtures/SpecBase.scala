@@ -30,9 +30,12 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.{Injector, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
+import play.api.mvc.{AnyContentAsEmpty, BodyParsers, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.{FakeRequest, Injecting}
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
+import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.ExecutionContext
@@ -54,17 +57,24 @@ trait SpecBase
 
   implicit val defaultTimeout: FiniteDuration = 5.seconds
   implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val ec: ExecutionContext = injector.instanceOf[ExecutionContext]
+  implicit val frontendAppConfigInstance: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "").withSession(
     SessionKeys.sessionId -> "foo").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-
-  implicit val frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-  implicit val ec: ExecutionContext = injector.instanceOf[ExecutionContext]
-  implicit val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-  implicit val messages: Messages = messagesApi.preferred(fakeRequest)
-  implicit val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
+  lazy val messagesApiInstance: MessagesApi = injector.instanceOf[MessagesApi]
+  lazy val messages: Messages = messagesApiInstance.preferred(fakeRequest)
+  lazy val errorHandlerInstance: ErrorHandler = injector.instanceOf[ErrorHandler]
   lazy val messagesControllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
-  implicit val authAction: AuthAction = injector.instanceOf[AuthAction]
-  implicit val citizenDetailsAction: IFAction = injector.instanceOf[IFAction]
+  lazy val authActionInstance: AuthAction = injector.instanceOf[AuthAction]
+  lazy val ifActionInstance: IFAction = injector.instanceOf[IFAction]
+  lazy val bodyParserInstance: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
+
+  type AuthRetrievals =
+    Option[String] ~ AffinityGroup ~ Enrolments ~ Option[Credentials] ~ Option[String] ~
+      ConfidenceLevel ~ Option[Name] ~ Option[TrustedHelper] ~ Option[String]
+
+  def fakeSaEnrolments(utr: String) = Set(Enrolment("IR-SA", Seq(EnrolmentIdentifier("UTR", utr)), "Activated"))
 
   protected def applicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
