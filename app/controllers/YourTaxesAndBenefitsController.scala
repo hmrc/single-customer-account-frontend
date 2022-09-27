@@ -33,7 +33,7 @@ class YourTaxesAndBenefitsController @Inject()(
                                )(implicit frontendAppConfig: FrontendAppConfig) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
-    val name = request.ifData.details.name.fold("null"){ name => s"${name.firstForename.getOrElse("null")} ${name.surname.getOrElse("null")}"}
+    val name = request.ifData.details.name.fold(""){ name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}"}
     val nino = request.authenticatedRequest.nino
     Ok(view(name, nino))
   }

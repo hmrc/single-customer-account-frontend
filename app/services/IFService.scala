@@ -68,20 +68,23 @@ class IFService @Inject()(connector: IFConnector)(implicit ec: ExecutionContext)
     for {
       designatoryDetails <- connector.getDesignatoryDetails(nino)
       contactDetails <- connector.getContactDetails(nino)
-      if(designatoryDetails.isDefined && contactDetails.isDefined)
     } yield {
-      val addresses = getAddresses(designatoryDetails.get)
-      val name = getName(designatoryDetails.get)
+      (designatoryDetails, contactDetails) match {
+        case (Some(dDetails), Some(cDetails)) =>
+          val addresses = getAddresses(dDetails)
+          val name = getName(dDetails)
 
-      PersonalDetailsResponse(
-        details = PersonalDetails(
-          name = name.map(Name.apply),
-          requestedName = name.flatMap(_.requestedName),
-          maritalStatus = designatoryDetails.get.details.marriageStatusType),
-        contactDetails = getContactDetails(contactDetails.get),
-        residentialAddress = addresses._1,
-        correspondenceAddress = addresses._2
-      )
+          PersonalDetailsResponse(
+            details = PersonalDetails(
+              name = name.map(Name.apply),
+              requestedName = name.flatMap(_.requestedName),
+              maritalStatus = designatoryDetails.get.details.marriageStatusType),
+            contactDetails = getContactDetails(cDetails),
+            residentialAddress = addresses._1,
+            correspondenceAddress = addresses._2
+          )
+        case _ => PersonalDetailsResponse()
+      }
     }
   }
 }
