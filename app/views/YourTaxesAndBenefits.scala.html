@@ -18,11 +18,12 @@
 @import models.auth.AuthenticatedIFRequest
 @import models.integrationframework.PersonalDetailsResponse
 @import views.html.templates.Layout
+@import uk.gov.hmrc.domain.Nino
 
 @this(
     layout: Layout
 )
-@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(name: String, nino: Option[Nino])(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(
     pageTitle    = messages("service.name"),
@@ -38,8 +39,11 @@
  <h1 class="govuk-heading-m" id="paye"><a class="govuk-link" href="#">@messages("ytab.paye")</a></h1>
  <p class="govuk-body">@messages("ytab.paye.description")</p>
 
- <h1 class="govuk-heading-m" id="ni"><a class="govuk-link" href="#">@messages("ytab.ni")</a></h1>
- <p class="govuk-body">@messages("ytab.ni.description")</p>
+ @if(nino.isDefined) {
+  <h1 class="govuk-heading-m" id="ni"><a class="govuk-link" href="#">@messages("ytab.ni")</a></h1>
+  <p class="govuk-body">@messages("ytab.ni.description")</p>
+  <p class="govuk-body">NINO: @nino.get.nino</p>
+ }
 
  <h1 class="govuk-heading-m" id="sp"><a class="govuk-link" href="#">@messages("ytab.sp")</a></h1>
  <p class="govuk-body">@messages("ytab.sp.description")</p>

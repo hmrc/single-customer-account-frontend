@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import controllers.routes
 import models.auth
 import models.auth.AuthenticatedRequest
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
@@ -36,7 +37,7 @@ class AuthActionImpl @Inject()(
                                 override val authConnector: AuthConnector,
                                 appConfig: FrontendAppConfig,
                                 val parser: BodyParsers.Default)
-                              (implicit val executionContext: ExecutionContext) extends AuthorisedFunctions with AuthAction {
+                              (implicit val executionContext: ExecutionContext) extends AuthorisedFunctions with AuthAction with Logging {
 
   object LT200 {
     def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
@@ -79,24 +80,18 @@ class AuthActionImpl @Inject()(
           trustedHelper.fold(nino.map(domain.Nino))(helper => Some(domain.Nino(helper.principalNino))),
           credentials,
           confidenceLevel,
-          Some(
-              trustedHelper.fold(name.getOrElse(Name(None, None)))(helper => Name(Some(helper.principalName), None))
-          ),
+          Some(trustedHelper.fold(name.getOrElse(Name(None, None)))(helper => Name(Some(helper.principalName), None))),
           trustedHelper,
           None,
           enrolments,
           trimmedRequest
         )
-
-        for {
-          result <- block(authenticatedRequest)
-        } yield {
-          result
-        }
+        block(authenticatedRequest)
       case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
     }
   }.recover {
     case authException =>
+      logger.error(authException.getMessage)
       Redirect(
       appConfig.loginUrl,
       Map("continue" -> Seq(appConfig.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))
