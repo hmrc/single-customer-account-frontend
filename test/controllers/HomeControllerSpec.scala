@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.MessageConnector
 import fixtures.SpecBase
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import views.html.HomeView
@@ -23,7 +24,7 @@ import views.html.HomeView
 class HomeControllerSpec extends SpecBase {
 
   lazy val homeView: HomeView = injector.instanceOf[HomeView]
-  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authAction, citizenDetailsAction, homeView)
+  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authAction, citizenDetailsAction,MessageConnector, homeView)
 
   "HomeController" must {
     "Return the Home page" in {
