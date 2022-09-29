@@ -37,7 +37,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
 
   val chocsBaseUrl: String = configuration.get[String]("microservice.services.sca-change-of-circumstances-frontend.url")
-
+  val messageFrontendUrl: String = configuration.get[String]("microservice.services.message-frontend.url")
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")

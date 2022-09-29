@@ -74,7 +74,7 @@
             <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
             <ul class="hmrc-account-menu__main js-hidden">
                 <li><a id="nav-taxes-and-benefits" href="@routes.YourTaxesAndBenefitsController.onPageLoad.url" class="hmrc-account-menu__link @if(uri == "/single-customer-account/taxes-and-benefits"){hmrc-account-menu__link--active}">@messages("nav.taxes_and_benefits")</a></li>
-                <li><a id="nav-messages" href="#" class="hmrc-account-menu__link">@messages("nav.messages")</a></li>
+                <li><a id="nav-messages" href="@routes.MessageController.messageList.url" class="hmrc-account-menu__link @if(uri == "/single-customer-account/messages"){hmrc-account-menu__link--active}">@messages("nav.messages")</a></li>
                 <li><a id="nav-details" href="@appConfig.chocsBaseUrl" class="hmrc-account-menu__link">@messages("nav.your_details")</a></li>
                 <li><a id="nav-signout" href="@controllers.auth.routes.AuthController.signOut.url" class="hmrc-account-menu__link">@messages("nav.signout")</a></li>
             </ul>
