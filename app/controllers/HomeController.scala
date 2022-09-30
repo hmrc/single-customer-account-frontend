@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.MessageConnector
 import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,15 +30,11 @@ class HomeController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 authenticate: AuthAction,
                                 getUserDetails: IFAction,
-                                messageConnector: MessageConnector,
                                 view: HomeView
-                               )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                              )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
-    messageConnector.getMessages(request).map { x =>
-      println("messages: " + x)
-      Ok(view(name))
-    }
+    Ok(view(name))
   }
 }

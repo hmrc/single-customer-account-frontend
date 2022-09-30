@@ -22,10 +22,9 @@ import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
 import services.MessageFrontendService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.{FrontendBaseController, FrontendController}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.partials.HtmlPartial
 import views.html.{MessageDetailView, MessageInboxView}
-import uk.gov.hmrc.hmrcfrontend.config.AccountMenuConfig
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -36,18 +35,17 @@ class MessageController @Inject() (
                                     getUserDetails: IFAction,
                                     cc: MessagesControllerComponents,
                                     messageInboxView: MessageInboxView,
-                                    messageDetailView: MessageDetailView,
-                                    aconfig: AccountMenuConfig
+                                    messageDetailView: MessageDetailView
                                   )(implicit val frontendAppConfig: FrontendAppConfig, val ec: ExecutionContext)
   extends FrontendController(cc) with I18nSupport{
 
 
   def messageList: Action[AnyContent] =
     (authenticate andThen getUserDetails).async { implicit request =>
-      messageFrontendService.getMessageListPartial map { p =>
+      messageFrontendService.getMessageListPartial map { htmlMessage =>
         Ok(
           messageInboxView(
-            messageListPartial = p successfulContentOrElse Html(
+            messageListPartial = htmlMessage successfulContentOrElse Html(
               Messages("label.sorry_theres_been_a_technical_problem_retrieving_your_messages")
             )
           )
@@ -65,7 +63,7 @@ class MessageController @Inject() (
         case HtmlPartial.Failure(_, _) =>
           Ok(
             messageDetailView(
-              message = Html(Messages("label.sorry_theres_been_a_techinal_problem_retrieving_your_message")),
+              message = Html(Messages("label.sorry_theres_been_a_technical_problem_retrieving_your_message")),
               title = Messages("label.message")
             )
           )
