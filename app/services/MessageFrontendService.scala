@@ -18,23 +18,22 @@ package services
 
 import com.codahale.metrics.Timer
 import config.FrontendAppConfig
+import connectors.MessageConnector
 import metrics.{Metrics, MetricsEnumeration}
 import play.api.Logging
 import models.MessageCount
 import play.api.mvc.RequestHeader
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.partials.{HeaderCarrierForPartialsConverter, HtmlPartial}
-import utils.EnhancedPartialRetriever
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MessageFrontendService @Inject() (
                                          http: HttpClient,
-                                         metrics: Metrics,
                                          headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter,
                                          servicesConfig: FrontendAppConfig,
-                                         enhancedPartialRetriever: EnhancedPartialRetriever
+                                         enhancedPartialRetriever: MessageConnector
                                        )(implicit executionContext: ExecutionContext)
   extends Logging {
 
@@ -53,22 +52,14 @@ class MessageFrontendService @Inject() (
 
   def getUnreadMessageCount(implicit request: RequestHeader): Future[Option[Int]] = {
     val url = messageFrontendUrl + "/messages/count?read=No"
-
-    val timerContext: Timer.Context =
-      metrics.startTimer(MetricsEnumeration.GET_UNREAD_MESSAGE_COUNT)
-
-    implicit val hc = headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
+    implicit val hc: HeaderCarrier = headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
 
     (for {
       messageCount <- http.GET[Option[MessageCount]](url)
     } yield {
-      timerContext.stop()
-      metrics.incrementSuccessCounter(MetricsEnumeration.GET_UNREAD_MESSAGE_COUNT)
       messageCount.map(_.count)
-    }) recover { case e =>
-      timerContext.stop()
-      metrics.incrementFailedCounter(MetricsEnumeration.GET_UNREAD_MESSAGE_COUNT)
-      logger.warn(s"Failed to load json", e)
+    }) recover { case exception =>
+      logger.error(s"Failed to load json", exception)
       None
     }
   }

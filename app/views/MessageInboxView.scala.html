@@ -28,7 +28,7 @@ layout: Layout
 @(messageListPartial: Html)(implicit request: AuthenticatedIFRequest[_], appConfig: FrontendAppConfig, messages: play.api.i18n.Messages, ec: ExecutionContext)
 @layout(
 pageTitle    = messages("service.name"),
-showBackLink = false
+showBackLink = true
 ) {
 
     @messageListPartial

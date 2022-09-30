@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.MessageConnector
 import fixtures.SpecBase
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import views.html.HomeView
