@@ -11,6 +11,10 @@ ytab.ni.description = View your National Insurance letter. Check gaps in your re
 ytab.sp = State Pension
 ytab.sp.description = View your State Pension forecast.
 
+label.message = Message
+label.sorry_theres_been_a_technical_problem_retrieving_your_messages=Sorry, there has been a technical problem retrieving your messages
+label.sorry_theres_been_a_technical_problem_retrieving_your_message=Sorry, there has been a technical problem retrieving your message
+
 site.back = Back
 site.remove = Remove
 site.change = Change
