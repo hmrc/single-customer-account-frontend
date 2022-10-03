@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.partials.{HeaderCarrierForPartialsConverter, HtmlPartial
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MessageFrontendService @Inject() (
+class MessageService @Inject()(
                                          http: HttpClient,
                                          headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter,
                                          servicesConfig: FrontendAppConfig,

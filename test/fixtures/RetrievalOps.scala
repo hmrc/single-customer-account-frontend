@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package fixtures
 
-import fixtures.SpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import views.html.HomeView
+import uk.gov.hmrc.auth.core.retrieve.~
 
-class HomeControllerSpec extends SpecBase {
-
-  lazy val homeView: HomeView = injector.instanceOf[HomeView]
-  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authActionInstance, ifActionInstance, homeView)
-
-
-  "HomeController" must {
-    "Return the Home page" in {
-
-      whenReady(controller.onPageLoad(fakeRequest)) { result =>
-        result.header.status shouldBe 200
-      }
-    }
+object RetrievalOps {
+  implicit class Ops[A](a: A) {
+    def ~[B](b: B): A ~ B = new ~(a, b)
   }
-
 }
