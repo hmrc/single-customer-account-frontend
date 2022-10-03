@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
-import services.MessageFrontendService
+import services.MessageService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.partials.HtmlPartial
 import views.html.{MessageDetailView, MessageInboxView}
@@ -30,7 +30,7 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class MessageController @Inject() (
-                                    val messageFrontendService: MessageFrontendService,
+                                    val messageFrontendService: MessageService,
                                     authenticate: AuthAction,
                                     getUserDetails: IFAction,
                                     cc: MessagesControllerComponents,
