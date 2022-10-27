@@ -136,5 +136,27 @@ class MessageControllerSpec extends SpecBase {
       }
       contentAsString(result) must include("Sorry, there has been a technical problem retrieving your message")
     }
+
+    "return 200 and label as Message" in {
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(
+        Some(nino) ~
+          Individual ~
+          Enrolments(Set.empty) ~
+          Some(Credentials("id", "type")) ~
+          Some(CredentialStrength.strong) ~
+          ConfidenceLevel.L200 ~
+          Some(Name(Some("chaz"), Some("dingle"))) ~
+          Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
+          Some("profileUrl")
+      )
+      when(mockMessageService.getMessageDetailPartial(any())(any())) thenReturn {
+        Future(HtmlPartial.Success(None, Html("<Message/>")))
+      }
+      val result = controller.messageDetail("")(FakeRequest("GET", "/foo"))
+      whenReady(result) { res =>
+        res.header.status shouldBe 200
+      }
+      contentAsString(result) must include("Message")
+    }
   }
 }
