@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package metrics
+package controllers
 
-object MetricsEnumeration extends Enumeration {
+import fixtures.SpecBase
+import play.api.mvc.ControllerComponents
+import uk.gov.hmrc.play.language.LanguageUtils
 
-  type MetricsEnumeration = Value
-  val GET_AGENT_CLIENT_STATUS = Value
-  val GET_SEISS_CLAIMS = Value
-  val GET_UNREAD_MESSAGE_COUNT = Value
-  val LOAD_PARTIAL = Value
-  val GET_BREATHING_SPACE_INDICATOR = Value
+class LanguageSwitchControllerSpec extends SpecBase{
+
+  lazy val languageUtilInstance : LanguageUtils = injector.instanceOf[LanguageUtils]
+  lazy val cc : ControllerComponents = injector.instanceOf[ControllerComponents]
+  lazy val controller: LanguageSwitchController = new LanguageSwitchController(frontendAppConfigInstance,languageUtilInstance, cc)
+
 }
