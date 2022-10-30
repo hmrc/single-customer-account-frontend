@@ -32,20 +32,39 @@ import scala.concurrent.Future
 class DataRetrievalActionClass extends SpecBase{
 
 
-  /*class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
+  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
     def callTransform[A](request: SessionRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
-
+  private val session = Session("id", LocalDateTime.now(), Some("abc"))
   "calling data retrieval from session repository" must {
 
     "must leave the request unfiltered" in {
       val sessionRepository = mock[SessionRepository]
-      when(sessionRepository.get("id")) thenReturn Future(Option(Session("id", any(), Some("abc"))))
+      when(sessionRepository.get("id")) thenReturn Future(Option(Session("id", LocalDateTime.now(), Some("abc"))))
       val action = new Harness(sessionRepository)
 
-      val result = action.callTransform(SessionRequest(FakeRequest(), "id")).futureValue
+      val result = action.callTransform(SessionRequest(fakeRequest, "id"))
 
-      result.session.get("id") mustBe true
+      whenReady(result) { result =>
+        result.cache.isDefined mustBe true
+      }
+     // result.session.get("id") must not be defined
     }
-  }*/
+  }
+
+  "calling data retrieval when no data" must {
+
+    "must be empty" in {
+      val sessionRepository = mock[SessionRepository]
+      when(sessionRepository.get("id")) thenReturn Future(None)
+      val action = new Harness(sessionRepository)
+
+      val result = action.callTransform(SessionRequest(fakeRequest, "id"))
+
+      whenReady(result) { result =>
+        result.cache.isEmpty mustBe true
+      }
+      // result.session.get("id") must not be defined
+    }
+  }
 }
