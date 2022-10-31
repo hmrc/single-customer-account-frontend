@@ -48,7 +48,7 @@ class MessageService @Inject()(
       messageFrontendUrl + "/messages/inbox-link?messagesInboxUrl=" + controllers.routes.MessageController.messageList
     )*/
 
-  def getUnreadMessageCount(implicit request: RequestHeader): Future[Option[Int]] = {
+ /* def getUnreadMessageCount(implicit request: RequestHeader): Future[Option[Int]] = {
     val url = messageFrontendUrl + "/messages/count?read=No"
     implicit val hc: HeaderCarrier = headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
 
@@ -60,5 +60,5 @@ class MessageService @Inject()(
       logger.error(s"Failed to load json", exception)
       None
     }
-  }
+  }*/
 }

@@ -32,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class IFConnector @Inject()(
                              val wsClient: WSClient,
-                             val metrics: Metrics,
                              appConfig: FrontendAppConfig)
                            (implicit executionContext: ExecutionContext) extends Logging {
 
