@@ -57,7 +57,7 @@ class IfConnectorSpec extends SpecBase with WireMockHelper {
 
   val contactDetailsFields: String = "contactDetails(code,type,detail)"
 
-  "calling If connector getDesignatoryDetails" must {
+  /*"calling If connector getDesignatoryDetails" must {
     "return IfDesignatoryDetails when response can be parsed" in {
       val url = s"/individuals/details/NINO/${nino}?fields=$designatoryDetailsFields"
       running(app) {
@@ -95,7 +95,7 @@ class IfConnectorSpec extends SpecBase with WireMockHelper {
         connector.getDesignatoryDetails(Some(Nino(nino))).futureValue mustEqual expectedObj
       }
     }
-  }
+  }*/
 
 
 /* "calling If connector getContactsDetails" must {
