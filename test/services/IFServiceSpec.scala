@@ -381,5 +381,20 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
 
     service.getPersonalDetails(Some(Nino(nino))).futureValue shouldBe expected
    }
+
+  "must return empty respone" in {
+
+
+   when(mockIfConnector.getDesignatoryDetails(any())(any()))
+     .thenReturn(Future.successful(None))
+
+   when(mockIfConnector.getContactDetails(any()))
+     .thenReturn(Future.successful(None))
+
+   val service = new IFService(mockIfConnector)
+
+   val expected = PersonalDetailsResponse()
+   service.getPersonalDetails(Some(Nino(nino))).futureValue shouldBe expected
+  }
   }
 }
