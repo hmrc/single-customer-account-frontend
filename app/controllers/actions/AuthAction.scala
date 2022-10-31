@@ -39,11 +39,6 @@ class AuthActionImpl @Inject()(
                                 val parser: BodyParsers.Default)
                               (implicit val executionContext: ExecutionContext) extends AuthorisedFunctions with AuthAction with Logging {
 
-  object LT200 {
-    def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
-      if (confLevel.level < ConfidenceLevel.L200.level) Some(confLevel) else None
-  }
-
   object GTOE200 {
     def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
       if (confLevel.level >= ConfidenceLevel.L200.level) Some(confLevel) else None

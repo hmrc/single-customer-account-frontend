@@ -22,6 +22,7 @@ import controllers.actions.AuthActionImpl
 import fixtures.RetrievalOps.Ops
 import fixtures.{SpecBase, WireMockHelper}
 import models.integrationframework.{IFContactDetail, IFContactDetails, IfAddress, IfAddressList, IfDesignatoryDetails, IfDetails, IfName, IfNameList}
+import play.api.libs.ws.WSClient
 import play.api.test.Helpers.running
 import uk.gov.hmrc.auth.core.{AuthConnector, ConfidenceLevel, CredentialStrength, Enrolments}
 import uk.gov.hmrc.domain.Nino
@@ -33,7 +34,7 @@ class IfConnectorSpec extends SpecBase with WireMockHelper {
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val authAction = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
-  lazy val connector = injector.instanceOf[IFConnector]
+  lazy val connector : IFConnector = new IFConnector(injector.instanceOf[WSClient],frontendAppConfigInstance)
   server.start()
 
 
@@ -99,7 +100,9 @@ class IfConnectorSpec extends SpecBase with WireMockHelper {
 
 /* "calling If connector getContactsDetails" must {
     "return IfContactDetails when response can be parsed" in {
-      val url = s"/individuals/details/contact/nino/${nino}?fields=$contactDetailsFields"
+      Thread.sleep(3000)
+      val url = "http://localhost:8421/individuals/details/contact/nino/AA999999A?fields=contactDetails(code,type,detail)"
+      println(url)
       running(app) {
         val contactDetails = Some(IFContactDetails(
           contactDetails = Some(Seq(
@@ -112,6 +115,10 @@ class IfConnectorSpec extends SpecBase with WireMockHelper {
         WireMock.get(urlEqualTo(url))
           .willReturn(ok(contactDetails.toString))
       )
+        Thread.sleep(3000)
+        /*whenReady((connector.getContactDetails(Some(Nino(nino))))){
+          res => res.get.contactDetails mustEqual contactDetails
+        }*/
       connector.getContactDetails(Some(Nino(nino))).futureValue mustEqual contactDetails
     }
   }
