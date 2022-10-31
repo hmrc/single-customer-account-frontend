@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package metrics
+package controllers.auth
 
-object MetricsEnumeration extends Enumeration {
+import fixtures.SpecBase
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import views.html.auth.SignedOutView
 
-  type MetricsEnumeration = Value
-  val GET_AGENT_CLIENT_STATUS = Value
-  val GET_SEISS_CLAIMS = Value
-  val GET_UNREAD_MESSAGE_COUNT = Value
-  val LOAD_PARTIAL = Value
-  val GET_BREATHING_SPACE_INDICATOR = Value
+class SignedOutControllerSpec extends SpecBase{
+
+  lazy val view: SignedOutView = injector.instanceOf[SignedOutView]
+  lazy val controller: SignedOutController = new SignedOutController(messagesControllerComponents, view)
+
+  "SignedOutController" must {
+    "Return the signed out page" in {
+
+      whenReady(controller.onPageLoad(fakeRequest)) { result =>
+        result.header.status shouldBe 200
+      }
+    }
+  }
 }
