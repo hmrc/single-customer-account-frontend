@@ -8,8 +8,10 @@ ytab.paye = Pay As You Earn (PAYE)
 ytab.paye.description = Check or update the employment, pension or other income information used to work out your PAYE Income Tax and tax codes.
 ytab.ni = National Insurance
 ytab.ni.description = View your National Insurance letter. Check gaps in your record.
+ytab.ni.nisummary = Check your National Insurance record
 ytab.sp = State Pension
 ytab.sp.description = View your State Pension forecast.
+ytab.sp.sprecord = Check your State Pension summary
 
 label.message = Message
 label.sorry_theres_been_a_technical_problem_retrieving_your_messages=Sorry, there has been a technical problem retrieving your messages
