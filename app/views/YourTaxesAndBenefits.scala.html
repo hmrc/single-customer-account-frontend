@@ -28,9 +28,7 @@
     pageTitle    = messages("service.name"),
     showBackLink = false
 ) {
-<style>
 
-</style>
  <p class="hmrc-caption govuk-caption-xl">@name</p>
  <h1 class="govuk-heading-xl" id="name">@messages("ytab.title")</h1>
 
@@ -55,21 +53,14 @@
 
 @if(nino.isDefined) {
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full govuk-!-padding-bottom-4 govuk-!-padding-top-4" style="border-bottom: 1px solid #bfc1c3; border-top: 1px solid #bfc1c3;
-     border-right: 1px solid #bfc1c3; border-left: 1px solid #bfc1c3;">
-        <h1 class="govuk-heading-m" id="ni"><a class="govuk-link" href="#">@messages("ytab.ni")</a></h1>
-        <p class="govuk-body">@messages("ytab.ni.description")</p>
-        <p class="govuk-body">NINO: @nino.get.nino</p>
-        <h1 class="govuk-heading-s" id="nisummary"><a class="govuk-link" href="#">@messages("ytab.ni.nisummary")</a></h1>
-    </div>
-</div>
-</br>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full govuk-!-padding-bottom-4 govuk-!-padding-top-4" style="border-bottom: 1px solid #bfc1c3; border-top: 1px solid #bfc1c3;
-     border-right: 1px solid #bfc1c3; border-left: 1px solid #bfc1c3;">
-  <h1 class="govuk-heading-m" id="sp"><a class="govuk-link" href="#">@messages("ytab.sp")</a></h1>
-  <p class="govuk-body">@messages("ytab.sp.description")</p>
-        <h1 class="govuk-heading-s" id="sprecord"><a class="govuk-link" href="#">@messages("ytab.sp.sprecord")</a></h1>
+    <div class="govuk-grid-column-full govuk-!-padding-top-4" style="border-bottom: 1px solid #bfc1c3; border-top: 1px solid #bfc1c3;
+     border-right: 1px solid #bfc1c3; border-left: 1px solid #bfc1c3;  width: 960px">
+        <h1 class="govuk-heading-l" id="ni">@messages("ytab.nisp")</h1>
+        <p class="govuk-body">@messages("ytab.nisp.description.1")</p>
+        <p class="govuk-body">@messages("ytab.nisp.description.2")</p>
+
+        <p class="govuk-body" style="line-height: 50%"><a href="#">@messages("ytab.nisp.link.sp")</a></p>
+        <p class="govuk-body" style="line-height: 50%"><a href="#">@messages("ytab.nisp.link.ni")</a></p>
 
     </div>
 </div>

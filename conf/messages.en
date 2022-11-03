@@ -6,12 +6,12 @@ ytab.sa = Self Assessment
 ytab.sa.description = View and manage your Self Assessment tax return.
 ytab.paye = Pay As You Earn (PAYE)
 ytab.paye.description = Check or update the employment, pension or other income information used to work out your PAYE Income Tax and tax codes.
-ytab.ni = National Insurance
-ytab.ni.description = View your National Insurance letter. Check gaps in your record.
-ytab.ni.nisummary = Check your National Insurance record
-ytab.sp = State Pension
-ytab.sp.description = View your State Pension forecast.
-ytab.sp.sprecord = Check your State Pension summary
+
+ytab.nisp = Your State Pension
+ytab.nisp.description.1 = You''re forecast to receive the full State Pension when you reach State Pension age.
+ytab.nisp.description.2 = This is because there are no gaps in your National Insurance record.
+ytab.nisp.link.sp = Check your State Pension summary
+ytab.nisp.link.ni = Check your National Insurance record
 
 label.message = Message
 label.sorry_theres_been_a_technical_problem_retrieving_your_messages=Sorry, there has been a technical problem retrieving your messages

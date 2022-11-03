@@ -86,10 +86,19 @@
 }
 
 @content = {
-    @contentBlock
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper govuk-main-wrapper--l">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                @contentBlock
+                </div>
+            </div>
+
+        </main>
+    </div>
 
     <div class="govuk-!-margin-top-8">
-        @hmrcReportTechnicalIssueHelper()
+    @hmrcReportTechnicalIssueHelper()
     </div>
 }
 
