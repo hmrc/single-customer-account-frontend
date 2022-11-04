@@ -29,40 +29,56 @@
     showBackLink = false
 ) {
 
- <p class="hmrc-caption govuk-caption-xl">@name</p>
- <h1 class="govuk-heading-xl" id="name">@messages("ytab.title")</h1>
+<Span class="hmrc-caption govuk-caption-xl">@name</Span>
+<h1 class="govuk-heading-xl" id="name">@messages("ytab.title")</h1>
 
  @if(saUrl.isDefined) {
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full govuk-!-padding-bottom-4 govuk-!-padding-top-4" style="border-bottom: 1px solid #bfc1c3; border-top: 1px solid #bfc1c3;
-     border-right: 1px solid #bfc1c3; border-left: 1px solid #bfc1c3;">
-        <h1 class="govuk-heading-m heading-tiled" id="sa"><a class="govuk-link" href="@saUrl.get">@messages("ytab.sa")</a></h1>
-        <p class="govuk-body">@messages("ytab.sa.description")</p>
+    <div class="sca-tile">
+        <h1 class="govuk-heading-l" id="sa">@messages("ytab.sa")</h1>
+        <p class="govuk-body">@messages("ytab.sa.description.2") </p>
+        <div class="govuk-grid-row">
+            <div class = "govuk-grid-column-one-half" >
+                <h1 class="govuk-heading-m" id="sanext">@messages("ytab.sa.description.1")</h1>
+                <p class="govuk-body">@messages("ytab.sa.description.2") <strong>@messages("ytab.sa.description.3")</strong></p>
+                <p class="govuk-body"><a class="govuk-link" href="@saUrl.get">@messages("ytab.sa.description.6")</a></p>
+            </div>
+            <div class = "govuk-grid-column-one-half" >
+                <h1 class="govuk-heading-m" id="sabal">@messages("ytab.bal")</h1>
+                <p class="govuk-body">@messages("ytab.bal.description")</p>
+            </div>
+        </div>
     </div>
-</div>
 }
 </br>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full govuk-!-padding-bottom-4 govuk-!-padding-top-4" style="border-bottom: 1px solid #bfc1c3; border-top: 1px solid #bfc1c3;
-     border-right: 1px solid #bfc1c3; border-left: 1px solid #bfc1c3;"> <h1 class="govuk-heading-m" id="paye"><a class="govuk-link" href="#">@messages("ytab.paye")</a></h1>
- <p class="govuk-body">@messages("ytab.paye.description")</p>
+<div class="sca-tile">
+    <h1 class="govuk-heading-l" id="paye">@messages("ytab.paye")</h1>
+    <div class="govuk-grid-row">
+        <div class = "govuk-grid-column-one-half" >
+            <h1 class="govuk-heading-m" id="payeIncome">@messages("ytab.paye.1")</h1>
+            <p class="govuk-body">@messages("ytab.paye.description.1")</p>
+        </div>
+        <div class = "govuk-grid-column-one-half" >
+            <h1 class="govuk-heading-m" id="payeBal">@messages("ytab.bal")</h1>
+            <p class="govuk-body">@messages("ytab.bal.description")</p>
+        </div>
     </div>
+    <p class="govuk-body" style="line-height: 50%"><a class="govuk-link" href="#">@messages("ytab.paye.description.2")</a></p>
 </div>
-
 </br>
 
 @if(nino.isDefined) {
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full govuk-!-padding-top-4" style="border-bottom: 1px solid #bfc1c3; border-top: 1px solid #bfc1c3;
-     border-right: 1px solid #bfc1c3; border-left: 1px solid #bfc1c3;  width: 960px">
+<div class="sca-tile">
+    <div class="govuk-grid-row">
+        <div class = "govuk-grid-column-two-thirds" >
         <h1 class="govuk-heading-l" id="ni">@messages("ytab.nisp")</h1>
         <p class="govuk-body">@messages("ytab.nisp.description.1")</p>
         <p class="govuk-body">@messages("ytab.nisp.description.2")</p>
 
-        <p class="govuk-body" style="line-height: 50%"><a href="#">@messages("ytab.nisp.link.sp")</a></p>
-        <p class="govuk-body" style="line-height: 50%"><a href="#">@messages("ytab.nisp.link.ni")</a></p>
-
+        <p class="govuk-body" style="line-height: 50%"><a href="@appConfig.spSummaryUrl">@messages("ytab.nisp.link.sp")</a></p>
+        <p class="govuk-body" style="line-height: 50%"><a href="@appConfig.niRecordUrl">@messages("ytab.nisp.link.ni")</a></p>
+        </div>
     </div>
 </div>
+
  }
 }

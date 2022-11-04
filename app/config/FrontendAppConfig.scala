@@ -37,6 +37,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
 
   val chocsBaseUrl: String = configuration.get[String]("microservice.services.sca-change-of-circumstances-frontend.url")
+  val nispBaseUrl: String = configuration.get[String]("microservice.services.nisp-frontend.url")
+  val niRecordUrl : String = s"$nispBaseUrl/check-your-state-pension/account/nirecord"
+  val spSummaryUrl : String = s"$nispBaseUrl/check-your-state-pension/account"
   private val selfAssessmentBaseUrl: String = configuration.get[String]("microservice.services.self-assessment.url")
   def selfAssessmentLink(utr: String): String = s"$selfAssessmentBaseUrl/self-assessment/ind/$utr"
   val messageFrontendUrl: String = configuration.get[String]("microservice.services.message-frontend.url")

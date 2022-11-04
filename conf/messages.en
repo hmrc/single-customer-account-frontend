@@ -3,10 +3,17 @@ home.name = Account Home
 
 ytab.title = Your taxes and benefits
 ytab.sa = Self Assessment
-ytab.sa.description = View and manage your Self Assessment tax return.
-ytab.paye = Pay As You Earn (PAYE)
-ytab.paye.description = Check or update the employment, pension or other income information used to work out your PAYE Income Tax and tax codes.
-
+ytab.sa.description.1 = Your next Self Assessment tax return
+ytab.sa.description.2 = Your 2021 to 2022 tax return is due by
+ytab.sa.description.3 = 31 January 2023
+ytab.bal= Your balance
+ytab.bal.description = Your account is up to date. You do not need to make any payments.
+ytab.sa.description.6 = Complete your tax return
+ytab.sa.description.7 = Your Self Assessment Unique Taxpayer Reference (UTR) is
+ytab.paye = Income from employment
+ytab.paye.1 = Your taxable income
+ytab.paye.description.1 = Your total taxable income reported to us from Dunder Mifflin is:
+ytab.paye.description.2 = Check your PAYE record
 ytab.nisp = Your State Pension
 ytab.nisp.description.1 = You''re forecast to receive the full State Pension when you reach State Pension age.
 ytab.nisp.description.2 = This is because there are no gaps in your National Insurance record.
