@@ -1,11 +1,13 @@
 service.name = Single Customer Account
 home.name = Account Home
 
-ytab.title = Your taxes and benefits
+ytab.title = Your taxes and benefits for this tax year
+ytab.title.description.1 = This tax year is 6 April 2022 to 5 April 2023.
+ytab.title.description.2 = Your National Insurance number is
 ytab.sa = Self Assessment
 ytab.sa.description.1 = Your next Self Assessment tax return
 ytab.sa.description.2 = Your 2021 to 2022 tax return is due by
-ytab.sa.description.3 = 31 January 2023
+ytab.sa.description.3 = 31 January 2023.
 ytab.bal= Your balance
 ytab.bal.description = Your account is up to date. You do not need to make any payments.
 ytab.sa.description.6 = Complete your tax return
@@ -13,7 +15,7 @@ ytab.sa.description.7 = Check your Self Assessment record
 ytab.sa.description.8 = Your Self Assessment Unique Taxpayer Reference (UTR) is
 ytab.paye = Income from employment
 ytab.paye.1 = Your taxable income
-ytab.paye.amount = £7524
+ytab.paye.amount = £7,524
 ytab.paye.description.1 = Your total taxable income reported to us from Dunder Mifflin is:
 ytab.paye.description.2 = Check your PAYE record
 ytab.nisp = Your State Pension
