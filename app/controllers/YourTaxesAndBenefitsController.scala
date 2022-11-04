@@ -35,11 +35,15 @@ class YourTaxesAndBenefitsController @Inject()(
                                )(implicit frontendAppConfig: FrontendAppConfig) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
+    var utr: String = ""
     val name = request.ifData.details.name.fold(""){ name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}"}
     val saUrl =  request.authenticatedRequest.enrolments.collectFirst {
-      case Enrolment("IR-SA", Seq(identifier), "Activated", _) => frontendAppConfig.selfAssessmentLink(SaUtr(identifier.value).value)
+      case Enrolment("IR-SA", Seq(identifier), "Activated", _) =>
+        utr = SaUtr(identifier.value).value
+        frontendAppConfig.selfAssessmentLink(SaUtr(identifier.value).value)
     }
     val nino = request.authenticatedRequest.nino
-    Ok(view(name, saUrl, nino))
+    Ok(view(name, saUrl, nino, utr))
+
   }
 }

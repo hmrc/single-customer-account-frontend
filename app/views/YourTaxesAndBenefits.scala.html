@@ -23,7 +23,7 @@
 @this(
     layout: Layout
 )
-@(name: String, saUrl: Option[String], nino: Option[Nino])(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(name: String, saUrl: Option[String], nino: Option[Nino], utr: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 @layout(
     pageTitle    = messages("service.name"),
     showBackLink = false
@@ -35,7 +35,7 @@
  @if(saUrl.isDefined) {
     <div class="sca-tile">
         <h1 class="govuk-heading-l" id="sa">@messages("ytab.sa")</h1>
-        <p class="govuk-body">@messages("ytab.sa.description.7") </p>
+        <p class="govuk-body">@messages("ytab.sa.description.7") @utr </p>
         <div class="govuk-grid-row">
             <div class = "govuk-grid-column-one-half" >
                 <h1 class="govuk-heading-m" id="sanext">@messages("ytab.sa.description.1")</h1>
@@ -56,6 +56,7 @@
         <div class = "govuk-grid-column-one-half" >
             <h1 class="govuk-heading-m" id="payeIncome">@messages("ytab.paye.1")</h1>
             <p class="govuk-body">@messages("ytab.paye.description.1")</p>
+            <h1 class="govuk-heading-l" id="amount" >@messages("ytab.paye.amount")</h1>
         </div>
         <div class = "govuk-grid-column-one-half" >
             <h1 class="govuk-heading-m" id="payeBal">@messages("ytab.bal")</h1>

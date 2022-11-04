@@ -12,6 +12,7 @@ ytab.sa.description.6 = Complete your tax return
 ytab.sa.description.7 = Your Self Assessment Unique Taxpayer Reference (UTR) is
 ytab.paye = Income from employment
 ytab.paye.1 = Your taxable income
+ytab.paye.amount = £7524
 ytab.paye.description.1 = Your total taxable income reported to us from Dunder Mifflin is:
 ytab.paye.description.2 = Check your PAYE record
 ytab.nisp = Your State Pension
