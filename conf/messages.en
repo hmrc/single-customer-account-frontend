@@ -1,8 +1,8 @@
 service.name = Single Customer Account
 home.name = Account Home
 
-ytab.title = Your taxes and benefits for this tax year
-ytab.title.description.1 = This tax year is 6 April 2022 to 5 April 2023.
+ytab.title = Your taxes and benefits for the current tax year
+ytab.title.description.1 = The current tax year is 6 April 2022 to 5 April 2023.
 ytab.title.description.2 = Your National Insurance number is
 ytab.sa = Self Assessment
 ytab.sa.description.1 = Your next Self Assessment tax return
