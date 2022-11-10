@@ -39,8 +39,8 @@
 
 @head = {
 
-    @hmrcHead(
-        Some(hmrcInternalHead(nonce = CSPNonce.get)),
+    @hmrcInternalHead(
+        nonce     = CSPNonce.get,
         headBlock = if(timeout) { Some(
             hmrcTimeoutDialog(TimeoutDialog(
                 timeout             = Some(appConfig.timeout),
