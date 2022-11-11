@@ -23,7 +23,7 @@
 @this(
     layout: Layout
 )
-@(name: String, saUrl: Option[String], nino: Option[Nino], utr: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(name: String, saUrl: Option[String], nino: Option[Nino], utr: Option[String])(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 @layout(
     pageTitle    = messages("service.name"),
     showBackLink = false
@@ -32,8 +32,9 @@
 <Span class="hmrc-caption govuk-caption-xl">@name</Span>
 <h1 class="govuk-heading-xl" id="name">@messages("ytab.title")</h1>
     <p class="govuk-body">@messages("ytab.title.description.1")</p>
-    <p class="govuk-body">@messages("ytab.title.description.2") @nino.get.nino.</p>
-
+    @if(nino.isDefined){
+        <p class="govuk-body">@messages("ytab.title.description.2") @{s"${nino.get.nino}."}</p>
+    }
 <div class="sca-tile">
     <h1 class="govuk-heading-l" id="paye">@messages("ytab.paye")</h1>
     <div class="govuk-grid-row">
@@ -50,10 +51,10 @@
     <p class="govuk-body" style="line-height: 50%"><a class="govuk-link" href="#">@messages("ytab.paye.description.2")</a></p>
 </div>
 
-@if(saUrl.isDefined) {
+@if(saUrl.isDefined && utr.isDefined) {
 <div class="sca-tile">
     <h1 class="govuk-heading-l" id="sa">@messages("ytab.sa")</h1>
-    <p class="govuk-body">@messages("ytab.sa.description.8") @utr. </p>
+    <p class="govuk-body">@messages("ytab.sa.description.8") @{s"${utr.get}."}</p>
     <div class="govuk-grid-row">
         <div class = "govuk-grid-column-one-half" >
             <h1 class="govuk-heading-m" id="sanext">@messages("ytab.sa.description.1")</h1>
