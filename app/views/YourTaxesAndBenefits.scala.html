@@ -51,7 +51,7 @@
     <p class="govuk-body" style="line-height: 50%"><a class="govuk-link" href="#">@messages("ytab.paye.description.2")</a></p>
 </div>
 
-@if(saUrl.isDefined && utr.isDefined) {
+@if(saUrl.isDefined) {
 <div class="sca-tile">
     <h1 class="govuk-heading-l" id="sa">@messages("ytab.sa")</h1>
     <p class="govuk-body">@messages("ytab.sa.description.8") @{s"${utr.get}."}</p>

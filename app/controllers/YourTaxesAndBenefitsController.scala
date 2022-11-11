@@ -42,6 +42,5 @@ class YourTaxesAndBenefitsController @Inject()(
     val saUrl = saUtr.fold(None: Option[String]){utr => Some(frontendAppConfig.selfAssessmentLink(SaUtr(utr).value))}
     val nino = request.authenticatedRequest.nino
     Ok(view(name, saUrl, nino, saUtr))
-
   }
 }
