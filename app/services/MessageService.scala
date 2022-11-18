@@ -21,6 +21,7 @@ import connectors.MessageConnector
 import models.MessageCount
 import play.api.Logging
 import play.api.mvc.RequestHeader
+import play.twirl.api.Html
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.partials.{HeaderCarrierForPartialsConverter, HtmlPartial}
 
@@ -37,12 +38,19 @@ class MessageService @Inject()(
 
   lazy val messageFrontendUrl: String = servicesConfig.messageFrontendUrl
 
-  def getMessageListPartial(implicit request: RequestHeader): Future[HtmlPartial] =
-    enhancedPartialRetriever.loadPartial(messageFrontendUrl + "/messages")
+  def getMessageListPartial(implicit request: RequestHeader, hc: HeaderCarrier): Future[HtmlPartial] = {
 
-  def getMessageDetailPartial(messageToken: String)(implicit request: RequestHeader): Future[HtmlPartial] =
-    enhancedPartialRetriever.loadPartial(messageFrontendUrl + "/messages/" + messageToken)
+    http.GET("http://localhost:8421/messages").map { i =>
+      val x = Html(i.body)
+      HtmlPartial.Success(Some("test"), x)
+    }
+  }
 
+  def getMessageDetailPartial(messageToken: String)(implicit request: RequestHeader, hc: HeaderCarrier): Future[HtmlPartial] =
+    http.GET("http://localhost:8421/messages/test").map { i =>
+      val x = Html(i.body)
+      HtmlPartial.Success(Some("test"), x)
+    }
   /*def getMessageInboxLinkPartial(implicit request: RequestHeader): Future[HtmlPartial] =
     enhancedPartialRetriever.loadPartial(
       messageFrontendUrl + "/messages/inbox-link?messagesInboxUrl=" + controllers.routes.MessageController.messageList
