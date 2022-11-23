@@ -67,7 +67,7 @@ class MessageServiceSpec extends SpecBase with WireMockHelper {
         Future.successful(expected)
       )
 
-      val result = messageService.getMessageListPartial(fakeRequest).futureValue
+      val result = messageService.getMessageListPartial(fakeRequest,any()).futureValue
       result mustBe expected
     }
   }
@@ -78,7 +78,7 @@ class MessageServiceSpec extends SpecBase with WireMockHelper {
       when(mockMessageConnector.loadPartial(any())(any(), any())).thenReturn(
         Future.successful(expected)
       )
-      val result = messageService.getMessageDetailPartial("abcd")(FakeRequest()).futureValue
+      val result = messageService.getMessageDetailPartial("abcd")(FakeRequest(),hc).futureValue
       result mustBe expected
 
     }
