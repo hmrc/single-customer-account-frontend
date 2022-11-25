@@ -38,19 +38,12 @@ class MessageService @Inject()(
 
   lazy val messageFrontendUrl: String = servicesConfig.messageFrontendUrl
 
-  def getMessageListPartial(implicit request: RequestHeader, hc: HeaderCarrier): Future[HtmlPartial] = {
+  def getMessageListPartial(implicit request: RequestHeader): Future[HtmlPartial] =
+    enhancedPartialRetriever.loadPartial(messageFrontendUrl + "/messages")
 
-    http.GET("http://localhost:8421/messages").map { i =>
-      val x = Html(i.body)
-      HtmlPartial.Success(Some("test"), x)
-    }
-  }
+  def getMessageDetailPartial(messageToken: String)(implicit request: RequestHeader): Future[HtmlPartial] =
+    enhancedPartialRetriever.loadPartial(messageFrontendUrl + "/messages/" + messageToken)
 
-  def getMessageDetailPartial(messageToken: String)(implicit request: RequestHeader, hc: HeaderCarrier): Future[HtmlPartial] =
-    http.GET("http://localhost:8421/messages/test").map { i =>
-      val x = Html(i.body)
-      HtmlPartial.Success(Some("test"), x)
-    }
   /*def getMessageInboxLinkPartial(implicit request: RequestHeader): Future[HtmlPartial] =
     enhancedPartialRetriever.loadPartial(
       messageFrontendUrl + "/messages/inbox-link?messagesInboxUrl=" + controllers.routes.MessageController.messageList
