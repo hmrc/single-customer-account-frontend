@@ -58,7 +58,7 @@ class MessageControllerSpec extends SpecBase {
           Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
           Some("profileUrl")
       )
-      when(mockMessageService.getMessageListPartial(any())) thenReturn {
+      when(mockMessageService.getMessageListPartial(any(), any())) thenReturn {
         Future(HtmlPartial.Success(Some("Success"), Html("<title>Message List</title>")))
       }
       val result = controller.messageList(FakeRequest())
@@ -80,7 +80,7 @@ class MessageControllerSpec extends SpecBase {
           Some(TrustedHelper("name", "name", "link", "AA999999B")) ~
           Some("profileUrl")
       )
-      when(mockMessageService.getMessageListPartial(any())) thenReturn {
+      when(mockMessageService.getMessageListPartial(any(),any())) thenReturn {
         Future(HtmlPartial.Failure(None))
       }
       val result = controller.messageList(FakeRequest())
@@ -104,7 +104,7 @@ class MessageControllerSpec extends SpecBase {
           Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
           Some("profileUrl")
       )
-      when(mockMessageService.getMessageDetailPartial(any())(any())) thenReturn {
+      when(mockMessageService.getMessageDetailPartial(any())(any(),any())) thenReturn {
         Future(HtmlPartial.Success(Some("Success"), Html("<title/>")))
       }
       val result = controller.messageDetail("SOME-MESSAGE-TOKEN")(FakeRequest("GET", "/foo"))
@@ -127,7 +127,7 @@ class MessageControllerSpec extends SpecBase {
           Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
           Some("profileUrl")
       )
-      when(mockMessageService.getMessageDetailPartial(any())(any())) thenReturn {
+      when(mockMessageService.getMessageDetailPartial(any())(any(), any())) thenReturn {
         Future(HtmlPartial.Failure(None, ""))
       }
       val result = controller.messageDetail("")(FakeRequest("GET", "/foo"))
@@ -149,7 +149,7 @@ class MessageControllerSpec extends SpecBase {
           Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
           Some("profileUrl")
       )
-      when(mockMessageService.getMessageDetailPartial(any())(any())) thenReturn {
+      when(mockMessageService.getMessageDetailPartial(any())(any(),any())) thenReturn {
         Future(HtmlPartial.Success(None, Html("<Message/>")))
       }
       val result = controller.messageDetail("")(FakeRequest("GET", "/foo"))
