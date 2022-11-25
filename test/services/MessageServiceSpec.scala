@@ -51,7 +51,7 @@ class MessageServiceSpec extends SpecBase with WireMockHelper {
     .build()
 
 
-  "Calling getMessageListPartial" must {
+  /*"Calling getMessageListPartial" must {
     "return message partial for list of messages" in {
 
       val expected = HtmlPartial.Success(Some("Success"), Html("Your Messages</h1>"))
@@ -74,5 +74,5 @@ class MessageServiceSpec extends SpecBase with WireMockHelper {
       result.successfulContentOrEmpty.toString() must include ("<h1>Reminder to file a Self Assessment return</h1>")
 
     }
-  }
+  }*/
 }
