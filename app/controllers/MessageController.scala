@@ -42,6 +42,7 @@ class MessageController @Inject() (
 
   def messageList: Action[AnyContent] =
     (authenticate andThen getUserDetails).async { implicit request =>
+
       messageFrontendService.getMessageListPartial map { htmlMessage =>
         Ok(
           messageInboxView(
@@ -55,6 +56,7 @@ class MessageController @Inject() (
 
   def messageDetail(messageToken: String): Action[AnyContent] =
     (authenticate andThen getUserDetails).async { implicit request =>
+
       messageFrontendService.getMessageDetailPartial(messageToken).map {
         case HtmlPartial.Success(Some(title), content) =>
           Ok(messageDetailView(message = content, title = title))
