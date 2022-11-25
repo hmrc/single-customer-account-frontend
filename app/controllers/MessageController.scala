@@ -44,9 +44,6 @@ class MessageController @Inject() (
     (authenticate andThen getUserDetails).async { implicit request =>
 
       messageFrontendService.getMessageListPartial map { htmlMessage =>
-        println("***************************")
-
-
         Ok(
           messageInboxView(
             messageListPartial = htmlMessage successfulContentOrElse Html(
