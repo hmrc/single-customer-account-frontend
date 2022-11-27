@@ -55,7 +55,7 @@ class IFConnector @Inject()(
       case None => Future.successful(None)
       case Some(ninoString) => {
         val headers = setHeaders ++ Seq(("OriginatorId", "DA2_BS_UNATTENDED"))
-        wsClient.url(s"${appConfig.ifBaseUrl}/individuals/details/NINO/${ninoString.nino}?fields=$designatoryDetailsFields")
+        wsClient.url(s"${appConfig.integrationFrameworkUrl}/individuals/details/NINO/${ninoString.nino}?fields=$designatoryDetailsFields")
           .withHttpHeaders(headers: _*)
           .get().map {
             case response if response.status >= OK && response.status < 300 => response.json.asOpt[IfDesignatoryDetails]
@@ -73,7 +73,7 @@ class IFConnector @Inject()(
     nino match {
       case None => Future.successful(None)
       case Some(ninoString) => {
-        wsClient.url(s"${appConfig.ifBaseUrl}/individuals/details/contact/nino/${ninoString.nino}?fields=$contactDetailsFields")
+        wsClient.url(s"${appConfig.integrationFrameworkUrl}/individuals/details/contact/nino/${ninoString.nino}?fields=$contactDetailsFields")
           .withHttpHeaders(setHeaders: _*)
           .get().map {
           case response if response.status >= OK && response.status < 300 => response.json.asOpt[IFContactDetails]
