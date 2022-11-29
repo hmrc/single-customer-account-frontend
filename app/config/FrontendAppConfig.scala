@@ -77,5 +77,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val integrationFrameworkPort: Int = configuration.get[Int]("microservice.services.integration-framework.port")
   val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
   val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
-  val ifBaseUrl = s"$integrationFrameworkProtocol://$integrationFrameworkHost:$integrationFrameworkPort"
+  val ifBaseUrl = s"$integrationFrameworkProtocol://$integrationFrameworkHost:$integrationFrameworkPort/single-customer-account-stub"
 }
