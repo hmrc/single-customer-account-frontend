@@ -72,10 +72,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val deskproToken = "SCA"
 
-  val integrationFrameworkProtocol: String = configuration.get[String]("microservice.services.integration-framework.protocol")
-  val integrationFrameworkHost: String = configuration.get[String]("microservice.services.integration-framework.host")
-  val integrationFrameworkPort: Int = configuration.get[Int]("microservice.services.integration-framework.port")
+  val integrationFrameworkUrl: String = configuration.get[String]("microservice.services.integration-framework.url")
   val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
   val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
-  val ifBaseUrl = s"$integrationFrameworkProtocol://$integrationFrameworkHost:$integrationFrameworkPort/single-customer-account-stub"
 }
