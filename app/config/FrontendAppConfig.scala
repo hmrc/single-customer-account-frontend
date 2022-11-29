@@ -60,8 +60,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
-  //PTA
-
   lazy val accessibilityBaseUrl = configuration.get[String]("accessibility-statement.baseUrl")
 
   lazy private val accessibilityRedirectUrl = configuration.get[String]("accessibility-statement.redirectUrl")
@@ -69,28 +67,15 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   def accessibilityStatementUrl(referrer: String) =
     s"$accessibilityBaseUrl/accessibility-statement$accessibilityRedirectUrl?referrerUrl=${SafeRedirectUrl(accessibilityBaseUrl + referrer).encodedUrl}"
 
-  lazy val personalAccount = "/single-customer-account"
-
-  lazy val bannerHomePageHeadingCy: String =
-    configuration.getOptional[String]("feature.banner.home.heading.cy").getOrElse("")
-  lazy val bannerHomePageLinkTextCy: String =
-    configuration.getOptional[String]("feature.banner.home.link.text.cy").getOrElse("")
-  lazy val bannerHomePageHeadingEn: String =
-    configuration.getOptional[String]("feature.banner.home.heading.en").getOrElse("")
-  lazy val bannerHomePageLinkUrl: String =
-    configuration.getOptional[String]("feature.banner.home.link.url").getOrElse("")
-  lazy val bannerHomePageLinkTextEn: String =
-    configuration.getOptional[String]("feature.banner.home.link.text.en").getOrElse("")
-  lazy val childBenefitLinkUrl = Some(
-    "https://docs.google.com/forms/d/e/1FAIpQLSegbiz4ClGW0XkC1pY3B02ltiY1V79V7ha0jZinECIz_FvSyg/viewform"
-  )
   def betaFeedbackUnauthenticatedUrl(aDeskproToken: String) =
     s"$contactBaseUrl/contact/beta-feedback-unauthenticated?service=$aDeskproToken"
 
   lazy val deskproToken = "SCA"
 
-  val integrationFrameworkUrl: String = configuration.get[String]("microservice.services.integration-framework.url")
+  val integrationFrameworkProtocol: String = configuration.get[String]("microservice.services.integration-framework.protocol")
+  val integrationFrameworkHost: String = configuration.get[String]("microservice.services.integration-framework.host")
+  val integrationFrameworkPort: Int = configuration.get[Int]("microservice.services.integration-framework.port")
   val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
   val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
-
+  val ifBaseUrl = s"$integrationFrameworkProtocol://$integrationFrameworkHost:$integrationFrameworkPort"
 }
