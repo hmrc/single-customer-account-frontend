@@ -31,15 +31,14 @@
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
     alphaBanner: StandardAlphaBanner,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-    hmrcInternalHead: HmrcInternalHead
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper
 )
 
 @(pageTitle: String, showBackLink: Boolean = false, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @head = {
 
-    @hmrcInternalHead(
+    @hmrcHead(
         nonce     = CSPNonce.get,
         headBlock = if(timeout) { Some(
             hmrcTimeoutDialog(TimeoutDialog(
