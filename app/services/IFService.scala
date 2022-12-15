@@ -22,6 +22,7 @@ import play.api.Logging
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.sca.Version
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,7 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class IFService @Inject()(connector: IFConnector)(implicit ec: ExecutionContext) extends Logging {
 
   // TODO: Check assumption behind name logic
-
   private def getName(designatoryDetails: IfDesignatoryDetails): Option[IfName] = {
     val realKnownAsNames: (Seq[IfName], Seq[IfName]) = designatoryDetails.nameList.name.partition(_.nameType.contains(1))
 
