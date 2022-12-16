@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.sca.HelloWorld
+import uk.gov.hmrc.sca.controllers.TestLibrary
 import views.html.HomeView
 
 import javax.inject.Inject
@@ -31,12 +31,14 @@ class HomeController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 authenticate: AuthAction,
                                 getUserDetails: IFAction,
-                                view: HomeView
+                                view: HomeView,
+                                testLibrary: TestLibrary
                               )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-HelloWorld.x
+
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
+testLibrary.sca
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
     Ok(view(name))
   }

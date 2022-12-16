@@ -22,7 +22,6 @@ import play.api.Logging
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.sca.Version
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
