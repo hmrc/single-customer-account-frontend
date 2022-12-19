@@ -38,7 +38,7 @@ class HomeController @Inject()(
 
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
-testLibrary.sca
+
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
     Ok(view(name))
   }
