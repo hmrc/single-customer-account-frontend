@@ -17,13 +17,16 @@
 @import config.FrontendAppConfig
 @import models.auth.AuthenticatedIFRequest
 @import uk.gov.hmrc.sca.views.html.SCALayout
+@import uk.gov.hmrc.sca.controllers.TestLibrary
+@import uk.gov.hmrc.sca.views.html.PtaLayout
 
 @this(
-        scaLayout: SCALayout
+        scaLayout: SCALayout,
+        ptaLayout: PtaLayout
 )
 @(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@scaLayout(
+@ptaLayout(
     pageTitle    = None,
     showBackLink = false,
     signoutUrl = s"${controllers.auth.routes.AuthController.signOut.url}",
@@ -33,6 +36,5 @@
 
     <p class="hmrc-caption govuk-caption-xl">@messages("index.heading")</p>
     <h1 class="govuk-heading-xl" id="name">@name</h1>
-
 
 }

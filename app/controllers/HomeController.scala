@@ -31,14 +31,12 @@ class HomeController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 authenticate: AuthAction,
                                 getUserDetails: IFAction,
-                                view: HomeView,
-                                testLibrary: TestLibrary
+                                view: HomeView
                               )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
-
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
     Ok(view(name))
   }
