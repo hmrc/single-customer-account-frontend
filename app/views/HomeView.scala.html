@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,16 @@
 
 @import config.FrontendAppConfig
 @import models.auth.AuthenticatedIFRequest
-@import uk.gov.hmrc.sca.views.html.SCALayout
-@import uk.gov.hmrc.sca.controllers.TestLibrary
+@import uk.gov.hmrc.sca.views.html.ScaLayout
 @import uk.gov.hmrc.sca.views.html.PtaLayout
+@import uk.gov.hmrc.http.HeaderCarrier
+@import scala.concurrent.ExecutionContext
 
 @this(
-        scaLayout: SCALayout,
+        scaLayout: ScaLayout,
         ptaLayout: PtaLayout
 )
-@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
 
 @ptaLayout(
     pageTitle    = None,
