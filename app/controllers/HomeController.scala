@@ -31,23 +31,13 @@ class HomeController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 authenticate: AuthAction,
                                 getUserDetails: IFAction,
-                                view: HomeView,
-                                testLibrary: TestLibrary
+                                view: HomeView
                               )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails).async { implicit request =>
+
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
-    val content = view(name)
-    testLibrary.scaLayout(
-      pageTitle = None,
-      showBackLink = false,
-      showSignOutInHeader = false,
-      headerHomeUrl = None,
-      signOutUrl = s"${controllers.auth.routes.AuthController.signOut.url}",
-      keepAliveUrl = s"${controllers.routes.KeepAliveController.keepAlive.url}",
-      serviceUrl = "single-customer-account", content = content).map { x =>
-      Ok(x)
-    }
+    Ok(view(name))
   }
 }
