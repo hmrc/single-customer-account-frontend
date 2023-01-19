@@ -30,9 +30,11 @@
 @ptaLayout(
     pageTitle    = None,
     showBackLink = false,
+    //
     showSignOutInHeader = false,
     headerHomeUrl = None,
-    signOutUrl = s"${controllers.auth.routes.AuthController.signOut.url}",
+    //
+    signoutUrl = s"${controllers.auth.routes.AuthController.signOut.url}",
     keepAliveUrl = s"${controllers.routes.KeepAliveController.keepAlive.url}",
     serviceUrl = "single-customer-account"
 ) {
