@@ -17,11 +17,13 @@
 package controllers
 
 import fixtures.SpecBase
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.time.Span
 import views.html.HomeView
 
 class HomeControllerSpec extends SpecBase {
-
+val timeout = Timeout(Span(1, Units))
   lazy val homeView: HomeView = injector.instanceOf[HomeView]
   lazy val controller: HomeController = new HomeController(messagesControllerComponents, authActionInstance, ifActionInstance, homeView)
 

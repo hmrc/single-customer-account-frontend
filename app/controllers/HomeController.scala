@@ -21,8 +21,8 @@ import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.sca.controllers.TestLibrary
-import views.html.HomeView
+import uk.gov.hmrc.sca.services.WrapperService
+import views.html.{HomeView, HomeViewWrapperVersion}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -31,11 +31,16 @@ class HomeController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 authenticate: AuthAction,
                                 getUserDetails: IFAction,
-                                view: HomeView
-                              )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                view: HomeViewWrapperVersion,
+                                wrapperService: WrapperService
+                              )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext)
+  extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails).async { implicit request =>
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
-    Ok(view(name))
+    wrapperService.layout(content = view(name), keepAliveUrl = wrapperService.keepAliveAuthenticatedUrl).map { layout =>
+      Ok(layout)
+    }
   }
+
 }
