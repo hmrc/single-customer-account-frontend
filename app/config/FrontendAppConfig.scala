@@ -76,7 +76,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     s"$accessibilityBaseUrl/accessibility-statement$accessibilityRedirectUrl?referrerUrl=${SafeRedirectUrl(accessibilityBaseUrl + referrer).encodedUrl}"
 
   lazy private val exitSurveyServiceName = "single-customer-account-frontend"
-  lazy private val contactBaseUrl: String = configuration.get[String]("sca-wrapper.contact-frontend.url")
+  lazy private val contactBaseUrl: String = configuration.get[String]("sca-wrapper.fallback.contact-frontend.url")
 
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactBaseUrl/contact/beta-feedback?service=$exitSurveyServiceName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"

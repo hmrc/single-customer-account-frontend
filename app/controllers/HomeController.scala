@@ -20,7 +20,9 @@ import config.FrontendAppConfig
 import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.sca.services.WrapperService
 import views.html.{HomeView, HomeViewWrapperVersion}
 
@@ -38,7 +40,11 @@ class HomeController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails).async { implicit request =>
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
-    wrapperService.layout(content = view(name), keepAliveUrl = wrapperService.keepAliveAuthenticatedUrl).map { layout =>
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    wrapperService.layout(
+      content = view(name),
+      keepAliveUrl = wrapperService.keepAliveAuthenticatedUrl
+    ).map { layout =>
       Ok(layout)
     }
   }
