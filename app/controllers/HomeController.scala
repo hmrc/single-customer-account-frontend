@@ -43,7 +43,8 @@ class HomeController @Inject()(
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     wrapperService.layout(
       content = view(name),
-      keepAliveUrl = wrapperService.keepAliveAuthenticatedUrl
+      keepAliveUrl = wrapperService.keepAliveAuthenticatedUrl,
+      headerHomeUrl = None
     ).map { layout =>
       Ok(layout)
     }
