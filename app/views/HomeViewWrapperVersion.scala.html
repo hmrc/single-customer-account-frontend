@@ -16,19 +16,15 @@
 
 @import config.FrontendAppConfig
 @import models.auth.AuthenticatedIFRequest
-@import models.integrationframework.PersonalDetailsResponse
+@import uk.gov.hmrc.sca.views.html.ScaLayout
+@import uk.gov.hmrc.sca.views.html.PtaLayout
+@import uk.gov.hmrc.http.HeaderCarrier
 @import scala.concurrent.ExecutionContext
-@import views.html.templates.Layout
 
 @this(
-layout: Layout
 )
+@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
 
-@(message: Html, title: String)(implicit request: AuthenticatedIFRequest[_], appConfig: FrontendAppConfig, messages: play.api.i18n.Messages, ec: ExecutionContext)
 
-@layout(
-pageTitle    = title,
-showBackLink = true
-)   {
-      @message
-    }
+    <p class="hmrc-caption govuk-caption-xl">@messages("index.heading")</p>
+    <h1 class="govuk-heading-xl" id="name">@name</h1>

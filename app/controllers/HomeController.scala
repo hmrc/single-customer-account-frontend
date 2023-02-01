@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,11 @@ import config.FrontendAppConfig
 import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.HomeView
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import uk.gov.hmrc.sca.services.WrapperService
+import views.html.{HomeView, HomeViewWrapperVersion}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -30,11 +33,19 @@ class HomeController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 authenticate: AuthAction,
                                 getUserDetails: IFAction,
-                                view: HomeView
-                              )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                view: HomeViewWrapperVersion,
+                                wrapperService: WrapperService
+                              )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext)
+  extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
-    val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
-    Ok(view(name))
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails).async { implicit request =>
+    val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}"}
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    wrapperService.layout(
+      content = view(name)
+    ).map { layout =>
+      Ok(layout)
+    }
   }
+
 }
