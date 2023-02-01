@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
+  val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
-  private val contactFormServiceIdentifier = "single-customer-account-frontend"
-  private val contactBaseUrl: String = configuration.get[String]("microservice.services.contact-frontend.url")
-  def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactBaseUrl/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
-
-  private val exitSurveyBaseUrl: String = configuration.get[String]("microservice.services.feedback-frontend.url")
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
+  val integrationFrameworkUrl: String = configuration.get[String]("microservice.services.integration-framework.url")
+  val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
+  val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
 
   val chocsBaseUrl: String = configuration.get[String]("microservice.services.sca-change-of-circumstances-frontend.url")
   val nispBaseUrl: String = configuration.get[String]("microservice.services.nisp-frontend.url")
@@ -55,24 +52,37 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     "cy" -> Lang("cy")
   )
 
-  val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
-  val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
-  val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
-  lazy val accessibilityBaseUrl = configuration.get[String]("accessibility-statement.baseUrl")
+//  lazy private val accessibilityBaseUrl: String = configuration.get[String]("accessibility-statement.baseUrl")
+//  lazy private val accessibilityRedirectUrl = configuration.get[String]("accessibility-statement.redirectUrl")
+//  def accessibilityStatementUrl(referrer: String) =
+//    s"$accessibilityBaseUrl/accessibility-statement$accessibilityRedirectUrl?referrerUrl=${SafeRedirectUrl(accessibilityBaseUrl + referrer).encodedUrl}"
+//  lazy private val exitSurveyServiceName = "single-customer-account-frontend"
+//  lazy private val contactBaseUrl: String = configuration.get[String]("microservice.services.contact-frontend.url")
+//  def feedbackUrl(implicit request: RequestHeader): String =
+//    s"$contactBaseUrl/contact/beta-feedback?service=$exitSurveyServiceName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
+//  lazy private val exitSurveyBaseUrl: String = configuration.get[String]("microservice.services.feedback-frontend.url")
+//  val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
+//  val timeout: Int = configuration.get[Int]("timeout-dialog.timeout")
+//  val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
-  lazy private val accessibilityRedirectUrl = configuration.get[String]("accessibility-statement.redirectUrl")
+
+
+  lazy private val accessibilityBaseUrl: String = configuration.get[String]("sca-wrapper.accessibility-statement.baseUrl")
+  lazy private val accessibilityRedirectUrl = configuration.get[String]("sca-wrapper.accessibility-statement.redirectUrl")
 
   def accessibilityStatementUrl(referrer: String) =
     s"$accessibilityBaseUrl/accessibility-statement$accessibilityRedirectUrl?referrerUrl=${SafeRedirectUrl(accessibilityBaseUrl + referrer).encodedUrl}"
 
-  def betaFeedbackUnauthenticatedUrl(aDeskproToken: String) =
-    s"$contactBaseUrl/contact/beta-feedback-unauthenticated?service=$aDeskproToken"
+  lazy private val exitSurveyServiceName = "single-customer-account-frontend"
+  lazy private val contactBaseUrl: String = configuration.get[String]("sca-wrapper.fallback.contact-frontend.url")
 
-  lazy val deskproToken = "SCA"
+  def feedbackUrl(implicit request: RequestHeader): String =
+    s"$contactBaseUrl/contact/beta-feedback?service=$exitSurveyServiceName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
-  val integrationFrameworkUrl: String = configuration.get[String]("microservice.services.integration-framework.url")
-  val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
-  val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
+  lazy private val exitSurveyBaseUrl: String = configuration.get[String]("sca-wrapper.fallback.feedback-frontend.url")
+  val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
+  val timeout: Int = configuration.get[Int]("sca-wrapper.timeout-dialog.timeout")
+  val countdown: Int = configuration.get[Int]("sca-wrapper.timeout-dialog.countdown")
 }

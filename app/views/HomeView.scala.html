@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,29 @@
 
 @import config.FrontendAppConfig
 @import models.auth.AuthenticatedIFRequest
-@import models.integrationframework.PersonalDetailsResponse
-@import views.html.templates.Layout
+@import uk.gov.hmrc.sca.views.html.ScaLayout
+@import uk.gov.hmrc.sca.views.html.PtaLayout
+@import uk.gov.hmrc.http.HeaderCarrier
+@import scala.concurrent.ExecutionContext
 
 @this(
-    layout: Layout
+        scaLayout: ScaLayout
 )
-@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
 
-@layout(
-    pageTitle    = messages("service.name"),
-    showBackLink = false
+@scaLayout(
+    pageTitle    = Some("hi"),
+    showBackLink = false,
+    //
+//    showSignOutInHeader = false,
+//    headerHomeUrl = None,
+    //
+    signoutUrl = s"${controllers.auth.routes.AuthController.signOut.url}",
+    keepAliveUrl = s"${controllers.routes.KeepAliveController.keepAlive.url}",
+    serviceUrl = "single-customer-account"
 ) {
 
     <p class="hmrc-caption govuk-caption-xl">@messages("index.heading")</p>
     <h1 class="govuk-heading-xl" id="name">@name</h1>
-
 
 }
