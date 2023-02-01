@@ -22,6 +22,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.sca.services.WrapperService
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -31,17 +32,18 @@ class AuthController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 config: FrontendAppConfig,
                                 sessionRepository: SessionRepository,
-                                authAction: IFActionImpl
+                                wrapperService: WrapperService
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def signOut(): Action[AnyContent] = Action.async {
-    implicit request =>
+  def signOut(): Action[AnyContent] = Action.async { implicit request =>
+    wrapperService.safeSignoutUrl().flatMap { safeSignoutUrl =>
       sessionRepository
         .clear("x")
         .map {
           _ =>
-            Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl))).withNewSession
-      }
+            safeSignoutUrl.fold(BadRequest("no origin set")){ url => Redirect(url).withNewSession}
+        }
+    }
   }
 
   def signOutNoSurvey(): Action[AnyContent] = Action.async {
