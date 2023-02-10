@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,14 @@ import fixtures.SpecBase
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatest.time.Span
-import views.html.HomeView
+import uk.gov.hmrc.sca.services.WrapperService
+import views.html.{HomeView, HomeViewWrapperVersion}
 
 class HomeControllerSpec extends SpecBase {
-val timeout = Timeout(Span(1, Units))
-  lazy val homeView: HomeView = injector.instanceOf[HomeView]
-  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authActionInstance, ifActionInstance, homeView)
+  lazy val wrapperService = injector.instanceOf[WrapperService]
+
+  lazy val homeView: HomeViewWrapperVersion = injector.instanceOf[HomeViewWrapperVersion]
+  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authActionInstance, ifActionInstance, homeView, wrapperService)
 
   "HomeController" must {
     "Return the Home page" in {
