@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,19 +28,18 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.auth.core.{AuthConnector, ConfidenceLevel, CredentialStrength, Enrolments}
+import uk.gov.hmrc.sca.services.WrapperService
 
 import scala.concurrent.Future
 
 class AuthControllerSpec extends SpecBase{
 
   lazy val sessionRepositoryInstance = injector.instanceOf[SessionRepository]
-  lazy val iFActionImplInstance = injector.instanceOf[IFActionImpl]
-  lazy val controller: AuthController = new AuthController(messagesControllerComponents, frontendAppConfigInstance, sessionRepositoryInstance, iFActionImplInstance)
+  lazy val wrapperService = injector.instanceOf[WrapperService]
+  lazy val controller: AuthController = new AuthController(messagesControllerComponents, frontendAppConfigInstance, sessionRepositoryInstance, wrapperService)
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   val nino = "AA999999A"
-  def sessionClear : Future[Boolean] = Future.successful {
-    true
-  }
+
   "AuthController" must {
     "Redirect to government gateway sign-out link with correct continue url when signed in with government gateway with a continue URL" in {
 
@@ -57,7 +56,8 @@ class AuthControllerSpec extends SpecBase{
       )
 
       val result = controller.signOut()(fakeRequest)
-      redirectLocation(result).get should startWith("http://localhost:9025/gg/sign-out")
+//      redirectLocation(result).get should startWith("http://localhost:9025/gg/sign-out")
+      redirectLocation(result).get should startWith("http://localhost:9514/feedback/SCA-FE")
     }
 
     "Redirect to gg sign-in link with correct continue url when session ends" in {

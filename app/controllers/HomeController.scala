@@ -42,7 +42,15 @@ class HomeController @Inject()(
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}"}
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     wrapperService.layout(
-      content = view(name)
+      content = view(name),
+      pageTitle = None,
+      showServiceName = true,
+//      serviceNameKey = ,
+      serviceNameUrl = None,
+//      signoutUrl = ,
+//      showBackLink = ,
+      showSignOutInHeader = false,
+      showBackLink = false
     ).map { layout =>
       Ok(layout)
     }
