@@ -26,19 +26,6 @@
 )
 @(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
 
-@scaLayout(
-    pageTitle    = Some("hi"),
-    showBackLink = false,
-    //
-//    showSignOutInHeader = false,
-//    headerHomeUrl = None,
-    //
-    signoutUrl = s"${controllers.auth.routes.AuthController.signOut.url}",
-    keepAliveUrl = s"${controllers.routes.KeepAliveController.keepAlive.url}",
-    serviceUrl = "single-customer-account"
-) {
 
     <p class="hmrc-caption govuk-caption-xl">@messages("index.heading")</p>
     <h1 class="govuk-heading-xl" id="name">@name</h1>
-
-}
