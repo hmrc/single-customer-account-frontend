@@ -1,5 +1,6 @@
 service.name = Single Customer Account
 home.name = Account Home
+page.title = Single Customer Account - GOVUK
 
 ytab.title = Your taxes and benefits for the current tax year
 ytab.title.description.1 = The current tax year is 6 April 2022 to 5 April 2023.

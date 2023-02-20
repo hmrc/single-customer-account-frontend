@@ -18,7 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.{AuthAction, IFAction}
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -43,8 +43,7 @@ class HomeController @Inject()(
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     wrapperService.layout(
       content = view(name),
-      pageTitle = None,
-      showServiceName = true,
+      pageTitle = Some(Messages("page.title")),
 //      serviceNameKey = ,
       serviceNameUrl = None,
 //      signoutUrl = ,
