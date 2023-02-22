@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.sca.services.WrapperService
-import views.html.{HomeView, HomeViewWrapperVersion}
+import views.html.HomeViewWrapperVersion
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

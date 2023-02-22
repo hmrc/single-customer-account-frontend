@@ -36,23 +36,21 @@ class AuthController @Inject()(
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def signOut(): Action[AnyContent] = Action.async { implicit request =>
-    wrapperService.safeSignoutUrl().flatMap { safeSignoutUrl =>
-      sessionRepository
-        .clear("x")
-        .map {
-          _ =>
-            safeSignoutUrl.fold(BadRequest("no origin set")){ url => Redirect(url).withNewSession}
-        }
-    }
-  }
-
-  def signOutNoSurvey(): Action[AnyContent] = Action.async {
-    implicit request =>
     sessionRepository
       .clear("x")
       .map {
         _ =>
-        Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url))).withNewSession
+          wrapperService.safeSignoutUrl().fold(BadRequest("no origin set")){ url => Redirect(url).withNewSession}
       }
+  }
+
+  def signOutNoSurvey(): Action[AnyContent] = Action.async {
+    implicit request =>
+      sessionRepository
+        .clear("x")
+        .map {
+          _ =>
+            Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url))).withNewSession
+        }
   }
 }
