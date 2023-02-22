@@ -16,14 +16,11 @@
 
 @import config.FrontendAppConfig
 @import models.auth.AuthenticatedIFRequest
-@import uk.gov.hmrc.sca.views.html.ScaLayout
-@import uk.gov.hmrc.sca.views.html.PtaLayout
 @import uk.gov.hmrc.http.HeaderCarrier
+
 @import scala.concurrent.ExecutionContext
 
-@this(
-        scaLayout: ScaLayout
-)
+@this()
 @(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
 
 

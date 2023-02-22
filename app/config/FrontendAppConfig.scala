@@ -76,12 +76,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     s"$accessibilityBaseUrl/accessibility-statement$accessibilityRedirectUrl?referrerUrl=${SafeRedirectUrl(accessibilityBaseUrl + referrer).encodedUrl}"
 
   lazy private val exitSurveyServiceName = "single-customer-account-frontend"
-  lazy private val contactBaseUrl: String = configuration.get[String]("sca-wrapper.fallback.contact-frontend.url")
+  lazy private val contactBaseUrl: String = configuration.get[String]("microservice.services.contact-frontend.url")
 
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactBaseUrl/contact/beta-feedback?service=$exitSurveyServiceName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
-  lazy private val exitSurveyBaseUrl: String = configuration.get[String]("sca-wrapper.fallback.feedback-frontend.url")
+  lazy private val exitSurveyBaseUrl: String = configuration.get[String]("microservice.services.feedback-frontend.url")
   val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
   val timeout: Int = configuration.get[Int]("sca-wrapper.timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("sca-wrapper.timeout-dialog.countdown")
