@@ -49,7 +49,8 @@ class HomeController @Inject()(
 //      signoutUrl = ,
 //      showBackLink = ,
       showSignOutInHeader = false,
-      showBackLink = false
+      showBackLink = false,
+      showAlphaBanner = true
     ).map { layout =>
       Ok(layout)
     }
