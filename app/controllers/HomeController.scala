@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -50,7 +51,8 @@ class HomeController @Inject()(
 //      showBackLink = ,
       showSignOutInHeader = false,
       showBackLink = false,
-      showAlphaBanner = true
+      showAlphaBanner = true,
+      optTrustedHelper = Some(TrustedHelper("principalName", "attorneyName", "returnLinkUrl", "principalNino"))
     ).map { layout =>
       Ok(layout)
     }
