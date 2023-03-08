@@ -16,9 +16,8 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, DataRetrievalAction}
+import controllers.actions.AuthAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject

@@ -18,11 +18,9 @@ package models.integrationframework
 
 import fixtures.SpecBase
 
-import java.time.LocalDate
+class AddressSpec extends SpecBase {
 
-class AddressSpec extends SpecBase{
-
-  lazy val mockAddress : Address = mock[Address]
+  lazy val mockAddress: Address = mock[Address]
   val validAddress = new Address(Some("addressLine1"),
     Some("addressLine2"), Some("addressLine3"), Some("addressLine4"), Some("addressLine5"), Some("QW123QW"), Some(1))
 

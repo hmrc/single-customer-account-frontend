@@ -19,24 +19,18 @@ package services
 import connectors.MessageConnector
 import controllers.actions.AuthActionImpl
 import fixtures.{SpecBase, WireMockHelper}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import play.api.test.FakeRequest
-import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.play.partials.{HeaderCarrierForPartialsConverter, HtmlPartial}
-
-import scala.concurrent.Future
+import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
 class MessageServiceSpec extends SpecBase with WireMockHelper {
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val authAction = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
-  val mockMessageConnector= mock[MessageConnector]
+  val mockMessageConnector = mock[MessageConnector]
   lazy val fakeHttp = injector.instanceOf[HttpClient]
   lazy val fakeheadercarrier = injector.instanceOf[HeaderCarrierForPartialsConverter]
-  lazy val messageService: MessageService = new MessageService(fakeHttp,fakeheadercarrier,frontendAppConfigInstance,mockMessageConnector)
+  lazy val messageService: MessageService = new MessageService(fakeHttp, fakeheadercarrier, frontendAppConfigInstance, mockMessageConnector)
   val nino = "AA999999A"
 
   server.start()

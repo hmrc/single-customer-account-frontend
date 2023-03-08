@@ -18,9 +18,9 @@ package controllers
 
 import fixtures.SpecBase
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import views.html.{HomeView, TestView}
+import views.html.TestView
 
-class TestControllerSpec extends SpecBase{
+class TestControllerSpec extends SpecBase {
 
   lazy val view: TestView = injector.instanceOf[TestView]
   lazy val controller: TestController = new TestController(messagesControllerComponents, authActionInstance, ifActionInstance, view)

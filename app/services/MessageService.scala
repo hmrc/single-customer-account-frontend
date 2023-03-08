@@ -18,22 +18,20 @@ package services
 
 import config.FrontendAppConfig
 import connectors.MessageConnector
-import models.MessageCount
 import play.api.Logging
 import play.api.mvc.RequestHeader
-import play.twirl.api.Html
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.partials.{HeaderCarrierForPartialsConverter, HtmlPartial}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MessageService @Inject()(
-                                         http: HttpClient,
-                                         headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter,
-                                         servicesConfig: FrontendAppConfig,
-                                         enhancedPartialRetriever: MessageConnector
-                                       )(implicit executionContext: ExecutionContext)
+                                http: HttpClient,
+                                headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter,
+                                servicesConfig: FrontendAppConfig,
+                                enhancedPartialRetriever: MessageConnector
+                              )(implicit executionContext: ExecutionContext)
   extends Logging {
 
   lazy val messageFrontendUrl: String = servicesConfig.messageFrontendUrl
@@ -49,17 +47,17 @@ class MessageService @Inject()(
       messageFrontendUrl + "/messages/inbox-link?messagesInboxUrl=" + controllers.routes.MessageController.messageList
     )*/
 
- /* def getUnreadMessageCount(implicit request: RequestHeader): Future[Option[Int]] = {
-    val url = messageFrontendUrl + "/messages/count?read=No"
-    implicit val hc: HeaderCarrier = headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
+  /* def getUnreadMessageCount(implicit request: RequestHeader): Future[Option[Int]] = {
+     val url = messageFrontendUrl + "/messages/count?read=No"
+     implicit val hc: HeaderCarrier = headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
 
-    (for {
-      messageCount <- http.GET[Option[MessageCount]](url)
-    } yield {
-      messageCount.map(_.count)
-    }) recover { case exception =>
-      logger.error(s"Failed to load json", exception)
-      None
-    }
-  }*/
+     (for {
+       messageCount <- http.GET[Option[MessageCount]](url)
+     } yield {
+       messageCount.map(_.count)
+     }) recover { case exception =>
+       logger.error(s"Failed to load json", exception)
+       None
+     }
+   }*/
 }
