@@ -17,7 +17,6 @@
 package connectors
 
 import com.google.inject.{Inject, Singleton}
-import com.kenshoo.play.metrics.Metrics
 import config.FrontendAppConfig
 import models.integrationframework.{IFContactDetails, IfDesignatoryDetails}
 import play.api.Logging

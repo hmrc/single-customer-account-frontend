@@ -15,22 +15,21 @@
  */
 
 package controllers.action
-import controllers.routes
+
 import controllers.action.AuthActionSpec.{Harness, authRetrievals, emptyAuthRetrievals, erroneousRetrievals, fakeAuthConnector}
 import controllers.actions.{AuthAction, AuthActionImpl}
 import fixtures.RetrievalOps.Ops
 import fixtures.SpecBase
-import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.OK
-import play.api.mvc.{Action, AnyContent, BaseController, BodyParsers, MessagesControllerComponents}
+import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
-import uk.gov.hmrc.auth.core.{AuthConnector, BearerTokenExpired, ConfidenceLevel, CredentialStrength, Enrolment, EnrolmentIdentifier, Enrolments, MissingBearerToken, UnsupportedAffinityGroup, UnsupportedCredentialRole}
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, Retrieval, ~}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,58 +37,59 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionSpec extends SpecBase with BeforeAndAfterEach
   with MockitoSugar {
 
-    "the user has valid credentials" must {
-      "return OK" in {
-        val authAction = new AuthActionImpl(fakeAuthConnector(authRetrievals), frontendAppConfigInstance,AuthActionSpec.parser)
-        val controller = new Harness(authAction)
+  "the user has valid credentials" must {
+    "return OK" in {
+      val authAction = new AuthActionImpl(fakeAuthConnector(authRetrievals), frontendAppConfigInstance, AuthActionSpec.parser)
+      val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(fakeRequest)
-        status(result) mustBe OK
-      }
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe OK
     }
-    "the user does not have valid enrolments" must {
-      "redirect to unauthorised" in {
-        val authAction = new AuthActionImpl(fakeAuthConnector(emptyAuthRetrievals),frontendAppConfigInstance,AuthActionSpec.parser)
-        val controller = new Harness(authAction)
+  }
+  "the user does not have valid enrolments" must {
+    "redirect to unauthorised" in {
+      val authAction = new AuthActionImpl(fakeAuthConnector(emptyAuthRetrievals), frontendAppConfigInstance, AuthActionSpec.parser)
+      val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(fakeRequest)
-        status(result) mustBe SEE_OTHER
-      }
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe SEE_OTHER
     }
-    "the user does not have valid id" must {
-      "redirect to unauthorised" in {
-        val authAction = new AuthActionImpl(fakeAuthConnector(erroneousRetrievals), frontendAppConfigInstance,AuthActionSpec.parser)
-        val controller = new Harness(authAction)
+  }
+  "the user does not have valid id" must {
+    "redirect to unauthorised" in {
+      val authAction = new AuthActionImpl(fakeAuthConnector(erroneousRetrievals), frontendAppConfigInstance, AuthActionSpec.parser)
+      val controller = new Harness(authAction)
 
-        val result = controller.onPageLoad()(fakeRequest)
-        status(result) mustBe SEE_OTHER
-      }
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe SEE_OTHER
     }
+  }
 
-    "the user hasn't logged in" must {
-      "redirect the user to log in " in {
-        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new MissingBearerToken)), frontendAppConfigInstance,AuthActionSpec.parser)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(frontendAppConfigInstance.loginUrl)
-      }
+  "the user hasn't logged in" must {
+    "redirect the user to log in " in {
+      val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new MissingBearerToken)), frontendAppConfigInstance, AuthActionSpec.parser)
+      val controller = new Harness(authAction)
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get must startWith(frontendAppConfigInstance.loginUrl)
     }
+  }
 
-    "the user's session has expired" must {
-      "redirect the user to log in " in {
-        val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new BearerTokenExpired)), frontendAppConfigInstance,AuthActionSpec.parser)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(frontendAppConfigInstance.loginUrl)
-      }
+  "the user's session has expired" must {
+    "redirect the user to log in " in {
+      val authAction = new AuthActionImpl(fakeAuthConnector(Future.failed(new BearerTokenExpired)), frontendAppConfigInstance, AuthActionSpec.parser)
+      val controller = new Harness(authAction)
+      val result = controller.onPageLoad()(fakeRequest)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get must startWith(frontendAppConfigInstance.loginUrl)
     }
+  }
 }
 
 object AuthActionSpec extends SpecBase with MockitoSugar {
 
   val nino = "AA999999A"
+
   private def fakeAuthConnector(stubbedRetrievalResult: Future[_]): AuthConnector =
     new AuthConnector {
       def authorise[A](predicate: Predicate, retrieval: Retrieval[A])
@@ -106,21 +106,21 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
 
 
   val authRetrievals = Future.successful(
-      Some(nino) ~
-        Individual ~
-        Enrolments(fakeSaEnrolments("11111111", "Activated")) ~
-        Some(Credentials("id", "type")) ~
-        Some(CredentialStrength.strong) ~
-        ConfidenceLevel.L200 ~
-        Some(Name(Some("chaz"), Some("dingle"))) ~
-        Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
-        Some("profileUrl"))
+    Some(nino) ~
+      Individual ~
+      Enrolments(fakeSaEnrolments("11111111", "Activated")) ~
+      Some(Credentials("id", "type")) ~
+      Some(CredentialStrength.strong) ~
+      ConfidenceLevel.L200 ~
+      Some(Name(Some("chaz"), Some("dingle"))) ~
+      Some(TrustedHelper("name", "name", "link", "AA999999A")) ~
+      Some("profileUrl"))
 
   private def emptyAuthRetrievals: Future[Some[String] ~ Enrolments] =
-    Future.successful(new ~(Some("id"), Enrolments(Set())))
+    Future.successful(new~(Some("id"), Enrolments(Set())))
 
   private def erroneousRetrievals: Future[None.type ~ Enrolments] =
-    Future.successful(new ~(None, Enrolments(Set())))
+    Future.successful(new~(None, Enrolments(Set())))
 
   class Harness(
                  authAction: AuthAction,

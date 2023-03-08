@@ -16,25 +16,16 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.{ok, urlEqualTo}
 import controllers.actions.AuthActionImpl
-import fixtures.RetrievalOps.Ops
 import fixtures.{SpecBase, WireMockHelper}
-import models.integrationframework.{IFContactDetail, IFContactDetails, IfAddress, IfAddressList, IfDesignatoryDetails, IfDetails, IfName, IfNameList}
 import play.api.libs.ws.WSClient
-import play.api.test.Helpers.running
-import uk.gov.hmrc.auth.core.{AuthConnector, ConfidenceLevel, CredentialStrength, Enrolments}
-import uk.gov.hmrc.domain.Nino
-
-import java.time.LocalDate
-import scala.concurrent.Future
+import uk.gov.hmrc.auth.core.AuthConnector
 
 class IfConnectorSpec extends SpecBase with WireMockHelper {
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val authAction = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
-  lazy val connector : IFConnector = new IFConnector(injector.instanceOf[WSClient],frontendAppConfigInstance)
+  lazy val connector: IFConnector = new IFConnector(injector.instanceOf[WSClient], frontendAppConfigInstance)
   server.start()
 
 
@@ -98,29 +89,29 @@ class IfConnectorSpec extends SpecBase with WireMockHelper {
   }*/
 
 
-/* "calling If connector getContactsDetails" must {
-    "return IfContactDetails when response can be parsed" in {
-      Thread.sleep(3000)
-      val url = "http://localhost:8421/individuals/details/contact/nino/AA999999A?fields=contactDetails(code,type,detail)"
-      println(url)
-      running(app) {
-        val contactDetails = Some(IFContactDetails(
-          contactDetails = Some(Seq(
-            IFContactDetail(code = 9, contactType = "MOBILE TELEPHONE", detail = "07123 987654"),
-            IFContactDetail(code = 7, contactType = "DAYTIME TELEPHONE", detail = "07123 987654"),
-            IFContactDetail(code = 8, contactType = "EVENING TELEPHONE", detail = "07123 987654"),
-            IFContactDetail(code = 11, contactType = "PRIMARY E-MAIL", detail = "fred.blogs@hotmail.com")
-          ))))
-      server.stubFor(
-        WireMock.get(urlEqualTo(url))
-          .willReturn(ok(contactDetails.toString))
-      )
+  /* "calling If connector getContactsDetails" must {
+      "return IfContactDetails when response can be parsed" in {
         Thread.sleep(3000)
-        /*whenReady((connector.getContactDetails(Some(Nino(nino))))){
-          res => res.get.contactDetails mustEqual contactDetails
-        }*/
-      connector.getContactDetails(Some(Nino(nino))).futureValue mustEqual contactDetails
+        val url = "http://localhost:8421/individuals/details/contact/nino/AA999999A?fields=contactDetails(code,type,detail)"
+        println(url)
+        running(app) {
+          val contactDetails = Some(IFContactDetails(
+            contactDetails = Some(Seq(
+              IFContactDetail(code = 9, contactType = "MOBILE TELEPHONE", detail = "07123 987654"),
+              IFContactDetail(code = 7, contactType = "DAYTIME TELEPHONE", detail = "07123 987654"),
+              IFContactDetail(code = 8, contactType = "EVENING TELEPHONE", detail = "07123 987654"),
+              IFContactDetail(code = 11, contactType = "PRIMARY E-MAIL", detail = "fred.blogs@hotmail.com")
+            ))))
+        server.stubFor(
+          WireMock.get(urlEqualTo(url))
+            .willReturn(ok(contactDetails.toString))
+        )
+          Thread.sleep(3000)
+          /*whenReady((connector.getContactDetails(Some(Nino(nino))))){
+            res => res.get.contactDetails mustEqual contactDetails
+          }*/
+        connector.getContactDetails(Some(Nino(nino))).futureValue mustEqual contactDetails
+      }
     }
-  }
-}*/
+  }*/
 }

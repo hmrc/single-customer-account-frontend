@@ -19,10 +19,9 @@ package controllers
 import controllers.actions.AuthActionImpl
 import fixtures.RetrievalOps._
 import fixtures.SpecBase
-import org.mockito.ArgumentMatchers.{any, endsWith}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
@@ -43,10 +42,10 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
 
   "YourTaxesAndBenefitsController" must {
     "Return the Tax and Benefit Page" in {
-      when(mockAuthConnector.authorise[AuthRetrievals](any(),any())(any(), any())) thenReturn Future.successful(
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(
         Some(nino) ~
           Individual ~
-          Enrolments(fakeSaEnrolments("11111111","Activated")) ~
+          Enrolments(fakeSaEnrolments("11111111", "Activated")) ~
           Some(Credentials("id", "type")) ~
           Some(CredentialStrength.strong) ~
           ConfidenceLevel.L200 ~
@@ -65,7 +64,7 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
     }
 
     "Return the Unauthorised Page given weak credentials" in {
-      when(mockAuthConnector.authorise[AuthRetrievals](any(),any())(any(), any())) thenReturn Future.successful(
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(
 
         Some(nino) ~
           Individual ~
@@ -102,7 +101,7 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
 
       val result = controller.onPageLoad(FakeRequest().withSession("sessionId" -> "FAKE_SESSION_ID"))
 
-      contentAsString(result) should not include("Self Assessment")
+      contentAsString(result) should not include ("Self Assessment")
       whenReady(result) { res =>
         res.header.status shouldBe 200
       }
@@ -113,7 +112,7 @@ class YourTaxesAndBenefitsControllerSpec extends SpecBase {
 
         Some(nino) ~
           Individual ~
-          Enrolments(fakeSaEnrolments("11111111","NotYetActivated")) ~
+          Enrolments(fakeSaEnrolments("11111111", "NotYetActivated")) ~
           Some(Credentials("id", "type")) ~
           Some(CredentialStrength.strong) ~
           ConfidenceLevel.L200 ~

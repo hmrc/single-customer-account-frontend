@@ -16,23 +16,22 @@
 
 package controllers.auth
 
-import controllers.actions.IFActionImpl
 import fixtures.RetrievalOps.Ops
 import fixtures.SpecBase
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation}
 import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 import uk.gov.hmrc.auth.core.{AuthConnector, ConfidenceLevel, CredentialStrength, Enrolments}
 import uk.gov.hmrc.sca.services.WrapperService
 
 import scala.concurrent.Future
 
-class AuthControllerSpec extends SpecBase{
+class AuthControllerSpec extends SpecBase {
 
   lazy val sessionRepositoryInstance = injector.instanceOf[SessionRepository]
   lazy val wrapperService = injector.instanceOf[WrapperService]
@@ -56,7 +55,7 @@ class AuthControllerSpec extends SpecBase{
       )
 
       val result = controller.signOut()(fakeRequest)
-//      redirectLocation(result).get should startWith("http://localhost:9025/gg/sign-out")
+      //      redirectLocation(result).get should startWith("http://localhost:9025/gg/sign-out")
       redirectLocation(result).get should startWith("http://localhost:9514/feedback/SCA-FE")
     }
 
