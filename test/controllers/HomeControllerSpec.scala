@@ -17,11 +17,9 @@
 package controllers
 
 import fixtures.SpecBase
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import org.scalatest.time.Span
 import uk.gov.hmrc.sca.services.WrapperService
-import views.html.{HomeView, HomeViewWrapperVersion}
+import views.html.HomeViewWrapperVersion
 
 class HomeControllerSpec extends SpecBase {
   lazy val wrapperService = injector.instanceOf[WrapperService]

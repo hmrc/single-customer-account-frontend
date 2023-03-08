@@ -18,8 +18,7 @@ package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import connectors.IFConnector
-import models.auth.{AuthenticatedIFRequest, AuthenticatedRequest, IFData}
+import models.auth.{AuthenticatedIFRequest, AuthenticatedRequest}
 import play.api.mvc._
 import services.IFService
 import uk.gov.hmrc.http.HeaderCarrier

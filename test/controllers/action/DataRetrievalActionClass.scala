@@ -16,25 +16,23 @@
 
 package controllers.action
 
-import controllers.actions.{DataRetrievalAction, DataRetrievalActionImpl}
+import controllers.actions.DataRetrievalActionImpl
 import fixtures.SpecBase
 import models.auth.SessionRequest
 import models.session.{OptionalDataRequest, Session}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.test.FakeRequest
 import repositories.SessionRepository
 
 import java.time.LocalDateTime
-import java.util.UUID
 import scala.concurrent.Future
 
-class DataRetrievalActionClass extends SpecBase{
+class DataRetrievalActionClass extends SpecBase {
 
 
   class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
     def callTransform[A](request: SessionRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
+
   private val session = Session("id", LocalDateTime.now(), Some("abc"))
   "calling data retrieval from session repository" must {
 
@@ -48,7 +46,7 @@ class DataRetrievalActionClass extends SpecBase{
       whenReady(result) { result =>
         result.cache.isDefined mustBe true
       }
-     // result.session.get("id") must not be defined
+      // result.session.get("id") must not be defined
     }
   }
 
