@@ -40,7 +40,6 @@ class HomeController @Inject()(
   extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails).async { implicit request =>
-    val requestWithTrustedHelper = request.copy(authenticatedRequest = request.authenticatedRequest.copy(trustedHelper = Some(TrustedHelper("principalName", "attorneyName", "returnLinkUrl", "principalNino"))))
     val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     wrapperService.layout(
@@ -53,7 +52,7 @@ class HomeController @Inject()(
       showSignOutInHeader = false,
       showBackLink = false,
       showAlphaBanner = true,
-      optTrustedHelper = requestWithTrustedHelper.authenticatedRequest.trustedHelper
+      optTrustedHelper = request.authenticatedRequest.trustedHelper
     ).map { layout =>
       Ok(layout)
     }
