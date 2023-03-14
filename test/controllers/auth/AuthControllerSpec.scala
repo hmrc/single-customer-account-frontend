@@ -22,7 +22,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation}
-import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
@@ -33,9 +32,8 @@ import scala.concurrent.Future
 
 class AuthControllerSpec extends SpecBase {
 
-  lazy val sessionRepositoryInstance = injector.instanceOf[SessionRepository]
   lazy val wrapperService = injector.instanceOf[WrapperService]
-  lazy val controller: AuthController = new AuthController(messagesControllerComponents, frontendAppConfigInstance, sessionRepositoryInstance, wrapperService)
+  lazy val controller: AuthController = new AuthController(messagesControllerComponents, frontendAppConfigInstance, wrapperService)
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   val nino = "AA999999A"
 

@@ -58,9 +58,6 @@ trait ButtonFluency {
     def disabled(): Button =
       button copy (disabled = true)
 
-    def preventingDoubleClick(): Button =
-      button copy (preventDoubleClick = true)
-
     def asStartButton(): Button =
       button copy (isStartButton = true)
 
