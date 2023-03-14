@@ -49,7 +49,7 @@ class HomeController @Inject()(
       //      signoutUrl = ,
       //      showBackLink = ,
       showSignOutInHeader = false,
-      showBackLink = true,
+      showBackLink = false,
       showAlphaBanner = true,
       optTrustedHelper = request.authenticatedRequest.trustedHelper
     ).map { layout =>
