@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration) {
 
-  val host: String    = configuration.get[String]("host")
+  val host: String    = configuration.get[String]("sca-wrapper.host")
   val appName: String = configuration.get[String]("appName")
   val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
