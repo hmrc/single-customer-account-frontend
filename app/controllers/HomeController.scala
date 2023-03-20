@@ -44,13 +44,9 @@ class HomeController @Inject()(
     wrapperService.layout(
       content = view(name),
       pageTitle = Some(Messages("page.title")),
-      //      serviceNameKey = ,
       serviceNameUrl = None,
-      //      signoutUrl = ,
-      //      showBackLink = ,
       showSignOutInHeader = false,
       showBackLink = false,
-      showAlphaBanner = true,
       optTrustedHelper = request.authenticatedRequest.trustedHelper
     ).map { layout =>
       Ok(layout)
