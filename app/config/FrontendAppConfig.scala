@@ -27,7 +27,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val host: String    = configuration.get[String]("sca-wrapper.host")
   val appName: String = configuration.get[String]("appName")
-  val cacheTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
   val integrationFrameworkUrl: String = configuration.get[String]("microservice.services.integration-framework.url")
   val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
