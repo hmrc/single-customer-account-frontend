@@ -43,30 +43,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
 
-  val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("features.welsh-translation")
-
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),
     "cy" -> Lang("cy")
   )
-
-
-
-//  lazy private val accessibilityBaseUrl: String = configuration.get[String]("accessibility-statement.baseUrl")
-//  lazy private val accessibilityRedirectUrl = configuration.get[String]("accessibility-statement.redirectUrl")
-//  def accessibilityStatementUrl(referrer: String) =
-//    s"$accessibilityBaseUrl/accessibility-statement$accessibilityRedirectUrl?referrerUrl=${SafeRedirectUrl(accessibilityBaseUrl + referrer).encodedUrl}"
-//  lazy private val exitSurveyServiceName = "single-customer-account-frontend"
-//  lazy private val contactBaseUrl: String = configuration.get[String]("microservice.services.contact-frontend.url")
-//  def feedbackUrl(implicit request: RequestHeader): String =
-//    s"$contactBaseUrl/contact/beta-feedback?service=$exitSurveyServiceName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
-//  lazy private val exitSurveyBaseUrl: String = configuration.get[String]("microservice.services.feedback-frontend.url")
-//  val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/single-customer-account-frontend"
-//  val timeout: Int = configuration.get[Int]("timeout-dialog.timeout")
-//  val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
-
-
 
   lazy private val accessibilityBaseUrl: String = configuration.get[String]("sca-wrapper.accessibility-statement.baseUrl")
   lazy private val accessibilityRedirectUrl = configuration.get[String]("sca-wrapper.accessibility-statement.redirectUrl")
