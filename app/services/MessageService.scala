@@ -20,15 +20,12 @@ import config.FrontendAppConfig
 import connectors.MessageConnector
 import play.api.Logging
 import play.api.mvc.RequestHeader
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.play.partials.{HeaderCarrierForPartialsConverter, HtmlPartial}
+import uk.gov.hmrc.play.partials.HtmlPartial
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MessageService @Inject()(
-                                http: HttpClient,
-                                headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter,
                                 servicesConfig: FrontendAppConfig,
                                 enhancedPartialRetriever: MessageConnector
                               )(implicit executionContext: ExecutionContext)
