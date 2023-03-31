@@ -97,7 +97,7 @@ class IFConnector @Inject()(
             None
         }.recover {
           case ex: Exception =>
-            logger.info(s"[IFConnector][getContactDetails] exception: ${ex.getMessage}")
+            logger.error(s"[IFConnector][getContactDetails] exception: ${ex.getMessage}")
             None
         }
       }
