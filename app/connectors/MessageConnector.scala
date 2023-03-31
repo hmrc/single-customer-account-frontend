@@ -32,17 +32,17 @@ class MessageConnector @Inject()(
 
   def loadPartial(url: String)(implicit request: RequestHeader, ec: ExecutionContext): Future[HtmlPartial] = {
     implicit val hc: HeaderCarrier = headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
-
     http.GET[HtmlPartial](url) map {
-      case partial: HtmlPartial.Success => partial
-      case partial: HtmlPartial.Failure =>
-        logger.error(s"Failed to load partial from $url, partial info: $partial")
+      case partial: HtmlPartial.Success => logger.info(s"[MessageConnector][loadPartial] partial successfully loaded")
         partial
-    } recover { case exception => logger.error(s"Failed to load partial from $url", exception)
-      exception match {
-        case ex: HttpException => HtmlPartial.Failure(Some(ex.responseCode))
-        case _ => HtmlPartial.Failure(None)
-      }
+      case partial: HtmlPartial.Failure =>
+        logger.error(s"[MessageConnector][loadPartial] Failed to load partial from $url, partial info: $partial")
+        partial
+    } recover {
+        case ex: HttpException => logger.error(s"[MessageConnector][loadPartial] Failed to load partial from $url, error: ${ex.getMessage}")
+          HtmlPartial.Failure(Some(ex.responseCode))
+        case ex@_ => logger.error(s"[MessageConnector][loadPartial] Unknown error: ${ex.getMessage}")
+          HtmlPartial.Failure(None)
     }
   }
 }

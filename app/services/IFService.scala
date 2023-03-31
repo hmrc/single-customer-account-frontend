@@ -30,12 +30,11 @@ class IFService @Inject()(connector: IFConnector)(implicit ec: ExecutionContext)
   // TODO: Check assumption behind name logic
   private def getName(designatoryDetails: IfDesignatoryDetails): Option[IfName] = {
     val realKnownAsNames: (Seq[IfName], Seq[IfName]) = designatoryDetails.nameList.name.partition(_.nameType.contains(1))
-
-    val name: Option[IfName] = if (realKnownAsNames._1.nonEmpty)
+    val name: Option[IfName] = if (realKnownAsNames._1.nonEmpty) {
       realKnownAsNames._1.sortBy(_.nameSequenceNumber).takeRight(1).headOption
-    else
+    } else {
       realKnownAsNames._2.sortBy(_.nameSequenceNumber).takeRight(1).headOption
-
+    }
     name
   }
 
@@ -53,8 +52,10 @@ class IFService @Inject()(connector: IFConnector)(implicit ec: ExecutionContext)
   // TODO: Check assumption of email and phone number orderings
 
   private def getContactDetails(contactDetails: IFContactDetails): Option[ContactDetails] = {
-    val emailAddress: Option[String] = contactDetails.contactDetails.flatMap(_.filter(_.contactType.contains("E-MAIL")).sortBy(_.code).headOption).map(_.detail)
-    val phoneNumber: Option[String] = contactDetails.contactDetails.flatMap(_.filter(_.contactType.contains("TELEPHONE")).sortBy(_.code).headOption).map(_.detail)
+    val emailAddress: Option[String] = contactDetails.contactDetails.flatMap(
+      _.filter(_.contactType.contains("E-MAIL")).sortBy(_.code).headOption).map(_.detail)
+    val phoneNumber: Option[String] = contactDetails.contactDetails.flatMap(
+      _.filter(_.contactType.contains("TELEPHONE")).sortBy(_.code).headOption).map(_.detail)
 
     (emailAddress, phoneNumber) match {
       case (None, None) => None

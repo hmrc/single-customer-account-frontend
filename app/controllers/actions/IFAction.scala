@@ -17,8 +17,8 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import config.FrontendAppConfig
 import models.auth.{AuthenticatedIFRequest, AuthenticatedRequest}
+import play.api.Logging
 import play.api.mvc._
 import services.IFService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,16 +28,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IFActionImpl @Inject()(
                               val ifService: IFService,
-                              appConfig: FrontendAppConfig,
                               val parser: BodyParsers.Default)
-                            (implicit val executionContext: ExecutionContext) extends IFAction {
+                            (implicit val executionContext: ExecutionContext) extends IFAction with Logging {
 
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[AuthenticatedIFRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     ifService.getPersonalDetails(request.nino).map { res =>
+      logger.info(s"[IFActionImpl][transform] Successful IF Action request")
       AuthenticatedIFRequest[A](request, res)
     }.recoverWith {
-      case ex: Exception => Future.failed(ex)
+      case ex: Exception =>
+        logger.error(s"[IFActionImpl][transform] exception: ${ex.getMessage}")
+        Future.failed(ex)
     }
   }
 }

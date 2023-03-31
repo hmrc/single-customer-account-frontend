@@ -51,18 +51,28 @@ class IFConnector @Inject()(
 
   def getDesignatoryDetails(nino: Option[Nino])(implicit hc: HeaderCarrier): Future[Option[IfDesignatoryDetails]] = {
     nino match {
-      case None => Future.successful(None)
+      case None => logger.info("[IFConnector][getDesignatoryDetails] No NINO supplied, defaulting to None")
+        Future.successful(None)
       case Some(ninoString) => {
         val headers = setHeaders ++ Seq(("OriginatorId", "DA2_BS_UNATTENDED"))
         wsClient.url(s"${appConfig.integrationFrameworkUrl}/individuals/details/NINO/${ninoString.nino}?fields=$designatoryDetailsFields")
           .withHttpHeaders(headers: _*)
           .get().map {
-            case response if response.status >= OK && response.status < 300 => response.json.asOpt[IfDesignatoryDetails]
-            case response if response.status == LOCKED => None //personal details record hidden
-            case response if response.status == NOT_FOUND => None
-            case response => None
+            case response if response.status >= OK && response.status < 300 =>
+              logger.info(s"[IFConnector][getDesignatoryDetails] IF successful response code: ${response.status}")
+              response.json.asOpt[IfDesignatoryDetails]
+            case response if response.status == LOCKED =>
+              logger.info("[IFConnector][getDesignatoryDetails] IF returned code 423 LOCKED, personal details record hidden")
+              None
+            case response if response.status == NOT_FOUND =>
+              logger.info("[IFConnector][getDesignatoryDetails] IF returned code 404 NOT FOUND")
+              None
+            case response => logger.warn(s"[IFConnector][getDesignatoryDetails] IF returned unknown code: ${response.status}")
+              None
         }.recover {
-          case ex: Exception => None
+          case ex: Exception =>
+            logger.error(s"[IFConnector][getDesignatoryDetails] exception: ${ex.getMessage}")
+            None
         }
       }
     }
@@ -70,16 +80,25 @@ class IFConnector @Inject()(
 
   def getContactDetails(nino: Option[Nino]): Future[Option[IFContactDetails]] = {
     nino match {
-      case None => Future.successful(None)
+      case None => logger.info("[IFConnector][getContactDetails] No NINO supplied, defaulting to None")
+        Future.successful(None)
       case Some(ninoString) => {
         wsClient.url(s"${appConfig.integrationFrameworkUrl}/individuals/details/contact/nino/${ninoString.nino}?fields=$contactDetailsFields")
           .withHttpHeaders(setHeaders: _*)
           .get().map {
-          case response if response.status >= OK && response.status < 300 => response.json.asOpt[IFContactDetails]
-          case response if response.status == NOT_FOUND => None
-          case response => None
+          case response if response.status >= OK && response.status < 300 =>
+            logger.info(s"[IFConnector][getContactDetails] IF successful response code: ${response.status}")
+            response.json.asOpt[IFContactDetails]
+          case response if response.status == NOT_FOUND =>
+            logger.info("[IFConnector][getContactDetails] IF returned code 404 NOT FOUND")
+            None
+          case response =>
+            logger.warn(s"[IFConnector][getContactDetails] IF returned unknown code: ${response.status}")
+            None
         }.recover {
-          case ex: Exception => None
+          case ex: Exception =>
+            logger.error(s"[IFConnector][getContactDetails] exception: ${ex.getMessage}")
+            None
         }
       }
     }

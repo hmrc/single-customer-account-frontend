@@ -81,12 +81,14 @@ class AuthActionImpl @Inject()(
           enrolments,
           trimmedRequest
         )
+        logger.info(s"[AuthActionImpl][invokeBlock] Successful Auth request")
         block(authenticatedRequest)
-      case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+      case _ => logger.info(s"[AuthActionImpl][invokeBlock] Unauthorised request")
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
     }
   }.recover {
     case authException =>
-      logger.error(authException.getMessage)
+      logger.error(s"[AuthActionImpl][invokeBlock] exception: ${authException.getMessage}")
       Redirect(
       appConfig.loginUrl,
       Map("continue" -> Seq(appConfig.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))
