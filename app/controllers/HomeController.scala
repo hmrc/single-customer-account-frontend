@@ -47,6 +47,7 @@ class HomeController @Inject()(
       serviceNameUrl = None,
       showSignOutInHeader = false,
       showBackLink = false,
+      hideMenuBar = false,
       optTrustedHelper = request.authenticatedRequest.trustedHelper
     ).map { layout =>
       Ok(layout)
