@@ -30,7 +30,7 @@ class MessageServiceSpec extends SpecBase with WireMockHelper {
   val mockMessageConnector = mock[MessageConnector]
   lazy val fakeHttp = injector.instanceOf[HttpClient]
   lazy val fakeheadercarrier = injector.instanceOf[HeaderCarrierForPartialsConverter]
-  lazy val messageService: MessageService = new MessageService(fakeHttp, fakeheadercarrier, frontendAppConfigInstance, mockMessageConnector)
+  lazy val messageService: MessageService = new MessageService(frontendAppConfigInstance, mockMessageConnector)
   val nino = "AA999999A"
 
   server.start()
