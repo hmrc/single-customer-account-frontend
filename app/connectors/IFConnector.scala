@@ -67,7 +67,7 @@ class IFConnector @Inject()(
             case response if response.status == NOT_FOUND =>
               logger.info("[IFConnector][getDesignatoryDetails] IF returned code 404 NOT FOUND")
               None
-            case response => logger.error(s"[IFConnector][getDesignatoryDetails] IF returned unknown code: ${response.status}")
+            case response => logger.warn(s"[IFConnector][getDesignatoryDetails] IF returned unknown code: ${response.status}")
               None
         }.recover {
           case ex: Exception =>
@@ -93,7 +93,7 @@ class IFConnector @Inject()(
             logger.info("[IFConnector][getContactDetails] IF returned code 404 NOT FOUND")
             None
           case response =>
-            logger.error(s"[IFConnector][getContactDetails] IF returned unknown code: ${response.status}")
+            logger.warn(s"[IFConnector][getContactDetails] IF returned unknown code: ${response.status}")
             None
         }.recover {
           case ex: Exception =>
