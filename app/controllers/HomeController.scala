@@ -46,8 +46,6 @@ class HomeController @Inject()(
       pageTitle = Some(Messages("page.title")),
       serviceNameUrl = None,
       showSignOutInHeader = false,
-      showBackLinkJS = false,
-      // backLinkUrl = Some("kritika"),
       hideMenuBar = false,
       optTrustedHelper = request.authenticatedRequest.trustedHelper
     ).map { layout =>
