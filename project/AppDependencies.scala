@@ -9,7 +9,7 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.12.0-play-28",
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "7.14.0",
 //    "uk.gov.hmrc"       %% "sca-wrapper"                    % "1.0.0-SNAPSHOT"
-    "uk.gov.hmrc"       %% "sca-wrapper"                    % "1.0.20"
+    "uk.gov.hmrc"       %% "sca-wrapper"                    % "1.0.22"
   )
 
   val test = Seq(
