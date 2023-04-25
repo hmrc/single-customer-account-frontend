@@ -48,8 +48,8 @@ class HomeController @Inject()(
       serviceNameUrl = None,
       showSignOutInHeader = false,
       hideMenuBar = false,
-      showBackLinkJS = true,
-      optTrustedHelper = Some(TrustedHelper("Kritika Rai": String, "kritika": String, "link": String, "AA33003B": String))
+     // showBackLinkJS = true,
+      optTrustedHelper = request.authenticatedRequest.trustedHelper
     ).map { layout =>
       Ok(layout)
     }
