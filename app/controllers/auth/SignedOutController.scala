@@ -33,6 +33,6 @@ class SignedOutController @Inject()(
   }
 
   def onTimeOut: Action[AnyContent] = Action { implicit request =>
-    Ok(timeOutView())
+    Ok(timeOutView()).withNewSession
   }
 }
