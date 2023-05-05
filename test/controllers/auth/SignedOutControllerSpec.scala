@@ -18,12 +18,13 @@ package controllers.auth
 
 import fixtures.SpecBase
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import views.html.auth.SignedOutView
+import views.html.auth.{SignedOutView, TimeOutView}
 
 class SignedOutControllerSpec extends SpecBase{
 
   lazy val view: SignedOutView = injector.instanceOf[SignedOutView]
-  lazy val controller: SignedOutController = new SignedOutController(messagesControllerComponents, view)
+  lazy val timeOutview: TimeOutView = injector.instanceOf[TimeOutView]
+  lazy val controller: SignedOutController = new SignedOutController(messagesControllerComponents, view, timeOutview)
 
   "SignedOutController" must {
     "Return the signed out page" in {
