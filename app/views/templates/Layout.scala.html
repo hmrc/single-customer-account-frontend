@@ -45,7 +45,7 @@
                 countdown           = Some(appConfig.countdown),
                 keepAliveUrl        = Some(routes.KeepAliveController.keepAlive.url),
                 keepAliveButtonText = Some(messages("timeout.keepAlive")),
-                signOutUrl          = Some(controllers.auth.routes.AuthController.signOut.url),
+                signOutUrl          = Some(controllers.auth.routes.SignedOutController.onTimeOut.url),
                 timeoutUrl          = Some(controllers.auth.routes.SignedOutController.onTimeOut.url),
                 signOutButtonText   = Some(messages("timeout.signOut")),
                 title               = Some(messages("timeout.title")),
@@ -67,6 +67,7 @@
     }
 
 @defining(request.uri) { uri =>
+        <p>hhhhhhhhhh</p>
     <div class="govuk-width-container">
             <!-- ACCOUNT MENU -->
         <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
