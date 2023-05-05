@@ -21,7 +21,7 @@
 @import scala.concurrent.ExecutionContext
 
 @this()
-@(date: String, desc: String)(implicit request: AuthenticatedCapabilityRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
+@(date: String, desc: String, url: String)(implicit request: AuthenticatedCapabilityRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
 
 <p class="govuk-heading-xl" id="date">@date</p>
-<a class="govuk-heading-xl" id="desc">@desc</a>
+<a href="@url" class="govuk-heading-xl" id="desc">@desc</a>

@@ -17,7 +17,7 @@
 package controllers
 
 
-import akka.actor.TypedActor.dispatcher
+
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.{AuthAction, CapabilityAction}
@@ -25,6 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CapabilityDetailsView
+import scala.concurrent.ExecutionContext
 
 class CapabilityDetailsController @Inject()(
                                              val controllerComponents: MessagesControllerComponents,
@@ -32,19 +33,16 @@ class CapabilityDetailsController @Inject()(
                                              getCapabilityDetails: CapabilityAction,
                                              config: FrontendAppConfig,
                                              view: CapabilityDetailsView
-                                           )(implicit frontendAppConfig: FrontendAppConfig) extends FrontendBaseController with I18nSupport  {
-
-//  private val endpoint = s"${config.capabilitiesDataBaseUrl}/single-customer-account-stub/individuals/details/NINO/%s"
+                                           )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport  {
 
   def getCapabilitiesData: Action[AnyContent] = (authenticate andThen getCapabilityDetails) { implicit request =>
 
     val date = request.ifCapabilitiesData.date
     val desc = request.ifCapabilitiesData.descriptionContent
-    println(s"date: $date")
-    println(s"desc: $desc")
-    println(request)
+    val url = request.ifCapabilitiesData.url
 
-    Ok(view(date, desc))
+    Ok(view(date, desc, url))
+
   }
 
 

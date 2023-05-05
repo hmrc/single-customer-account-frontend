@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import models.integrationframework.{IFContactDetails, IfCapabilityDetails}
+import models.integrationframework.IfCapabilityDetails
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.ws.WSClient
@@ -48,7 +48,7 @@ class CapabilityConnector @Inject()(
       case None => logger.info("[CapabilityConnector][getCapabilityDetails] No NINO supplied, defaulting to None")
         Future.successful(None)
       case Some(ninoString) => {
-        wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-stub/individuals/details/capability/NINO/${ninoString.nino}?fields=$capabilityDetailsFields")
+        wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-stub/individuals/details/NINO/${ninoString.nino}?fields=$capabilityDetailsFields")
           .withHttpHeaders(setHeaders: _*)
           .get().map {
           case response if response.status >= OK && response.status < 300 =>
