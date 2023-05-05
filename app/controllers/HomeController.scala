@@ -45,7 +45,7 @@ class HomeController @Inject()(
     wrapperService.layout(
       content = view(name),
       pageTitle = Some(Messages("page.title")),
-      serviceNameUrl = None,
+      serviceNameUrl = Some(controllers.HomeController.onPageLoad),
       showSignOutInHeader = false,
       hideMenuBar = false,
      // showBackLinkJS = true,
