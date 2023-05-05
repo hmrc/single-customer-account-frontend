@@ -37,6 +37,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val niRecordUrl : String = s"$nispBaseUrl/check-your-state-pension/account/nirecord"
   val spSummaryUrl : String = s"$nispBaseUrl/check-your-state-pension/account"
   private val selfAssessmentBaseUrl: String = configuration.get[String]("microservice.services.self-assessment.url")
+  val capabilitiesDataBaseUrl: String = baseUrl(serviceName = "capabilitiesData")
   def selfAssessmentLink(utr: String): String = s"$selfAssessmentBaseUrl/self-assessment/ind/$utr"
   val messageFrontendUrl: String = configuration.get[String]("microservice.services.message-frontend.url")
   val loginUrl: String         = configuration.get[String]("urls.login")
@@ -47,6 +48,32 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     "en" -> Lang("en"),
     "cy" -> Lang("cy")
   )
+
+  protected lazy val rootServices = "microservice.services"
+
+  protected lazy val defaultProtocol: String =
+    configuration
+      .getOptional[String](s"$rootServices.protocol")
+      .getOrElse("http")
+
+  def getConfString(confKey: String, defString: => String) =
+    configuration
+      .getOptional[String](s"$rootServices.$confKey")
+      .getOrElse(defString)
+
+  def getConfInt(confKey: String, defInt: => Int) =
+    configuration
+      .getOptional[Int](s"$rootServices.$confKey")
+      .getOrElse(defInt)
+
+  private def throwConfigNotFoundError(key: String) =
+    throw new RuntimeException(s"Could not find config key '$key'")
+  def baseUrl(serviceName: String) = {
+    val protocol = getConfString(s"$serviceName.protocol", defaultProtocol)
+    val host = getConfString(s"$serviceName.host", throwConfigNotFoundError(s"$serviceName.host"))
+    val port = getConfInt(s"$serviceName.port", throwConfigNotFoundError(s"$serviceName.port"))
+    s"$protocol://$host:$port"
+  }
 
   lazy private val accessibilityBaseUrl: String = configuration.get[String]("sca-wrapper.accessibility-statement.baseUrl")
   lazy private val accessibilityRedirectUrl = configuration.get[String]("sca-wrapper.accessibility-statement.redirectUrl")

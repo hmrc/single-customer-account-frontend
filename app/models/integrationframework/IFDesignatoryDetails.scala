@@ -16,7 +16,8 @@
 
 package models.integrationframework
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Format, Json, Reads}
+import uk.gov.hmrc.auth.core.Nino
 
 import java.time.LocalDate
 
@@ -27,6 +28,19 @@ case class IfDesignatoryDetails( details: IfDetails,
 object IfDesignatoryDetails {
 
   implicit val reads: Reads[IfDesignatoryDetails] = Json.reads[IfDesignatoryDetails]
+
+}
+
+case class IfCapabilityDetails(
+                                nino: Nino,
+                                date: String,
+                                descriptionContent: String,
+                                url: String
+                              )
+
+object IfCapabilityDetails {
+
+  implicit val format: Format[IfCapabilityDetails] = Json.format[IfCapabilityDetails]
 
 }
 
