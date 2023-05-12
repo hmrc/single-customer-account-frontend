@@ -38,7 +38,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val niRecordUrl : String = s"$nispBaseUrl/check-your-state-pension/account/nirecord"
   val spSummaryUrl : String = s"$nispBaseUrl/check-your-state-pension/account"
   private val selfAssessmentBaseUrl: String = configuration.get[String]("microservice.services.self-assessment.url")
-  val capabilitiesDataBaseUrl: String = servicesConfig.baseUrl(serviceName = "capabilitiesData")
+  val capabilitiesDataBaseUrl: String = servicesConfig.baseUrl(serviceName = "capabilities-data")
   def selfAssessmentLink(utr: String): String = s"$selfAssessmentBaseUrl/self-assessment/ind/$utr"
   val messageFrontendUrl: String = configuration.get[String]("microservice.services.message-frontend.url")
   val loginUrl: String         = configuration.get[String]("urls.login")
