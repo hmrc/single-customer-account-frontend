@@ -28,10 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class CapabilityService @Inject()(connector: CapabilityConnector)(implicit ec: ExecutionContext) extends Logging {
 
 
-  def getCapabilityDetails(nino: Option[Nino])(implicit hc: HeaderCarrier): Future[IfCapabilityDetails] = {
-    println("running")
-    val ifCapabilityDetails = connector.getCapabilityDetails(nino)
-    ifCapabilityDetails.map {
+  def getCapabilityDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[IfCapabilityDetails] = {
+    connector.getCapabilityDetails(nino).map {
       case Some(capabilityDetails) => capabilityDetails
       case None => throw new RuntimeException("Capability details not found")
     }

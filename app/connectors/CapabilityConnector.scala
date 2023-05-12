@@ -31,11 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CapabilityConnector @Inject()(
-                                   val wsClient: WSClient,
-                                   appConfig: FrontendAppConfig
-                                   ) (implicit executionContext: ExecutionContext) extends Logging {
-
-  private val capabilityDetailsFields: String = "capabilityDetails(nino,date,descriptionContent,url)"
+                                     val wsClient: WSClient,
+                                     appConfig: FrontendAppConfig
+                                   )(implicit executionContext: ExecutionContext) extends Logging {
 
   private def setHeaders = Seq(
     (HeaderNames.authorisation, s"Bearer ${appConfig.integrationFrameworkAuthToken}"),
@@ -43,33 +41,26 @@ class CapabilityConnector @Inject()(
     ("CorrelationId" -> UUID.randomUUID().toString)
   )
 
-  def getCapabilityDetails(nino: Option[Nino]): Future[Option[IfCapabilityDetails]] = {
-    nino match {
-      case None => logger.info("[CapabilityConnector][getCapabilityDetails] No NINO supplied, defaulting to None")
-        Future.successful(None)
-      case Some(ninoString) => {
-        wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/capabilities-data/${ninoString.nino}?fields=$capabilityDetailsFields")
-          .withHttpHeaders(setHeaders: _*)
-          .get().map {
-          case response if response.status >= OK && response.status < 300 =>
-            logger.info(s"[CapabilityConnector][getCapabilityDetails] IF successful response code: ${response.status}")
-            response.json.asOpt[IfCapabilityDetails]
-          case response if response.status == NOT_FOUND =>
-            logger.info("[CapabilityConnector][getCapabilityDetails] IF returned code 404 NOT FOUND")
-            None
-          case response =>
-            logger.warn(s"[CapabilityConnector][getCapabilityDetails] IF returned unknown code: ${response.status}")
-            None
-        }.recover {
-          case ex: Exception =>
-            logger.error(s"[CapabilityConnector][getCapabilityDetails] exception: ${ex.getMessage}")
-            None
-        }
-      }
+  def getCapabilityDetails(nino: Nino): Future[Option[IfCapabilityDetails]] = {
+
+    wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/capabilities-data/${nino.nino}")
+      .withHttpHeaders(setHeaders: _*)
+      .get().map {
+      case response if response.status >= OK && response.status < 300 =>
+        logger.info(s"[CapabilityConnector][getCapabilityDetails] IF successful response code: ${response.status}")
+        response.json.asOpt[IfCapabilityDetails]
+      case response if response.status == NOT_FOUND =>
+        logger.info("[CapabilityConnector][getCapabilityDetails] IF returned code 404 NOT FOUND")
+        None
+      case response =>
+        logger.warn(s"[CapabilityConnector][getCapabilityDetails] IF returned unknown code: ${response.status}")
+        None
+    }.recover {
+      case ex: Exception =>
+        logger.error(s"[CapabilityConnector][getCapabilityDetails] exception: ${ex.getMessage}")
+        None
     }
+
   }
-
-
-
 
 }
