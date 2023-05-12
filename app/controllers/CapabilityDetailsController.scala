@@ -20,30 +20,32 @@ package controllers
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import controllers.actions.{AuthAction, CapabilityAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CapabilityService
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CapabilityDetailsView
+
 import scala.concurrent.ExecutionContext
 
 class CapabilityDetailsController @Inject()(
                                              val controllerComponents: MessagesControllerComponents,
-                                             authenticate: AuthAction,
-                                             getCapabilityDetails: CapabilityAction,
+                                             val capabilityService: CapabilityService,
                                              config: FrontendAppConfig,
                                              view: CapabilityDetailsView
                                            )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport  {
 
-  def getCapabilitiesData: Action[AnyContent] = (authenticate andThen getCapabilityDetails) { implicit request =>
+  def getCapabilitiesData: Action[AnyContent] = Action.async {implicit request =>
+  val ifCapabilityDetails = capabilityService.getCapabilityDetails(Some(Nino("GG012345C")))
+    println(s"Thisis the capDetails: $ifCapabilityDetails")
+    ifCapabilityDetails.map { capabilityDetails =>
+      val date = capabilityDetails.date
+      val desc = capabilityDetails.descriptionContent
+      val url = capabilityDetails.url
+      println(date)
 
-    val date = request.ifCapabilitiesData.date
-    val desc = request.ifCapabilitiesData.descriptionContent
-    val url = request.ifCapabilitiesData.url
-
-    Ok(view(date, desc, url))
-
+      Ok(view(date,desc,url))
+    }
   }
-
-
 }

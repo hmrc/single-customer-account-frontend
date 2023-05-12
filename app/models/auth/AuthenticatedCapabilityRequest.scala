@@ -19,8 +19,10 @@ package models.auth
 import models.integrationframework.IfCapabilityDetails
 import play.api.mvc.WrappedRequest
 
+import scala.concurrent.ExecutionContext
+
 
 case class AuthenticatedCapabilityRequest[A](
                                               authenticatedRequest: AuthenticatedRequest[A],
-                                              ifCapabilitiesData: IfCapabilityDetails) extends WrappedRequest[A](authenticatedRequest)
+                                              ifCapabilitiesData: IfCapabilityDetails)(implicit executionContext: ExecutionContext) extends WrappedRequest[A](authenticatedRequest)
 

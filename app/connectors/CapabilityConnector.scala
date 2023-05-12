@@ -48,7 +48,7 @@ class CapabilityConnector @Inject()(
       case None => logger.info("[CapabilityConnector][getCapabilityDetails] No NINO supplied, defaulting to None")
         Future.successful(None)
       case Some(ninoString) => {
-        wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-stub/individuals/details/NINO/${ninoString.nino}?fields=$capabilityDetailsFields")
+        wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/capabilities-data/${ninoString.nino}?fields=$capabilityDetailsFields")
           .withHttpHeaders(setHeaders: _*)
           .get().map {
           case response if response.status >= OK && response.status < 300 =>

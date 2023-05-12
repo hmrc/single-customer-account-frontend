@@ -29,13 +29,11 @@ class CapabilityService @Inject()(connector: CapabilityConnector)(implicit ec: E
 
 
   def getCapabilityDetails(nino: Option[Nino])(implicit hc: HeaderCarrier): Future[IfCapabilityDetails] = {
-
+    println("running")
     val ifCapabilityDetails = connector.getCapabilityDetails(nino)
     ifCapabilityDetails.map {
       case Some(capabilityDetails) => capabilityDetails
       case None => throw new RuntimeException("Capability details not found")
     }
-
   }
-
 }
