@@ -28,8 +28,8 @@ class CapabilityDetailsControllerSpec extends SpecBase {
   lazy val capabilityService = injector.instanceOf[CapabilityService]
 
   lazy val capabilityDetailsView: CapabilityDetailsView = injector.instanceOf[CapabilityDetailsView]
-  lazy val controller: CapabilityDetailsController = new CapabilityDetailsController(messagesControllerComponents,capabilityService, capabilityDetailsView)
-
+//lazy val controller: CapabilityDetailsController = new CapabilityDetailsController(messagesControllerComponents,capabilityService, capabilityDetailsView)
+  lazy val controller: CapabilityDetailsController = injector.instanceOf[CapabilityDetailsController]
   val expectedDate = "9 April 2023"
   val expectedDescription = "Your tax code has changed"
   val expectedUrl = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
