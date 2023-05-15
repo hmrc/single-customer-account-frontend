@@ -1,2 +1,2 @@
 #!/bin/bash
-sm --start SCA_FUTURES_ALL
+sm2 --start SCA_FUTURES_ALL

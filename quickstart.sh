@@ -1,3 +1,3 @@
 #!/bin/bash
-sm --stop SINGLE_CUSTOMER_ACCOUNT_FRONTEND
+sm2 --stop SINGLE_CUSTOMER_ACCOUNT_FRONTEND
 sbt run
