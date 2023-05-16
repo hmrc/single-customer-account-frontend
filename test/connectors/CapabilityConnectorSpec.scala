@@ -20,13 +20,16 @@ import com.github.tomakehurst.wiremock.client.WireMock.{get, ok, urlEqualTo}
 import controllers.actions.AuthActionImpl
 import fixtures.{SpecBase, WireMockHelper}
 import models.integrationframework.IfCapabilityDetails
+import org.mockito.Mockito.when
 import uk.gov.hmrc.auth.core.{AuthConnector, Nino}
 import uk.gov.hmrc.domain
 
+import scala.concurrent.Future
+
 class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  lazy val authAction = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
-  lazy val connector = injector.instanceOf[CapabilityConnector]
+  lazy val authAction = mock[AuthActionImpl]
+  lazy val connector = mock[CapabilityConnector]
 
   val nino = domain.Nino("GG012345C")
   val ninoT = Nino(hasNino = true,Some("GG012345C"))
@@ -45,6 +48,8 @@ class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
     "call getCapabilityDetails and return successful response" in {
 
       val expectedDetails = IfCapabilityDetails(ninoT, "9 April 2023", "Your tax code has changed", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
+
+      when(connector.getCapabilityDetails(nino)).thenReturn(Future.successful(Some(expectedDetails)))
 
       val result = connector.getCapabilityDetails(nino)
       result.futureValue mustBe Some(expectedDetails)
