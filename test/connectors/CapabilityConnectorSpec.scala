@@ -62,8 +62,9 @@ class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
           )
       )
 
-      val result = capabilityConnector.getCapabilityDetails(nino)
-      result.futureValue mustBe Some(expectedDetails)
+      capabilityConnector.getCapabilityDetails(nino).map { result =>
+        result mustBe Some(expectedDetails)
+      }
     }
   }
 }
