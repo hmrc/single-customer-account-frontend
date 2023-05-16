@@ -16,23 +16,20 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{get, ok, urlEqualTo}
-import controllers.actions.AuthActionImpl
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.{ok, urlEqualTo}
 import fixtures.{SpecBase, WireMockHelper}
 import models.integrationframework.IfCapabilityDetails
-import org.mockito.Mockito.when
-import uk.gov.hmrc.auth.core.{AuthConnector, Nino}
+import play.api.libs.json.Json
+import uk.gov.hmrc.auth.core.Nino
 import uk.gov.hmrc.domain
 
-import scala.concurrent.Future
-
 class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
-  lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  lazy val authAction = mock[AuthActionImpl]
-  lazy val connector = mock[CapabilityConnector]
+
+  private lazy val capabilityConnector: CapabilityConnector = injector.instanceOf[CapabilityConnector]
 
   val nino = domain.Nino("GG012345C")
-  val ninoT = Nino(hasNino = true,Some("GG012345C"))
+  val ninoT = Nino(hasNino = true, Some("GG012345C"))
 
   server.start()
 
@@ -41,17 +38,31 @@ class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
     "metrics.enabled" -> false,
     "auditing.enabled" -> false,
     "auditing.traceRequests" -> false
-  )
-    .build()
+  ).build()
 
   "Calling CapabilityConnector" must {
     "call getCapabilityDetails and return successful response" in {
 
       val expectedDetails = IfCapabilityDetails(ninoT, "9 April 2023", "Your tax code has changed", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
 
-      when(connector.getCapabilityDetails(nino)).thenReturn(Future.successful(Some(expectedDetails)))
+      server.stubFor(
+        WireMock.get(urlEqualTo(s"/single-customer-account-capabilities/capabilities-data/${nino.value}"))
+          .willReturn(
+            ok
+              .withHeader("Content-Type", "application/json")
+              .withBody(Json.obj(
+                "nino" -> Json.obj(
+                  "hasNino" -> true,
+                  "nino" -> "GG012345C"
+                ),
+                "date" -> "9 April 2023",
+                "descriptionContent" -> "Your tax code has changed",
+                "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
+              ).toString())
+          )
+      )
 
-      val result = connector.getCapabilityDetails(nino)
+      val result = capabilityConnector.getCapabilityDetails(nino)
       result.futureValue mustBe Some(expectedDetails)
     }
   }
