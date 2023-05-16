@@ -10,7 +10,7 @@ GET         /taxes-and-benefits                          controllers.YourTaxesAn
 GET         /messages                                    controllers.MessageController.messageList
 GET         /messages/:messageToken                      controllers.MessageController.messageDetail(messageToken: String)
 
-GET         /capability-details                          controllers.CapabilityDetailsController.getCapabilitiesData
+GET         /capability-details                          controllers.CapabilityDetailsController.onPageLoad
 
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 

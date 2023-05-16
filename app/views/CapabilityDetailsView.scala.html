@@ -14,13 +14,8 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import uk.gov.hmrc.http.HeaderCarrier
-
-@import scala.concurrent.ExecutionContext
-
 @this()
-@(date: String, desc: String, url: String)(implicit request:  Request[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
+@(date: String, desc: String, url: String)(implicit request: Request[_], messages: Messages)
 
 <p class="govuk-heading-xl" id="date">@date</p>
 <a href="@url" class="govuk-heading-xl" id="desc">@desc</a>

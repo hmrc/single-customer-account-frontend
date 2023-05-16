@@ -18,7 +18,6 @@ package controllers
 
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CapabilityService
@@ -32,10 +31,10 @@ class CapabilityDetailsController @Inject()(
                                              val controllerComponents: MessagesControllerComponents,
                                              val capabilityService: CapabilityService,
                                              view: CapabilityDetailsView
-                                           )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext)
+                                           )(implicit executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
-  def getCapabilitiesData: Action[AnyContent] = Action.async { implicit request =>
+  def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     capabilityService.getCapabilityDetails(Nino("GG012345C")).map { capabilityDetails =>
       val date = capabilityDetails.date
       val desc = capabilityDetails.descriptionContent
