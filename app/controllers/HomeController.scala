@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -39,20 +38,23 @@ class HomeController @Inject()(
                               )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails).async { implicit request =>
-    val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
+
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-    wrapperService.layout(
-      content = view(name),
-      pageTitle = Some(Messages("page.title")),
-      serviceNameUrl = Some(routes.HomeController.onPageLoad.url),
-      showSignOutInHeader = false,
-      hideMenuBar = false,
-     // showBackLinkJS = true,
-      optTrustedHelper = request.authenticatedRequest.trustedHelper
-    ).map { layout =>
-      Ok(layout)
-    }
+
+    val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
+
+    Ok(
+      wrapperService.layout(
+        content = view(name),
+        pageTitle = Some(Messages("page.title")),
+        serviceNameUrl = Some(routes.HomeController.onPageLoad.url),
+        showSignOutInHeader = false,
+        hideMenuBar = false,
+        // showBackLinkJS = true,
+        optTrustedHelper = request.authenticatedRequest.trustedHelper
+      )
+    )
   }
 
 }
