@@ -29,7 +29,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val host: String    = configuration.get[String]("sca-wrapper.host")
   val appName: String = configuration.get[String]("appName")
 
-  val integrationFrameworkUrl: String = configuration.get[String]("microservice.services.integration-framework.url")
+  val integrationFrameworkUrl: String = servicesConfig.baseUrl(serviceName = "integration-framework")
   val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
   val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
 
@@ -38,9 +38,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val niRecordUrl : String = s"$nispBaseUrl/check-your-state-pension/account/nirecord"
   val spSummaryUrl : String = s"$nispBaseUrl/check-your-state-pension/account"
   private val selfAssessmentBaseUrl: String = configuration.get[String]("microservice.services.self-assessment.url")
+  val messageFrontendUrl: String = servicesConfig.baseUrl(serviceName = "message-frontend")
   val capabilitiesDataBaseUrl: String = servicesConfig.baseUrl(serviceName = "capabilities-data")
   def selfAssessmentLink(utr: String): String = s"$selfAssessmentBaseUrl/self-assessment/ind/$utr"
-  val messageFrontendUrl: String = configuration.get[String]("microservice.services.message-frontend.url")
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
