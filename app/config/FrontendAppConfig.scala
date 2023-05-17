@@ -21,14 +21,15 @@ import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
   val host: String    = configuration.get[String]("sca-wrapper.host")
   val appName: String = configuration.get[String]("appName")
 
-  val integrationFrameworkUrl: String = configuration.get[String]("microservice.services.integration-framework.url")
+  val integrationFrameworkUrl: String = servicesConfig.baseUrl(serviceName = "integration-framework")
   val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
   val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
 
@@ -37,8 +38,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val niRecordUrl : String = s"$nispBaseUrl/check-your-state-pension/account/nirecord"
   val spSummaryUrl : String = s"$nispBaseUrl/check-your-state-pension/account"
   private val selfAssessmentBaseUrl: String = configuration.get[String]("microservice.services.self-assessment.url")
+  val messageFrontendUrl: String = servicesConfig.baseUrl(serviceName = "message-frontend")
   def selfAssessmentLink(utr: String): String = s"$selfAssessmentBaseUrl/self-assessment/ind/$utr"
-  val messageFrontendUrl: String = configuration.get[String]("microservice.services.message-frontend.url")
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
