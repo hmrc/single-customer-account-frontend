@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import models.integrationframework.IfCapabilityDetails
+import models.integrationframework.CapabilityDetails
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.ws.WSClient
@@ -37,28 +37,28 @@ class CapabilityConnector @Inject()(
 
   private def setHeaders = Seq(
     (HeaderNames.authorisation, s"Bearer ${appConfig.integrationFrameworkAuthToken}"),
-    ("Environment" -> appConfig.integrationFrameworkEnvironment),
-    ("CorrelationId" -> UUID.randomUUID().toString)
+    "Environment" -> appConfig.integrationFrameworkEnvironment,
+    "CorrelationId" -> UUID.randomUUID().toString
   )
 
-  def getCapabilityDetails(nino: Nino): Future[Option[IfCapabilityDetails]] = {
+  def getCapabilityDetails(nino: Nino): Future[Seq[CapabilityDetails]] = {
 
     wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/capabilities-data/${nino.nino}")
       .withHttpHeaders(setHeaders: _*)
       .get().map {
       case response if response.status >= OK && response.status < 300 =>
         logger.info(s"[CapabilityConnector][getCapabilityDetails] IF successful response code: ${response.status}")
-        response.json.asOpt[IfCapabilityDetails]
+        response.json.as[Seq[CapabilityDetails]]
       case response if response.status == NOT_FOUND =>
         logger.info("[CapabilityConnector][getCapabilityDetails] IF returned code 404 NOT FOUND")
-        None
+        Seq.empty
       case response =>
         logger.warn(s"[CapabilityConnector][getCapabilityDetails] IF returned unknown code: ${response.status}")
-        None
+        Seq.empty
     }.recover {
       case ex: Exception =>
         logger.error(s"[CapabilityConnector][getCapabilityDetails] exception: ${ex.getMessage}")
-        None
+        Seq.empty
     }
 
   }

@@ -18,18 +18,18 @@ package services
 
 import connectors.CapabilityConnector
 import fixtures.SpecBase
-import models.integrationframework.IfCapabilityDetails
+import models.integrationframework.CapabilityDetails
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.Nino
 import uk.gov.hmrc.domain
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CapabilityServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
@@ -38,10 +38,6 @@ class CapabilityServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
 
   override lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/capability-details/")
   val nino = domain.Nino("GG012345C")
-  val expectedNino = Nino(hasNino = true,Some("GG012345C"))
-  val expectedDate = "9 April 2023"
-  val expectedDescription = "Your tax code has changed"
-  val expectedUrl = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
 
   val service = new CapabilityService(mockCapabilityConnector)
 
@@ -53,18 +49,25 @@ class CapabilityServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
 
     "return successful response if getCapabilityDetails returns some data" in {
 
-      val expectedObj = IfCapabilityDetails(
-       nino = expectedNino,
-       date = expectedDate,
-       descriptionContent = expectedDescription,
-       url = expectedUrl
+      val capabilityDetails: Seq[CapabilityDetails] = Seq(
+        CapabilityDetails(
+          nino = Nino(true, Some("GG012345C")),
+          date = LocalDate.of(2022, 5, 19),
+          descriptionContent = "Desc-1",
+          url = "url-1"),
+        CapabilityDetails(
+          nino = Nino(true, Some("GG012345C")),
+          date = LocalDate.of(2023, 4, 9),
+          descriptionContent = "Desc-2",
+          url = "url-2")
       )
 
       when(mockCapabilityConnector.getCapabilityDetails(any()))
-        .thenReturn(Future.successful(Some(expectedObj)))
+        .thenReturn(Future.successful(capabilityDetails))
 
-
-      service.getCapabilityDetails(nino).futureValue shouldBe expectedObj
+      service.getCapabilityDetails(nino).map(res =>
+        res mustBe capabilityDetails
+      )
 
     }
 
@@ -72,13 +75,11 @@ class CapabilityServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
 
       val nino = domain.Nino("GG012345C")
 
-      when(mockCapabilityConnector.getCapabilityDetails(nino)).thenReturn(Future.successful(None))
+      when(mockCapabilityConnector.getCapabilityDetails(nino)).thenReturn(Future.successful(Seq.empty))
 
-      val result = service.getCapabilityDetails(nino)
-
-      assertThrows[RuntimeException] {
-        result.futureValue
-      }
+      service.getCapabilityDetails(nino).map(res =>
+        res mustBe Seq.empty
+      )
     }
   }
 }
