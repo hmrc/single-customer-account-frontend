@@ -14,8 +14,27 @@
  * limitations under the License.
  *@
 
-@this()
-@(date: String, desc: String, url: String)(implicit request: Request[_], messages: Messages)
+@import models.integrationframework.CapabilityDetails
+@import views.html.templates.Layout
 
-<p class="govuk-heading-xl" id="date">@date</p>
-<a href="@url" class="govuk-heading-xl" id="desc">@desc</a>
+@this(
+        layout: Layout,
+        dateHelper: DateHelper
+)
+
+
+@(capabilityDetails: Seq[CapabilityDetails])(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm("Tax Code Changes with Sample Rule")) {
+
+    <h1 class="govuk-heading-l">Tax Code Changes with Sample Rule</h1>
+
+    <ul class="govuk-list govuk-list--bullet">
+        @for(capabilityDetail <- capabilityDetails) {
+            <li>
+                <p class="font-xsmall">@dateHelper.formatDate(capabilityDetail.date)</p>
+                <a href="@capabilityDetail.url" class="govuk-link" id="desc">@capabilityDetail.descriptionContent</a>
+            </li>
+        }
+    </ul>
+}

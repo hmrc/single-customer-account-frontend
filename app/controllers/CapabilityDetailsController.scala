@@ -36,11 +36,7 @@ class CapabilityDetailsController @Inject()(
 
   def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     capabilityService.getCapabilityDetails(Nino("GG012345C")).map { capabilityDetails =>
-      val date = capabilityDetails.date
-      val desc = capabilityDetails.descriptionContent
-      val url = capabilityDetails.url
-
-      Ok(view(date, desc, url))
+      Ok(view(capabilityDetails))
     }
   }
 }

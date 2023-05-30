@@ -16,11 +16,15 @@
 
 package utils
 
-import play.api.libs.json.{Reads, Writes}
-
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import javax.inject.{Inject, Singleton}
 
-trait LocalDateFormat {
-  implicit val localDateReads: Reads[LocalDate] = Reads.DefaultLocalDateReads
-  implicit val localDateWrites: Writes[LocalDate] = Writes.DefaultLocalDateWrites
+@Singleton
+class DateHelper @Inject()() {
+  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+
+  def formatDate(date: LocalDate): String = {
+    date.format(formatter)
+  }
 }
