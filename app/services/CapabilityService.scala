@@ -17,7 +17,7 @@
 package services
 
 import connectors.CapabilityConnector
-import models.integrationframework.IfCapabilityDetails
+import models.integrationframework.CapabilityDetails
 import play.api.Logging
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,10 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CapabilityService @Inject()(connector: CapabilityConnector)(implicit ec: ExecutionContext) extends Logging {
 
 
-  def getCapabilityDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[IfCapabilityDetails] = {
-    connector.getCapabilityDetails(nino).map {
-      case Some(capabilityDetails) => capabilityDetails
-      case None => throw new RuntimeException("Capability details not found")
-    }
+  def getCapabilityDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[Seq[CapabilityDetails]] = {
+    connector.getCapabilityDetails(nino)
   }
 }

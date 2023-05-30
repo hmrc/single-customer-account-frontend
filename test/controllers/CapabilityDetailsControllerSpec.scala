@@ -17,7 +17,7 @@
 package controllers
 
 import fixtures.SpecBase
-import models.integrationframework.IfCapabilityDetails
+import models.integrationframework.CapabilityDetails
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
@@ -27,24 +27,31 @@ import services.CapabilityService
 import uk.gov.hmrc.auth.core.Nino
 import views.html.CapabilityDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CapabilityDetailsControllerSpec extends SpecBase with BeforeAndAfter {
 
-  lazy val mockCapabilityService = mock[CapabilityService]
+  lazy val mockCapabilityService: CapabilityService = mock[CapabilityService]
   lazy val view: CapabilityDetailsView = inject[CapabilityDetailsView]
 
   lazy val controller: CapabilityDetailsController = new CapabilityDetailsController(messagesControllerComponents, mockCapabilityService, view)
 
-  private def viewAsString(date: String, desc: String, url: String) = view(date, desc, url)(fakeRequest, messages).toString
+  private def viewAsString(capabilityDetails: Seq[CapabilityDetails]) = view(capabilityDetails)(fakeRequest, messages).toString
 
   "CapabilityDetailsController" must {
     "Return the capabilityDetails page successfully with correct data" in {
-      val capabilityDetails = IfCapabilityDetails(
-        nino = Nino(true, Some("GG012345C")),
-        date = "9 April 2023",
-        descriptionContent = "Your tax code has changed",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
+      val capabilityDetails: Seq[CapabilityDetails] = Seq(
+        CapabilityDetails(
+          nino = Nino(true, Some("GG012345C")),
+          date = LocalDate.of(2022, 5, 19),
+          descriptionContent = "Desc-1",
+          url = "url-1"),
+        CapabilityDetails(
+          nino = Nino(true, Some("GG012345C")),
+          date = LocalDate.of(2023, 4, 9),
+          descriptionContent = "Desc-2",
+          url = "url-2")
       )
 
       when(mockCapabilityService.getCapabilityDetails(any())(any())).thenReturn(Future.successful(capabilityDetails))
@@ -52,7 +59,7 @@ class CapabilityDetailsControllerSpec extends SpecBase with BeforeAndAfter {
       val result = controller.onPageLoad(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(capabilityDetails.date, capabilityDetails.descriptionContent, capabilityDetails.url)
+      contentAsString(result) mustBe viewAsString(capabilityDetails)
 
     }
   }
