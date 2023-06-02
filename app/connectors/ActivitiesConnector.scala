@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import models.integrationframework.CapabilityDetails
+import models.integrationframework.{Activities, CapabilityDetails}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.ws.WSClient
@@ -41,24 +41,24 @@ class ActivitiesConnector @Inject()(
     "CorrelationId" -> UUID.randomUUID().toString
   )
 
-  def getActivityDetails(nino: Nino): Future[Seq[CapabilityDetails]] = {
+  def getActivityDetails(nino: Nino): Future[Activities] = {
 
     wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/activities/${nino.nino}")
       .withHttpHeaders(setHeaders: _*)
       .get().map {
       case response if response.status >= OK && response.status < 300 =>
         logger.info(s"[CapabilityConnector][getCapabilityDetails] IF successful response code: ${response.status}")
-        response.json.as[Seq[CapabilityDetails]]
+        response.json.as[Activities]
       case response if response.status == NOT_FOUND =>
         logger.info("[CapabilityConnector][getCapabilityDetails] IF returned code 404 NOT FOUND")
-        Seq.empty
+        Activities(Seq.empty,Seq.empty,Seq.empty,Seq.empty)
       case response =>
         logger.warn(s"[CapabilityConnector][getCapabilityDetails] IF returned unknown code: ${response.status}")
-        Seq.empty
+        Activities(Seq.empty,Seq.empty,Seq.empty,Seq.empty)
     }.recover {
       case ex: Exception =>
         logger.error(s"[CapabilityConnector][getCapabilityDetails] exception: ${ex.getMessage}")
-        Seq.empty
+        Activities(Seq.empty,Seq.empty,Seq.empty,Seq.empty)
     }
 
   }
