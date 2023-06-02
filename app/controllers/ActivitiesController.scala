@@ -17,26 +17,25 @@
 package controllers
 
 import com.google.inject.Inject
-import connectors.ActivitiesConnector
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{ActivitiesService, CapabilityService}
+import services.{ActivitiesService}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.CapabilityDetailsView
+import views.html.ActivitiesView
 
 import scala.concurrent.ExecutionContext
 
 class ActivitiesController @Inject()(
                                       val controllerComponents: MessagesControllerComponents,
                                       val activitiesService: ActivitiesService,
-                                      view: CapabilityDetailsView
+                                      view: ActivitiesView
                                            )(implicit executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    activitiesService.getActivityDetails(Nino("GG012345C")).map { activityDetails =>
-      Ok(view(activityDetails))
+    activitiesService.getActivityDetails(Nino("GG012345C")).map { activities =>
+      Ok(view(activities))
     }
   }
 }

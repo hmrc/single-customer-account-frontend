@@ -29,20 +29,4 @@
 
     <h1 class="govuk-heading-l">Tax Code Changes with Sample Rule</h1>
 
-    <dl class="govuk-summary-list">
-        @for(capabilityDetail <- capabilityDetails) {
-
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    </strong>
-                    @dateHelper.formatDate(capabilityDetail.date)
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <a href="tax-code-change" title="" class="govuk-link--no-visited-state">
-                        @capabilityDetail.descriptionContent
-                    </a>
-                </dd>
-            </div>
-        }
-    </dl>
 }

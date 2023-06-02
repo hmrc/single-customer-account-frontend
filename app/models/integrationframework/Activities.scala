@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package services
+package models.integrationframework
 
-import connectors.ActivitiesConnector
-import models.integrationframework.{Activities}
-import play.api.Logging
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
+import models.integrationframework.CapabilityDetails
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+case class Activities(
+  taxCalc: Seq[CapabilityDetails],
+  taxCode: Seq[CapabilityDetails],
+  childBenefit: Seq[CapabilityDetails],
+  payeIncome: Seq[CapabilityDetails]
+)
 
-class ActivitiesService @Inject()(connector: ActivitiesConnector)(implicit ec: ExecutionContext) extends Logging {
+object Activities {
 
+  implicit val format: Format[Activities] = Json.format[Activities]
 
-  def getActivityDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[Activities] = {
-    connector.getActivityDetails(nino)
-  }
 }
