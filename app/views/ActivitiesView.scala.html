@@ -30,9 +30,10 @@
 
     <dl class="govuk-summary-list">
 
-            @for(category <- Seq(activities.taxCalc,activities.taxCode, activities.childBenefit, activities.payeIncome)) {
-            <h2 class="govuk-heading-m">Insert sub heading</h2>
-            @for(activity <- category) {
+
+            @for(category <- Seq({data: activities.taxCalc, desc: "text1"},{data: activities.taxCode, desc: "text2"}, {data: activities.childBenefit, desc: "text3"}, {data: activities.payeIncome, desc: "text4"}))) {
+            <h2 class="govuk-heading-m">@category.desc</h2>
+            @for(activity <- category.data) {
             <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         </strong>
