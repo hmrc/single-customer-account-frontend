@@ -16,6 +16,7 @@
 
 @import models.integrationframework.Activities
 @import views.html.templates.Layout
+@import java.time.LocalDate
 
 @this(
         layout: Layout,
@@ -26,26 +27,31 @@
 
 @layout(pageTitle = titleNoForm("Your Recent Account Updates")) {
 
-    <h1 class="govuk-heading-l">Your Recent Account Updates</h1>
+    <h1 class="govuk-heading-l">Your recent account activity</h1>
 
-    <dl class="govuk-summary-list">
+    @for(category <- Seq((activities.taxCalc, "Your tax calculation"), (activities.taxCode, "Latest Tax code change"), (activities.childBenefit, "Recent Child Benefit payments"), (activities.payeIncome, "Your PAYE income for the current tax year"))) {
+        <dl class="govuk-summary-list">
 
+        <h2 class="govuk-heading-m" style="width: max-content;">@category._2</h2>
 
-            @for(category <- Seq({data: activities.taxCalc, desc: "text1"},{data: activities.taxCode, desc: "text2"}, {data: activities.childBenefit, desc: "text3"}, {data: activities.payeIncome, desc: "text4"}))) {
-            <h2 class="govuk-heading-m">@category.desc</h2>
-            @for(activity <- category.data) {
+        @for(activity <- category._1) {
             <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        </strong>
-                        @dateHelper.formatDate(activity.date)
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <a href="tax-code-change" title="" class="govuk-link--no-visited-state">
-                            @activity.descriptionContent
-                        </a>
-                    </dd>
-                </div>
+                <dt class="govuk-summary-list__key">
+
+
+                    @if(LocalDate.now.minusMonths(1).minusDays(7).compareTo(activity.date) < 0){ <strong class="govuk-tag govuk-tag--green">
+                    New
+                </strong>}
+                    </strong>
+                    @dateHelper.formatDate(activity.date)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="tax-code-change" title="" class="govuk-link--no-visited-state">
+                        @activity.descriptionContent
+                    </a>
+                </dd>
+            </div>
             }
-        }
-    </dl>
+        </dl>
+    }
 }

@@ -31,6 +31,12 @@ label.message = Message
 label.sorry_theres_been_a_technical_problem_retrieving_your_messages=Sorry, there has been a technical problem retrieving your messages
 label.sorry_theres_been_a_technical_problem_retrieving_your_message=Sorry, there has been a technical problem retrieving your message
 
+activities.subHeading1 = Your tax calculation
+activities.subHeading2 = Latest Tax code change
+activities.subHeading3 = Recent Child Benefit payments
+activities.subHeading4 = Your PAYE income for the current tax year
+
+
 site.back = Back
 site.remove = Remove
 site.change = Change
