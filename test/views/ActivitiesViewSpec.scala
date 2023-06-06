@@ -34,8 +34,6 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
 
   val hasNino = true
   private lazy val activityModel = Activities(
-
-
     taxCalc = Seq(
       CapabilityDetails(
         nino = Nino(hasNino, Some("GG012345C")),
@@ -96,12 +94,21 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
     )
   )
 
+  private lazy val emptyActivityModel = Activities(
+    taxCalc = Seq.empty,
+    taxCode = Seq.empty,
+    childBenefit = Seq.empty,
+    payeIncome = Seq.empty
+  )
+
   private val template: ActivitiesView = inject[ActivitiesView]
   implicit val request: Request[_] = FakeRequest()
 
   def activitiesView: Html = template(activityModel)(request, messages)
+  def emptyActivitiesView: Html = template(emptyActivityModel)(request, messages)
 
   private lazy val activitiesDoc = Jsoup.parse(activitiesView.toString())
+  private lazy val emptyActivitiesDoc = Jsoup.parse(emptyActivitiesView.toString())
 
   "Activities View" must {
 
@@ -130,6 +137,21 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
         activitiesDoc must haveElementAtPathWithClass("div","govuk-summary-list__row")
         activitiesDoc must haveElementAtPathWithClass("dt","govuk-summary-list__key")
         activitiesDoc must haveElementAtPathWithClass("dd","govuk-summary-list__value")
+      }
+    }
+
+    "display no Activities" when {
+      "no activities are present" in {
+//        emptyActivitiesDoc mustNot haveDescriptionListWithId("actionsList")
+        emptyActivitiesDoc mustNot haveLinkWithUrlWithClass(
+          "govuk-link--no-visited-state", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+        emptyActivitiesDoc mustNot haveLinkWithText("Central Perk Coffee Ltd paid you PAYE income")
+        emptyActivitiesDoc mustNot haveStrongWithText(
+          LocalDate.now.minusMonths(2).minusDays(14).format(dateTimeFormatter))
+        emptyActivitiesDoc mustNot haveElementAtPathWithClass("div","govuk-summary-list__row")
+        emptyActivitiesDoc mustNot haveElementAtPathWithClass("dt","govuk-summary-list__key")
+        emptyActivitiesDoc mustNot haveElementAtPathWithClass("dd","govuk-summary-list__value")
       }
     }
   }
