@@ -35,7 +35,8 @@ case class CapabilityDetails(
                               nino: Nino,
                               date: LocalDate,
                               descriptionContent: String,
-                              url: String
+                              url: String,
+                              activityHeading: String
                             )
 
 object CapabilityDetails {

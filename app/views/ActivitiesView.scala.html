@@ -29,12 +29,12 @@
 
     <h1 class="govuk-heading-l">Your recent account activity</h1>
 
-    @for(category <- Seq((activities.taxCalc, "Your tax calculation"), (activities.taxCode, "Latest Tax code change"), (activities.childBenefit, "Recent Child Benefit payments"), (activities.payeIncome, "Your PAYE income for the current tax year"))) {
+    @for(category <- Seq((activities.taxCalc), (activities.taxCode), (activities.childBenefit), (activities.payeIncome))) {
         <dl class="govuk-summary-list" id="actionsList">
 
-        <h2 class="govuk-heading-m" style="width: max-content;">@category._2</h2>
+        @if(category.length > 0){<h2 class="govuk-heading-m" style="width: max-content;">@category.head.activityHeading</h2>}
 
-        @for(activity <- category._1) {
+        @for(activity <- category) {
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     <strong>

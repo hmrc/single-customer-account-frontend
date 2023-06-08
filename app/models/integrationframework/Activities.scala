@@ -16,14 +16,13 @@
 
 package models.integrationframework
 
-import models.integrationframework.CapabilityDetails
 import play.api.libs.json.{Format, Json}
 
 case class Activities(
   taxCalc: Seq[CapabilityDetails],
   taxCode: Seq[CapabilityDetails],
   childBenefit: Seq[CapabilityDetails],
-  payeIncome: Seq[CapabilityDetails]
+  payeIncome: Seq[CapabilityDetails],
 )
 
 object Activities {
