@@ -17,31 +17,31 @@
 package controllers
 
 import fixtures.SpecBase
-import models.integrationframework.CapabilityDetails
+import models.integrationframework.{Activities, CapabilityDetails}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status.OK
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
-import services.CapabilityService
+import services.{ActivitiesService, CapabilityService}
 import uk.gov.hmrc.auth.core.Nino
-import views.html.CapabilityDetailsView
+import views.html.{ActivitiesView, CapabilityDetailsView}
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class CapabilityDetailsControllerSpec extends SpecBase with BeforeAndAfter {
+class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
 
-  lazy val mockCapabilityService: CapabilityService = mock[CapabilityService]
-  lazy val view: CapabilityDetailsView = inject[CapabilityDetailsView]
+  lazy val mockCapabilityService: ActivitiesService = mock[ActivitiesService]
+  lazy val view: ActivitiesView = inject[ActivitiesView]
 
-  lazy val controller: CapabilityDetailsController = new CapabilityDetailsController(messagesControllerComponents, mockCapabilityService, view)
+  lazy val controller: ActivitiesController = new ActivitiesController(messagesControllerComponents, mockCapabilityService, view)
 
-  private def viewAsString(capabilityDetails: Seq[CapabilityDetails]) = view(capabilityDetails)(fakeRequest, messages).toString
+  private def viewAsString(Activities: Activities) = view(Activities)(fakeRequest, messages).toString
 
   "CapabilityDetailsController" must {
     "Return the capabilityDetails page successfully with correct data" in {
-      val capabilityDetails: Seq[CapabilityDetails] = Seq(
+      val activities: Activities = Activities(Seq(
         CapabilityDetails(
           nino = Nino(true, Some("GG012345C")),
           date = LocalDate.of(2022, 5, 19),
@@ -53,14 +53,15 @@ class CapabilityDetailsControllerSpec extends SpecBase with BeforeAndAfter {
           date = LocalDate.of(2023, 4, 9),
           descriptionContent = "Desc-2",
           url = "url-2",
-          activityHeading = "Your Tax calculation"))
+          activityHeading = "Your Tax calculation")
+      ),Seq.empty,Seq.empty, Seq.empty)
 
-      when(mockCapabilityService.getCapabilityDetails(any())(any())).thenReturn(Future.successful(capabilityDetails))
+      when(mockCapabilityService.getActivityDetails(any())(any())).thenReturn(Future.successful(activities))
 
       val result = controller.onPageLoad(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(capabilityDetails)
+      contentAsString(result) mustBe viewAsString(activities)
 
     }
   }

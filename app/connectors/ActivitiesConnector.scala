@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import models.integrationframework.{Activities, CapabilityDetails}
+import models.integrationframework.{Activities}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.ws.WSClient
@@ -43,7 +43,7 @@ class ActivitiesConnector @Inject()(
 
   def getActivityDetails(nino: Nino): Future[Activities] = {
 
-    wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/activities/${nino.nino}")
+    wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/activities/${nino.value}")
       .withHttpHeaders(setHeaders: _*)
       .get().map {
       case response if response.status >= OK && response.status < 300 =>

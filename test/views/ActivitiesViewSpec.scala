@@ -23,6 +23,7 @@ import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.Nino
+import uk.gov.hmrc.domain
 import utils.ViewSpecHelpers
 import views.html.ActivitiesView
 
@@ -32,65 +33,78 @@ import java.time.format.DateTimeFormatter
 class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
 
 
-  val hasNino = true
+  val nino = domain.Nino("GG012345C")
+  val ninoT = Nino(hasNino = true, Some("GG012345C"))
+  
+  
   private lazy val activityModel = Activities(
     taxCalc = Seq(
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.minusMonths(2).minusDays(1),
         descriptionContent = "Your tax calculation for the 2022-2023 is now available",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+      activityHeading = "Your tax calculation")
     ),
     taxCode = Seq(
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.minusMonths(1).minusDays(1),
         descriptionContent = "Your tax code has changed - 1",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+        activityHeading = "Latest Tax code change"),
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.minusMonths(2),
         descriptionContent = "Your tax code has changed - 2",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+        activityHeading = "Latest Tax code change"),
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now,
         descriptionContent = "Your tax code has changed - 7",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+        activityHeading = "Latest Tax code change"),
     ),
     childBenefit = Seq(
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.minusMonths(1).minusDays(1),
         descriptionContent = "HMRC paid you Child Benefit",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
+      , activityHeading = "Recent Child Benefit payments"),
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.minusMonths(2),
         descriptionContent = "HMRC paid you Child Benefit",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
+      , activityHeading = "Recent Child Benefit payments"),
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.minusMonths(3).plusDays(1),
         descriptionContent = "HMRC paid you Child Benefit",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
+      , activityHeading = "Recent Child Benefit payments"),
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.withMonth(4).withDayOfMonth(5),
         descriptionContent = "HMRC paid you Child Benefit",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
+      , activityHeading = "Recent Child Benefit payments"),
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.withMonth(4).withDayOfMonth(6),
         descriptionContent = "HMRC paid you Child Benefit",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
+      , activityHeading = "Recent Child Benefit payments"),
     ),
     payeIncome = Seq(
       CapabilityDetails(
-        nino = Nino(hasNino, Some("GG012345C")),
+        nino = ninoT,
         date = LocalDate.now.minusMonths(2).minusDays(14),
         descriptionContent = "Central Perk Coffee Ltd paid you PAYE income",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"),
+        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+        activityHeading = "Your PAYE income for the current tax year"),
     )
   )
 
