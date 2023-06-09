@@ -96,7 +96,7 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
           )
       )
 
-      whenReady(activitiesConnector.getActivities(nino)) { result =>
+      activitiesConnector.getActivities(nino).map { result =>
 
         result mustBe Some(expectedDetails)
       }

@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{ok, urlEqualTo}
 import fixtures.{SpecBase, WireMockHelper}
 import models.integrationframework.CapabilityDetails
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.auth.core.Nino
 import uk.gov.hmrc.domain
 
@@ -45,28 +45,31 @@ class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
   "Calling CapabilityConnector" must {
     "call getCapabilityDetails and return successful response" in {
 
+      val capabilitiesResponseJson: JsArray = Json.arr(
+        Json.obj(
+          "nino" -> Json.obj(
+            "hasNino" -> true,
+            "nino" -> "GG012345C"
+          ),
+          "date" -> "09-04-2021",
+          "descriptionContent" -> "Your tax code has changed",
+          "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+          "activityHeading" -> "Your Tax code has changed"
+        )
+      )
       val expectedDetails = CapabilityDetails(ninoT, LocalDate.of(2023, 4, 9), "Your tax code has changed", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison", "Your Tax code has changed")
+
 
       server.stubFor(
         WireMock.get(urlEqualTo(s"/single-customer-account-capabilities/capabilities-data/GG012345C"))
           .willReturn(
             ok
               .withHeader("Content-Type", "application/json")
-              .withBody(
-                Json.obj(
-                  "nino" -> Json.obj(
-                    "hasNino" -> true,
-                    "nino" -> "GG012345C"
-                  ),
-                  "date" -> "09-04-2021",
-                  "descriptionContent" -> "Your tax code has changed",
-                  "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-                  "activityHeading" -> "Your Tax code has changed"
-                ).toString())
+              .withBody(capabilitiesResponseJson.toString())
           )
       )
 
-      whenReady(capabilityConnector.getCapabilityDetails(nino)) { result =>
+      capabilityConnector.getCapabilityDetails(nino).map { result =>
 
         result mustBe Some(expectedDetails)
       }
