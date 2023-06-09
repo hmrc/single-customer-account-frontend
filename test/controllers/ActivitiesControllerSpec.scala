@@ -23,9 +23,9 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status.OK
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
-import services.{ActivitiesService, CapabilityService}
+import services.ActivitiesService
 import uk.gov.hmrc.auth.core.Nino
-import views.html.{ActivitiesView, CapabilityDetailsView}
+import views.html.ActivitiesView
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -39,8 +39,8 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
 
   private def viewAsString(Activities: Activities) = view(Activities)(fakeRequest, messages).toString
 
-  "CapabilityDetailsController" must {
-    "Return the capabilityDetails page successfully with correct data" in {
+  "ActivitiesController" must {
+    "Return the activities page successfully with correct data" in {
       val activities: Activities = Activities(Seq(
         CapabilityDetails(
           nino = Nino(true, Some("GG012345C")),
@@ -61,8 +61,8 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
       val result = controller.onPageLoad(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(activities)
 
+      contentAsString(result) mustBe viewAsString(activities)
     }
   }
 }

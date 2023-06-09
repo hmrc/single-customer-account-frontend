@@ -67,8 +67,7 @@ class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
       )
 
       whenReady(capabilityConnector.getCapabilityDetails(nino)) { result =>
-        println("Result: " + result.map(details =>  Json.toJson(details)))
-        println("expectedDetails: " + expectedDetails)
+
         result mustBe Some(expectedDetails)
       }
     }
