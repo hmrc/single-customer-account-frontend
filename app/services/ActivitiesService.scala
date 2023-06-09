@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ActivitiesService @Inject()(connector: ActivitiesConnector)(implicit ec: ExecutionContext) extends Logging {
 
 
-  def getActivityDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[Activities] = {
-    connector.getActivityDetails(nino)
+  def getActivities(nino: Nino)(implicit hc: HeaderCarrier): Future[Activities] = {
+    connector.getActivities(nino)
   }
 }

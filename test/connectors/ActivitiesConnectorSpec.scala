@@ -84,7 +84,7 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
     )))
 
   "Calling Activities Connector" must {
-    "call getActivityDetails and return successful response" in {
+    "call getActivities and return successful response" in {
 
       server.stubFor(
         get(urlEqualTo(activitiesUrl))
@@ -96,7 +96,7 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
           )
       )
 
-      whenReady(activitiesConnector.getActivityDetails(nino)) { result =>
+      whenReady(activitiesConnector.getActivities(nino)) { result =>
 
         result mustBe Some(expectedDetails)
       }
