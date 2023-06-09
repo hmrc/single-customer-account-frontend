@@ -16,9 +16,9 @@
 
 package services
 
-import connectors.CapabilityConnector
+import connectors.ActivitiesConnector
 import fixtures.SpecBase
-import models.integrationframework.CapabilityDetails
+import models.integrationframework.{Activities, CapabilityDetails}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito._
@@ -32,25 +32,25 @@ import uk.gov.hmrc.domain
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class CapabilityServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
+class ActivitiesServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
 
-  private val mockCapabilityConnector = mock[CapabilityConnector]
+  private val mockActivitiesConnector = mock[ActivitiesConnector]
 
   override lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", s"/capability-details/")
   val nino = domain.Nino("GG012345C")
 
-  val service = new CapabilityService(mockCapabilityConnector)
+  val service = new ActivitiesService(mockActivitiesConnector)
 
   override protected def beforeEach(): Unit = {
-    Mockito.reset(mockCapabilityConnector)
+    Mockito.reset(mockActivitiesConnector)
   }
 
-  "getCapabilityDetails" must {
+  "getActivities" must {
 
-    "return successful response if getCapabilityDetails returns some data" in {
+    "return successful response if getActivities returns some data" in {
 
-      val capabilityDetails: Seq[CapabilityDetails] = Seq(
-        CapabilityDetails(
+      val activities: Activities = Activities(
+        Seq(CapabilityDetails(
           nino = Nino(true, Some("GG012345C")),
           date = LocalDate.of(2022, 5, 19),
           descriptionContent = "Desc-1",
@@ -62,25 +62,27 @@ class CapabilityServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
           descriptionContent = "Desc-2",
           url = "url-2",
           activityHeading = "Your Tax code has changed")
+        ),
+        Seq.empty,
+        Seq.empty,
+        Seq.empty)
+
+      when(mockActivitiesConnector.getActivities(any()))
+        .thenReturn(Future.successful(activities))
+
+      service.getActivities(nino).map(res =>
+        res mustBe activities
       )
-
-      when(mockCapabilityConnector.getCapabilityDetails(any()))
-        .thenReturn(Future.successful(capabilityDetails))
-
-      service.getCapabilityDetails(nino).map(res =>
-        res mustBe capabilityDetails
-      )
-
     }
 
-    "throw an exception when the capability details are not found" in {
+    "throw an exception when activities are not found" in {
 
       val nino = domain.Nino("GG012345C")
 
-      when(mockCapabilityConnector.getCapabilityDetails(nino)).thenReturn(Future.successful(Seq.empty))
+      when(mockActivitiesConnector.getActivities(nino)).thenReturn(Future.successful(Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)))
 
-      service.getCapabilityDetails(nino).map(res =>
-        res mustBe Seq.empty
+      service.getActivities(nino).map(res =>
+        res mustBe Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)
       )
     }
   }

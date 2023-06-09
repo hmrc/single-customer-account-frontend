@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.integrationframework.CapabilityDetails
-@import views.html.templates.Layout
+package services
 
-@this(
-        layout: Layout,
-        dateHelper: DateHelper
-)
+import connectors.ActivitiesConnector
+import models.integrationframework.{Activities}
+import play.api.Logging
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
+class ActivitiesService @Inject()(connector: ActivitiesConnector)(implicit ec: ExecutionContext) extends Logging {
 
 
-@(capabilityDetails: Seq[CapabilityDetails])(implicit request: Request[_], messages: Messages)
-
-@layout(pageTitle = titleNoForm("Tax Code Changes with Sample Rule")) {
-
-    <h1 class="govuk-heading-l">Tax Code Changes with Sample Rule</h1>
-
+  def getActivities(nino: Nino)(implicit hc: HeaderCarrier): Future[Activities] = {
+    connector.getActivities(nino)
+  }
 }
