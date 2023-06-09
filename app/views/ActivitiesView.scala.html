@@ -19,26 +19,28 @@
 @import java.time.LocalDate
 
 @this(
-        layout: Layout,
-        dateHelper: DateHelper
+layout: Layout,
+dateHelper: DateHelper
 )
 
 @(activities: Activities)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm("Your Recent Account Updates")) {
 
-    <h1 class="govuk-heading-l">Your recent account activity</h1>
+<h1 class="govuk-heading-l">Your recent account activity</h1>
 
-    @for(category <- Seq((activities.taxCalc), (activities.taxCode), (activities.childBenefit), (activities.payeIncome))) {
+@for(category <- Seq((activities.taxCalc), (activities.taxCode), (activities.childBenefit), (activities.payeIncome))) {
+
+    @if(category.length > 0){
+
         <dl class="govuk-summary-list" id="actionsList">
+            <h2 class="govuk-heading-m" style="width: max-content;">@category.head.activityHeading</h2>
 
-        @if(category.length > 0){<h2 class="govuk-heading-m" style="width: max-content;">@category.head.activityHeading</h2>}
-
-        @for(activity <- category) {
+            @for(activity <- category) {
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     <strong>
-                    @dateHelper.formatDate(activity.date)
+                        @dateHelper.formatDate(activity.date)
                     </strong>
                 </dt>
                 <dd class="govuk-summary-list__value">
@@ -49,5 +51,6 @@
             </div>
             }
         </dl>
+        }
     }
 }

@@ -156,7 +156,7 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
 
     "display no Activities" when {
       "no activities are present" in {
-//        emptyActivitiesDoc mustNot haveDescriptionListWithId("actionsList")
+        emptyActivitiesDoc mustNot haveDescriptionListWithId("actionsList")
         emptyActivitiesDoc mustNot haveLinkWithUrlWithClass(
           "govuk-link--no-visited-state", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
         val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
