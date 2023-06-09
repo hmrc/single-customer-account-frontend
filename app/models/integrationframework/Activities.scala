@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.integrationframework.CapabilityDetails
-@import views.html.templates.Layout
+package models.integrationframework
 
-@this(
-        layout: Layout,
-        dateHelper: DateHelper
+import play.api.libs.json.{Format, Json}
+
+case class Activities(
+  taxCalc: Seq[CapabilityDetails],
+  taxCode: Seq[CapabilityDetails],
+  childBenefit: Seq[CapabilityDetails],
+  payeIncome: Seq[CapabilityDetails],
 )
 
+object Activities {
 
-@(capabilityDetails: Seq[CapabilityDetails])(implicit request: Request[_], messages: Messages)
-
-@layout(pageTitle = titleNoForm("Tax Code Changes with Sample Rule")) {
-
-    <h1 class="govuk-heading-l">Tax Code Changes with Sample Rule</h1>
+  implicit val format: Format[Activities] = Json.format[Activities]
 
 }

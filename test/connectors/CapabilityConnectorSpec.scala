@@ -45,10 +45,10 @@ class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
   "Calling CapabilityConnector" must {
     "call getCapabilityDetails and return successful response" in {
 
-      val expectedDetails = CapabilityDetails(ninoT, LocalDate.of(2023, 4, 9), "Your tax code has changed", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
+      val expectedDetails = CapabilityDetails(ninoT, LocalDate.of(2023, 4, 9), "Your tax code has changed", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison", "Your Tax code has changed")
 
       server.stubFor(
-        WireMock.get(urlEqualTo(s"/single-customer-account-capabilities/capabilities-data/${nino.value}"))
+        WireMock.get(urlEqualTo(s"/single-customer-account-capabilities/capabilities-data/GG012345C"))
           .willReturn(
             ok
               .withHeader("Content-Type", "application/json")
@@ -58,14 +58,16 @@ class CapabilityConnectorSpec extends SpecBase with WireMockHelper {
                     "hasNino" -> true,
                     "nino" -> "GG012345C"
                   ),
-                  "date" -> "09-04-2023",
+                  "date" -> "09-04-2021",
                   "descriptionContent" -> "Your tax code has changed",
-                  "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
+                  "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+                  "activityHeading" -> "Your Tax code has changed"
                 ).toString())
           )
       )
 
-      capabilityConnector.getCapabilityDetails(nino).map { result =>
+      whenReady(capabilityConnector.getCapabilityDetails(nino)) { result =>
+
         result mustBe Some(expectedDetails)
       }
     }
