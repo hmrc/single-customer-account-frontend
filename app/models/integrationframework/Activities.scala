@@ -22,7 +22,7 @@ case class Activities(
   taxCalc: Seq[CapabilityDetails],
   taxCode: Seq[CapabilityDetails],
   childBenefit: Seq[CapabilityDetails],
-  payeIncome: Seq[CapabilityDetails],
+  payeIncome: Seq[CapabilityDetails]
 )
 
 object Activities {
