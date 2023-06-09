@@ -34,7 +34,7 @@ class ActivitiesController @Inject()(
   extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    activitiesService.getActivityDetails(Nino("GG012345C")).map { activities =>
+    activitiesService.getActivities(Nino("GG012345C")).map { activities =>
       Ok(view(activities))
     }
   }

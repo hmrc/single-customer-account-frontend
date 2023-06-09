@@ -41,7 +41,7 @@ class ActivitiesConnector @Inject()(
     "CorrelationId" -> UUID.randomUUID().toString
   )
 
-  def getActivityDetails(nino: Nino): Future[Activities] = {
+  def getActivities(nino: Nino): Future[Activities] = {
 
     wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/activities/${nino.value}")
       .withHttpHeaders(setHeaders: _*)

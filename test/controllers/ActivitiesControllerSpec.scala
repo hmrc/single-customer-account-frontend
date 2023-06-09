@@ -32,10 +32,10 @@ import scala.concurrent.Future
 
 class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
 
-  lazy val mockCapabilityService: ActivitiesService = mock[ActivitiesService]
+  lazy val mockActivitiesService: ActivitiesService = mock[ActivitiesService]
   lazy val view: ActivitiesView = inject[ActivitiesView]
 
-  lazy val controller: ActivitiesController = new ActivitiesController(messagesControllerComponents, mockCapabilityService, view)
+  lazy val controller: ActivitiesController = new ActivitiesController(messagesControllerComponents, mockActivitiesService, view)
 
   private def viewAsString(Activities: Activities) = view(Activities)(fakeRequest, messages).toString
 
@@ -56,7 +56,7 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
           activityHeading = "Your Tax calculation")
       ),Seq.empty,Seq.empty, Seq.empty)
 
-      when(mockCapabilityService.getActivityDetails(any())(any())).thenReturn(Future.successful(activities))
+      when(mockActivitiesService.getActivities(any())(any())).thenReturn(Future.successful(activities))
 
       val result = controller.onPageLoad(fakeRequest)
 
