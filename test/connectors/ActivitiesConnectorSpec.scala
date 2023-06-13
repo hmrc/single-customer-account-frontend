@@ -19,30 +19,35 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import fixtures.{SpecBase, WireMockHelper}
 import models.integrationframework.{Activities, CapabilityDetails}
+import play.api.http.Status.OK
 import play.api.libs.json.Json
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.Nino
 import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.test.HttpClientSupport
 
 import java.time.LocalDate
 
+
 class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClientSupport {
 
   import ActivitiesConnectorSpec._
 
   private lazy val activitiesConnector: ActivitiesConnector = injector.instanceOf[ActivitiesConnector]
+  private val fakeRequest = FakeRequest("GET", "/")
 
   val activitiesResponseJson = Json.obj(
     "taxCalc" -> Json.arr(Json.obj(
-    "nino" -> Json.obj(
-      "hasNino" -> true,
-      "nino" -> "GG012345C"
-    ),
-    "date" -> LocalDate.now.minusMonths(2).minusDays(1),
-    "descriptionContent" -> "Your tax calculation for the 2022 to 2023 is now available",
-    "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-    "activityHeading" -> "Your tax calculation"
-  )),
+      "nino" -> Json.obj(
+        "hasNino" -> true,
+        "nino" -> "GG012345C"
+      ),
+      "date" -> LocalDate.now.minusMonths(2).minusDays(1),
+      "descriptionContent" -> "Your tax calculation for the 2022 to 2023 is now available",
+      "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+      "activityHeading" -> "Your tax calculation"
+    )),
     "taxCode" -> Json.arr(Json.obj(
       "nino" -> Json.obj(
         "hasNino" -> true,
@@ -83,6 +88,8 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
       "activityHeading" -> "Your PAYE income for the current tax year"
     )))
 
+  val emptyActivitiesResponseJson = Json.obj("taxCalc" -> Json.arr(), "taxCode" -> Json.arr(), "childBenefit" -> Json.arr(), "payeIncome" -> Json.arr())
+
   "Calling Activities Connector" must {
     "call getActivities and return successful response" in {
 
@@ -96,52 +103,107 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
           )
       )
 
-      activitiesConnector.getActivities(nino).map { result =>
 
-        result mustBe Some(expectedDetails)
+      activitiesConnector.getActivities(nino).map { result =>
+        result mustBe expectedDetails
+      }
+
+
+    }
+
+    "call getActivities and return NOT_FOUND response" in {
+
+      server.stubFor(
+        get(urlEqualTo(activitiesUrl))
+          .willReturn(
+            notFound.withHeader("Content-Type", "application/json")
+              .withBody(
+                emptyActivitiesResponseJson.toString())
+          )
+      )
+
+      val result = activitiesConnector.getActivities(nino)
+      whenReady(result) { response =>
+        status(response) mustBe NOT_FOUND
       }
     }
+
+
+    "call getActivities and return 5xx response" in {
+
+      server.stubFor(
+        get(urlEqualTo(activitiesUrl))
+          .willReturn(
+            serverError.withHeader("Content-Type", "application/json")
+              .withBody(
+                emptyActivitiesResponseJson.toString())
+          )
+      )
+
+      activitiesConnector.getActivities(nino).map { result =>
+        result mustBe emptyExpectedDetails
+      }
+    }
+
+    "call getActivities and recover from exception" in {
+
+      server.stubFor(
+        get(urlEqualTo(activitiesUrl))
+          .willReturn(
+            badRequest
+          )
+      )
+
+      activitiesConnector.getActivities(nino).map { result =>
+        result mustBe None
+      }
+    }
+
+
   }
 }
 
 object ActivitiesConnectorSpec {
 
   val nino = domain.Nino("TT012345C")
-  val ninoT = Nino(hasNino = true, nino = Some("GG012345C"))
+  val ninoT = Nino(hasNino = true, nino = Some("TT012345C"))
 
-      val expectedDetails = Activities(
-        Seq(CapabilityDetails(
-          ninoT,
-          LocalDate.now.minusMonths(2).minusDays(1),
-          "Your tax calculation for the 2022 to 2023 is now available",
-          "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-          "Your tax calculation")),
-        Seq(CapabilityDetails(
-          ninoT,
-          LocalDate.now.minusMonths(2).minusDays(1),
-          "Your tax code has changed",
-          "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-          "Latest Tax code change")),
-        Seq(
-          CapabilityDetails(
-            ninoT,
-            LocalDate.now.minusMonths(2).minusDays(1),
-            "HMRC paid you Child Benefit",
-            "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-            "Recent Child Benefit payments"),
-          CapabilityDetails(
-            ninoT,
-            LocalDate.now.minusMonths(4).minusDays(1),
-            "HMRC paid you Child Benefit",
-            "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-            "Recent Child Benefit payments")
-        ),
-        Seq(CapabilityDetails(
-          ninoT,
-          LocalDate.now.minusMonths(2).minusDays(1),
-          "Your tax calculation for the 2022 to 2023 is now available",
-          "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-          "Your PAYE income for the current tax year")))
+  val expectedDetails = Activities(
+    Seq(CapabilityDetails(
+      ninoT,
+      LocalDate.now.minusMonths(2).minusDays(1),
+      "Your tax calculation for the 2022 to 2023 is now available",
+      "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+      "Your tax calculation")),
+    Seq(CapabilityDetails(
+      ninoT,
+      LocalDate.now.minusMonths(2).minusDays(1),
+      "Your tax code has changed",
+      "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+      "Latest Tax code change")),
+    Seq(
+      CapabilityDetails(
+        ninoT,
+        LocalDate.now.minusMonths(2).minusDays(1),
+        "HMRC paid you Child Benefit",
+        "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+        "Recent Child Benefit payments"),
+      CapabilityDetails(
+        ninoT,
+        LocalDate.now.minusMonths(4).minusDays(1),
+        "HMRC paid you Child Benefit",
+        "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+        "Recent Child Benefit payments")
+    ),
+    Seq(CapabilityDetails(
+      ninoT,
+      LocalDate.now.minusMonths(2).minusDays(1),
+      "Your tax calculation for the 2022 to 2023 is now available",
+      "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
+      "Your PAYE income for the current tax year")))
+
+  val emptyExpectedDetails = Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)
+
 
 
   private val activitiesUrl = s"/single-customer-account-capabilities/activities/$nino"
