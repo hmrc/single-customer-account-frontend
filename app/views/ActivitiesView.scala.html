@@ -25,9 +25,9 @@ dateHelper: DateHelper
 
 @(activities: Activities)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm("Your Recent Account Updates")) {
+@layout(pageTitle = titleNoForm(messages("activities.yourRecentAccountUpdates"))) {
 
-<h1 class="govuk-heading-l">Your recent account activity</h1>
+<h1 class="govuk-heading-l">@messages("activities.yourRecentAccountActivity")</h1>
 
 @for(category <- Seq((activities.taxCalc), (activities.taxCode), (activities.childBenefit), (activities.payeIncome))) {
 

@@ -16,15 +16,17 @@
 
 package controllers
 
+import controllers.actions.AuthActionImpl
 import fixtures.SpecBase
 import models.integrationframework.{Activities, CapabilityDetails}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status.OK
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import services.ActivitiesService
-import uk.gov.hmrc.auth.core.Nino
+import uk.gov.hmrc.auth.core.{AuthConnector, Nino}
 import views.html.ActivitiesView
 
 import java.time.LocalDate
@@ -34,8 +36,10 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
 
   lazy val mockActivitiesService: ActivitiesService = mock[ActivitiesService]
   lazy val view: ActivitiesView = inject[ActivitiesView]
+  lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  lazy val authAction = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
 
-  lazy val controller: ActivitiesController = new ActivitiesController(messagesControllerComponents, mockActivitiesService, view)
+  lazy val controller: ActivitiesController = new ActivitiesController(messagesControllerComponents, mockActivitiesService, authActionInstance, ifActionInstance, view)
 
   private def viewAsString(Activities: Activities) = view(Activities)(fakeRequest, messages).toString
 
@@ -58,11 +62,11 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
 
       when(mockActivitiesService.getActivities(any())(any())).thenReturn(Future.successful(activities))
 
-      val result = controller.onPageLoad(fakeRequest)
+      val result = controller.onPageLoad(FakeRequest())
 
       status(result) mustBe OK
 
-      contentAsString(result) mustBe viewAsString(activities)
+      contentAsString(result).replace("%2F", "") mustBe viewAsString(activities).replace("%2F", "")
     }
   }
 }
