@@ -45,6 +45,21 @@ object CapabilityDetails {
 
 }
 
+case class ActionDetails(
+                          nino: Nino,
+                          date: LocalDate,
+                          descriptionContent: String,
+                          actionDescription: String,
+                          url: String,
+                          activityHeading: String
+                        )
+
+object ActionDetails {
+
+  implicit val format: Format[ActionDetails] = Json.format[ActionDetails]
+
+}
+
 case class IfDetails(marriageStatusType: Option[Int] = None)
 
 object IfDetails {

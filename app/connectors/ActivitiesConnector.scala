@@ -47,20 +47,19 @@ class ActivitiesConnector @Inject()(
       .withHttpHeaders(setHeaders: _*)
       .get().map {
       case response if response.status >= OK && response.status < 300 =>
-        logger.info(s"[CapabilityConnector][getCapabilityDetails] IF successful response code: ${response.status}")
+        logger.info(s"[ActivitiesConnector][getActivities] IF successful response code: ${response.status}")
         response.json.as[Activities]
       case response if response.status == NOT_FOUND =>
-        logger.info("[CapabilityConnector][getCapabilityDetails] IF returned code 404 NOT FOUND")
+        logger.info("[ActivitiesConnector][getActivities] IF returned code 404 NOT FOUND")
         Activities(Seq.empty,Seq.empty,Seq.empty,Seq.empty)
       case response =>
-        logger.warn(s"[CapabilityConnector][getCapabilityDetails] IF returned unknown code: ${response.status}")
+        logger.warn(s"[ActivitiesConnector][getActivities] IF returned unknown code: ${response.status}")
         Activities(Seq.empty,Seq.empty,Seq.empty,Seq.empty)
     }.recover {
       case ex: Exception =>
-        logger.error(s"[CapabilityConnector][getCapabilityDetails] exception: ${ex.getMessage}")
+        logger.error(s"[ActivitiesConnector][getActivities] exception: ${ex.getMessage}")
         Activities(Seq.empty,Seq.empty,Seq.empty,Seq.empty)
     }
-
   }
 
 }
