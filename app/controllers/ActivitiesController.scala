@@ -17,14 +17,14 @@
 package controllers
 
 import com.google.inject.Inject
-
 import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ActivitiesService
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ActivitiesView
+import views.html.{ActionsView, ActivitiesView}
+
 import scala.concurrent.ExecutionContext
 
 
@@ -33,7 +33,7 @@ class ActivitiesController @Inject()(
   val activitiesService: ActivitiesService,
   authenticate: AuthAction,
   getUserDetails: IFAction,
-  view: ActivitiesView
+  view: ActivitiesView,
 )(implicit executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
