@@ -19,10 +19,7 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import fixtures.{SpecBase, WireMockHelper}
 import models.integrationframework.{Activities, CapabilityDetails}
-import play.api.http.Status.OK
 import play.api.libs.json.Json
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.Nino
 import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.test.HttpClientSupport
@@ -35,7 +32,6 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
   import ActivitiesConnectorSpec._
 
   private lazy val activitiesConnector: ActivitiesConnector = injector.instanceOf[ActivitiesConnector]
-  private val fakeRequest = FakeRequest("GET", "/")
 
   val activitiesResponseJson = Json.obj(
     "taxCalc" -> Json.arr(Json.obj(
@@ -116,7 +112,8 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
       server.stubFor(
         get(urlEqualTo(activitiesUrl))
           .willReturn(
-            notFound.withHeader("Content-Type", "application/json")
+            notFound
+              .withHeader("Content-Type", "application/json")
               .withBody(
                 emptyActivitiesResponseJson.toString())
           )
@@ -124,7 +121,7 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
 
       val result = activitiesConnector.getActivities(nino)
       whenReady(result) { response =>
-        status(response) mustBe NOT_FOUND
+        response mustBe emptyExpectedDetails
       }
     }
 
@@ -134,7 +131,8 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
       server.stubFor(
         get(urlEqualTo(activitiesUrl))
           .willReturn(
-            serverError.withHeader("Content-Type", "application/json")
+            serverError
+              .withHeader("Content-Type", "application/json")
               .withBody(
                 emptyActivitiesResponseJson.toString())
           )
@@ -151,11 +149,15 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
         get(urlEqualTo(activitiesUrl))
           .willReturn(
             badRequest
+              .withHeader("Content-Type", "application/json")
+              .withBody(
+                emptyActivitiesResponseJson.toString()
+              )
           )
       )
 
       activitiesConnector.getActivities(nino).map { result =>
-        result mustBe None
+        result mustBe emptyExpectedDetails
       }
     }
 
@@ -203,7 +205,6 @@ object ActivitiesConnectorSpec {
       "Your PAYE income for the current tax year")))
 
   val emptyExpectedDetails = Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)
-
 
 
   private val activitiesUrl = s"/single-customer-account-capabilities/activities/$nino"
