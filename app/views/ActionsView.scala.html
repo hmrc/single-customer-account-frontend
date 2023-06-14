@@ -23,7 +23,7 @@ layout: Layout,
 dateHelper: DateHelper
 )
 
-@(actions: Actions)(implicit request: Request[_], messages: Messages)
+@(actions: Actions])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("activities.yourRecentAccountUpdates"))) {
 
@@ -37,4 +37,5 @@ dateHelper: DateHelper
         </div>
     </div>
 </div>
+
 }

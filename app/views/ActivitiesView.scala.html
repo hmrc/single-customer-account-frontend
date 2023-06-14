@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.integrationframework.Activities
+@import models.integrationframework.{Activities, Actions}
 @import views.html.templates.Layout
 @import java.time.LocalDate
 
@@ -23,11 +23,24 @@ layout: Layout,
 dateHelper: DateHelper
 )
 
-@(activities: Activities)(implicit request: Request[_], messages: Messages)
+@(activities: Activities, actions: Actions)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("activities.yourRecentAccountUpdates"))) {
 
 <h1 class="govuk-heading-l">@messages("activities.yourRecentAccountActivity")</h1>
+
+
+<div class="sca-tasks">
+    <div class="sca-tasks__item">
+        <div>
+            <p><a class="govuk-link--no-visited-state" href=@actions.url>@actions.actionDescription</a> </p>
+            <p>@actions.descriptionContent</p>
+        </div>
+        <div class="sca-tasks__status">
+        </div>
+    </div>
+</div>
+
 
 @for(category <- Seq((activities.taxCalc), (activities.taxCode), (activities.childBenefit), (activities.payeIncome))) {
 
