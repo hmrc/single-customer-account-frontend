@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import models.integrationframework.{Activities}
+import models.integrationframework.Activities
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.ws.WSClient

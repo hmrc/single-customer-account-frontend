@@ -17,7 +17,7 @@
 package services
 
 import connectors.ActivitiesConnector
-import models.integrationframework.{Activities}
+import models.integrationframework.Activities
 import play.api.Logging
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier

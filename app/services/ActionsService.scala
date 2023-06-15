@@ -17,7 +17,7 @@
 package services
 
 import connectors.ActionsConnector
-import models.integrationframework.{ActionDetails, Activities, CapabilityDetails}
+import models.integrationframework.Actions
 import play.api.Logging
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ActionsService @Inject()(connector: ActionsConnector)(implicit ec: ExecutionContext) extends Logging {
 
 
-  def getActions(nino: Nino)(implicit hc: HeaderCarrier): Future[Seq[ActionDetails]] = {
-    connector.getActionDetails(nino)
+  def getActions(nino: Nino)(implicit hc: HeaderCarrier): Future[Actions] = {
+    connector.getActions(nino)
   }
 }

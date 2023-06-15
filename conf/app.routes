@@ -11,7 +11,7 @@ GET         /messages                                    controllers.MessageCont
 GET         /messages/:messageToken                      controllers.MessageController.messageDetail(messageToken: String)
 
 GET         /capability-details                          controllers.CapabilityDetailsController.onPageLoad
-GET         /recent-updates                              controllers.ActivitiesController.onPageLoad
+GET         /activities                                  controllers.ActivitiesController.onPageLoad
 GET         /actions                                     controllers.ActionsController.onPageLoad
 
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)

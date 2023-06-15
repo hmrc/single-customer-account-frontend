@@ -141,10 +141,10 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
 
     "display description list" when {
       "activities are present" in {
-        activitiesDoc must haveDescriptionListWithId("actionsList")
+        activitiesDoc must haveDescriptionListWithId("activitiesList")
         activitiesDoc must haveLinkWithUrlWithClass(
           "govuk-link--no-visited-state", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
-        val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
         activitiesDoc must haveLinkWithText("Central Perk Coffee Ltd paid you PAYE income")
         activitiesDoc must haveStrongWithText(
           LocalDate.now.minusMonths(2).minusDays(14).format(dateTimeFormatter))
@@ -156,7 +156,7 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
 
     "display no Activities" when {
       "no activities are present" in {
-        emptyActivitiesDoc mustNot haveDescriptionListWithId("actionsList")
+        emptyActivitiesDoc mustNot haveDescriptionListWithId("activitiesList")
         emptyActivitiesDoc mustNot haveLinkWithUrlWithClass(
           "govuk-link--no-visited-state", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
         val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")

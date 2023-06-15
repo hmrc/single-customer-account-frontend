@@ -23,7 +23,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.ActivitiesService
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.{ActionsView, ActivitiesView}
+import views.html.ActivitiesView
 
 import scala.concurrent.ExecutionContext
 
