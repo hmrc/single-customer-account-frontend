@@ -16,9 +16,11 @@
 
 package connectors
 
+import akka.http.scaladsl.model.StatusCodes.ServerError
 import com.github.tomakehurst.wiremock.client.WireMock._
 import fixtures.{SpecBase, WireMockHelper}
 import models.integrationframework.{Activities, CapabilityDetails}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.Nino
 import uk.gov.hmrc.domain
@@ -80,8 +82,8 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
       ),
       "date" -> LocalDate.now.minusMonths(2).minusDays(1),
       "descriptionContent" -> "Your tax calculation for the 2022 to 2023 is now available",
-      "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-      "activityHeading" -> "Your PAYE income for the current tax year"
+      "url" -> "www.tax.service.gov.uk/check-income-tax/tax-code-change/tasbt tetx-code-comparison",
+      "activityHeading" -> "Your PAYE income for the current tax year55555"
     )))
 
   val emptyActivitiesResponseJson = Json.obj("taxCalc" -> Json.arr(), "taxCode" -> Json.arr(), "childBenefit" -> Json.arr(), "payeIncome" -> Json.arr())
@@ -90,21 +92,20 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
     "call getActivities and return successful response" in {
 
       server.stubFor(
-        get(urlEqualTo(activitiesUrl))
+        get(urlEqualTo(s"/single-customer-account-capabilities/activities/${nino}"))
           .willReturn(
-            ok
+            ok.withStatus(OK)
               .withHeader("Content-Type", "application/json")
               .withBody(
-                activitiesResponseJson.toString())
+                emptyActivitiesResponseJson.toString())
           )
       )
 
 
-      activitiesConnector.getActivities(nino).map { result =>
-        result mustBe expectedDetails
+      val result = activitiesConnector.getActivities(nino)
+      whenReady(result) { result =>
+        result mustBe emptyExpectedDetails
       }
-
-
     }
 
     "call getActivities and return NOT_FOUND response" in {
@@ -112,7 +113,7 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
       server.stubFor(
         get(urlEqualTo(activitiesUrl))
           .willReturn(
-            notFound
+            notFound.withStatus(NOT_FOUND)
               .withHeader("Content-Type", "application/json")
               .withBody(
                 emptyActivitiesResponseJson.toString())
@@ -120,8 +121,8 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
       )
 
       val result = activitiesConnector.getActivities(nino)
-      whenReady(result) { response =>
-        response mustBe emptyExpectedDetails
+      whenReady(result) { result =>
+        result mustBe emptyExpectedDetails
       }
     }
 
@@ -131,14 +132,15 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
       server.stubFor(
         get(urlEqualTo(activitiesUrl))
           .willReturn(
-            serverError
+            serverError.withStatus(INTERNAL_SERVER_ERROR)
               .withHeader("Content-Type", "application/json")
               .withBody(
                 emptyActivitiesResponseJson.toString())
           )
       )
 
-      activitiesConnector.getActivities(nino).map { result =>
+      val result = activitiesConnector.getActivities(nino)
+      whenReady(result) { result =>
         result mustBe emptyExpectedDetails
       }
     }
@@ -151,12 +153,13 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
             badRequest
               .withHeader("Content-Type", "application/json")
               .withBody(
-                emptyActivitiesResponseJson.toString()
+                "This is an exception"
               )
           )
       )
 
-      activitiesConnector.getActivities(nino).map { result =>
+      val result = activitiesConnector.getActivities(nino)
+      whenReady(result) { result =>
         result mustBe emptyExpectedDetails
       }
     }

@@ -101,7 +101,7 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
     payeIncome = Seq(
       CapabilityDetails(
         nino = ninoT,
-        date = LocalDate.now.minusMonths(2).minusDays(14),
+        date = LocalDate.now.minusMonths(2).minusDays(18),
         descriptionContent = "Central Perk Coffee Ltd paid you PAYE income",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
         activityHeading = "Your PAYE income for the current tax year"),
@@ -147,7 +147,7 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
         val dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
         activitiesDoc must haveLinkWithText("Central Perk Coffee Ltd paid you PAYE income")
         activitiesDoc must haveStrongWithText(
-          LocalDate.now.minusMonths(2).minusDays(14).format(dateTimeFormatter))
+          LocalDate.now.minusMonths(2).minusDays(18).format(dateTimeFormatter))
         activitiesDoc must haveElementAtPathWithClass("div","govuk-summary-list__row")
         activitiesDoc must haveElementAtPathWithClass("dt","govuk-summary-list__key")
         activitiesDoc must haveElementAtPathWithClass("dd","govuk-summary-list__value")

@@ -33,7 +33,7 @@ class ActivitiesController @Inject()(
   val activitiesService: ActivitiesService,
   authenticate: AuthAction,
   getUserDetails: IFAction,
-  view: ActivitiesView,
+  view: ActivitiesView
 )(implicit executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
