@@ -32,6 +32,7 @@ import views.html.ActivitiesView
 import java.time.LocalDate
 import scala.concurrent.Future
 
+
 class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
 
   lazy val mockActivitiesService: ActivitiesService = mock[ActivitiesService]
