@@ -25,7 +25,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.Nino
 import uk.gov.hmrc.domain
 import utils.ViewSpecHelpers
-import views.html.ActivitiesView
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -123,6 +122,9 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
 
   private lazy val activitiesDoc = Jsoup.parse(activitiesView.toString())
   private lazy val emptyActivitiesDoc = Jsoup.parse(emptyActivitiesView.toString())
+
+  println("AC: " + activitiesView)
+
 
   "Activities View" must {
 

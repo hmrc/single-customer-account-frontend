@@ -16,7 +16,7 @@
 
 package connectors
 
-import akka.http.scaladsl.model.StatusCodes.ServerError
+
 import com.github.tomakehurst.wiremock.client.WireMock._
 import fixtures.{SpecBase, WireMockHelper}
 import models.integrationframework.{Activities, CapabilityDetails}
@@ -34,6 +34,8 @@ class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClie
   import ActivitiesConnectorSpec._
 
   private lazy val activitiesConnector: ActivitiesConnector = injector.instanceOf[ActivitiesConnector]
+
+  val nino = domain.Nino("TT012345C")
 
   val activitiesResponseJson = Json.obj(
     "taxCalc" -> Json.arr(Json.obj(
