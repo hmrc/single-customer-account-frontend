@@ -27,19 +27,20 @@ dateHelper: DateHelper
 
 @layout(pageTitle = titleNoForm(messages("activities.yourRecentAccountUpdates"))) {
 
-<h2 class="govuk-heading-m">@messages("actions.thingsForYouToDo")</h2>
+@if(actions.taxCalc.length > 0){<h2 class="govuk-heading-m">@messages("actions.thingsForYouToDo")</h2>
 
-@for(action <- actions.taxCalc) {
-    <div class="sca-tasks">
-        <div class="sca-tasks__item">
-            <div>
-                <p class="govuk-body govuk-body-m"><a class="govuk-link--no-visited-state" href=@action.url>@action.actionDescription</a></p>
-                <p class="govuk-body govuk-body-m">@action.descriptionContent</p>
-            </div>
-            <div class="sca-tasks__status">
-            </div>
+<div class="sca-tasks" id="actionsList">
+    @for(action <- actions.taxCalc) {
+    <div class="sca-tasks__item">
+        <div>
+            <p class="govuk-body govuk-body-m"><a class="govuk-link--no-visited-state" href=@action.url>@action.actionDescription</a>
+            </p>
+            <p class="govuk-body govuk-body-m">@action.descriptionContent</p>
+        </div>
+        <div class="sca-tasks__status">
         </div>
     </div>
+        }
+</div>
     }
-
 }

@@ -62,7 +62,6 @@ class ActionsControllerSpec extends SpecBase with BeforeAndAfter {
 
       status(result) mustBe OK
 
-//      contentAsString(result).replace("%2F", "") mustBe viewAsString(actions).replace("%2F", "")
     }
   }
 }

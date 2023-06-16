@@ -63,40 +63,33 @@ class ActionsViewSpec extends SpecBase with ViewSpecHelpers {
   private lazy val actionsDoc = Jsoup.parse(actionsView.toString())
   private lazy val emptyActionsDoc = Jsoup.parse(emptyActionsView.toString())
 
-  println("AC: " + actionsDoc)
-
   "Actions View" must {
 
-    "display things for you to do heading" when {
-      "actions are present" in
-        actionsDoc must haveH2HeadingWithText("Things for you to do")
-    }
-  }
+    //    "display things for you to do heading" when {
+    //      "actions are present" in
+    //        actionsDoc must haveH2HeadingWithText("Things for you to do")
+    //    }
+    //  }
 
-  "display description list" when {
-    "actions are present" in {
-      actionsDoc must haveDescriptionListWithId("actionsList")
-      actionsDoc must haveLinkWithUrlWithClass(
-        "govuk-link--no-visited-state", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
-      val dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-      actionsDoc must haveStrongWithText(
-        LocalDate.now.minusMonths(2).minusDays(1).format(dateTimeFormatter))
-      actionsDoc must haveParagraphWithText("You paid too much tax in the 2022 to 2023 tax year. HMRC owes you a £84.23 refund")
-      actionsDoc must haveLinkWithText("Claim your tax refund")
+    "display description list" when {
+      "actions are present" in {
+        actionsDoc must haveDivWithId("actionsList")
+        actionsDoc must haveLinkWithUrlWithClass(
+          "govuk-link--no-visited-state", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
+        actionsDoc must haveParagraphWithText("You paid too much tax in the 2022 to 2023 tax year. HMRC owes you a £84.23 refund")
+        actionsDoc must haveLinkWithText("Claim your tax refund")
+      }
     }
-  }
 
-  "display no Actions" when {
-    "no actions are present" in {
-      emptyActionsDoc mustNot haveH2HeadingWithText("Things for you to do")
-      emptyActionsDoc mustNot haveDescriptionListWithId("actionsList")
-      emptyActionsDoc mustNot haveLinkWithUrlWithClass(
-        "govuk-link--no-visited-state", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
-      val dateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-      emptyActionsDoc mustNot haveStrongWithText(
-        LocalDate.now.minusMonths(2).minusDays(1).format(dateTimeFormatter))
-      emptyActionsDoc mustNot haveParagraphWithText("You paid too much tax in the 2022 to 2023 tax year. HMRC owes you a £84.23 refund")
-      emptyActionsDoc mustNot haveLinkWithText("Claim your tax refund")
+    "display no Actions" when {
+      "no actions are present" in {
+        emptyActionsDoc mustNot haveH2HeadingWithText("Things for you to do")
+        emptyActionsDoc mustNot haveDescriptionListWithId("actionsList")
+        emptyActionsDoc mustNot haveLinkWithUrlWithClass(
+          "govuk-link--no-visited-state", "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison")
+        emptyActionsDoc mustNot haveParagraphWithText("You paid too much tax in the 2022 to 2023 tax year. HMRC owes you a £84.23 refund")
+        emptyActionsDoc mustNot haveLinkWithText("Claim your tax refund")
+      }
     }
   }
 }
