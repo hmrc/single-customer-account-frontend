@@ -10,7 +10,6 @@ GET         /taxes-and-benefits                          controllers.YourTaxesAn
 GET         /messages                                    controllers.MessageController.messageList
 GET         /messages/:messageToken                      controllers.MessageController.messageDetail(messageToken: String)
 
-GET         /capability-details                          controllers.CapabilityDetailsController.onPageLoad
 GET         /activities                                  controllers.ActivitiesController.onPageLoad
 GET         /actions                                     controllers.ActionsController.onPageLoad
 
