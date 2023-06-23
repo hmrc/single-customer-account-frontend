@@ -18,7 +18,7 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import models.integrationframework.CapabilityDetails
+import models.integrationframework.Actions
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.ws.WSClient
@@ -30,10 +30,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class CapabilityConnector @Inject()(
-                                     val wsClient: WSClient,
-                                     appConfig: FrontendAppConfig
-                                   )(implicit executionContext: ExecutionContext) extends Logging {
+class ActionsConnector @Inject()(
+                                  val wsClient: WSClient,
+                                  appConfig: FrontendAppConfig
+                                )(implicit executionContext: ExecutionContext) extends Logging {
 
   private def setHeaders = Seq(
     (HeaderNames.authorisation, s"Bearer ${appConfig.integrationFrameworkAuthToken}"),
@@ -41,24 +41,24 @@ class CapabilityConnector @Inject()(
     "CorrelationId" -> UUID.randomUUID().toString
   )
 
-  def getCapabilityDetails(nino: Nino): Future[Seq[CapabilityDetails]] = {
+  def getActions(nino: Nino): Future[Actions] = {
 
-    wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/capabilities-data/${nino.nino}")
+    wsClient.url(s"${appConfig.capabilitiesDataBaseUrl}/single-customer-account-capabilities/actions/${nino.nino}")
       .withHttpHeaders(setHeaders: _*)
       .get().map {
       case response if response.status >= OK && response.status < 300 =>
-        logger.info(s"[CapabilityConnector][getCapabilityDetails] IF successful response code: ${response.status}")
-        response.json.as[Seq[CapabilityDetails]]
+        logger.info(s"[ActionsConnector][getActions] IF successful response code: ${response.status}")
+        response.json.as[Actions]
       case response if response.status == NOT_FOUND =>
-        logger.info("[CapabilityConnector][getCapabilityDetails] IF returned code 404 NOT FOUND")
-        Seq.empty
+        logger.info("[ActionsConnector][getActions] IF returned code 404 NOT FOUND")
+        Actions(Seq.empty)
       case response =>
-        logger.warn(s"[CapabilityConnector][getCapabilityDetails] IF returned unknown code: ${response.status}")
-        Seq.empty
+        logger.warn(s"[ActionsConnector][getActions] IF returned unknown code: ${response.status}")
+        Actions(Seq.empty)
     }.recover {
       case ex: Exception =>
-        logger.error(s"[CapabilityConnector][getCapabilityDetails] exception: ${ex.getMessage}")
-        Seq.empty
+        logger.error(s"[ActionsConnector][getActions] exception: ${ex.getMessage}")
+        Actions(Seq.empty)
     }
 
   }
