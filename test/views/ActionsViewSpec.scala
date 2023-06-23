@@ -28,7 +28,6 @@ import utils.ViewSpecHelpers
 import views.html.ActionsView
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class ActionsViewSpec extends SpecBase with ViewSpecHelpers {
 
