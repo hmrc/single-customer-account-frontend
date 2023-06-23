@@ -16,11 +16,10 @@
 
 @import models.integrationframework.Activities
 @import views.html.templates.Layout
-@import java.time.LocalDate
 
 @this(
-layout: Layout,
-dateHelper: DateHelper
+    layout: Layout,
+    dateHelper: DateHelper
 )
 
 @(activities: Activities)(implicit request: Request[_], messages: Messages)

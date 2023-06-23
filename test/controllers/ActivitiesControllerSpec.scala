@@ -59,7 +59,7 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
           descriptionContent = "Desc-2",
           url = "url-2",
           activityHeading = "Your Tax calculation")
-      ),Seq.empty,Seq.empty, Seq.empty)
+      ), Seq.empty, Seq.empty, Seq.empty)
 
       when(mockActivitiesService.getActivities(any())(any())).thenReturn(Future.successful(activities))
 

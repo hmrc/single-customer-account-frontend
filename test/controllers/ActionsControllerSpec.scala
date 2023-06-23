@@ -18,13 +18,13 @@ package controllers
 
 import controllers.actions.AuthActionImpl
 import fixtures.SpecBase
-import models.integrationframework.{ActionDetails, Actions, CapabilityDetails}
+import models.integrationframework.{ActionDetails, Actions}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status.OK
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
+import play.api.test.Helpers.{defaultAwaitTimeout, status}
 import services.ActionsService
 import uk.gov.hmrc.auth.core.{AuthConnector, Nino}
 import views.html.ActionsView
