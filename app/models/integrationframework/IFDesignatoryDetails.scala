@@ -35,12 +35,28 @@ case class CapabilityDetails(
                               nino: Nino,
                               date: LocalDate,
                               descriptionContent: String,
-                              url: String
+                              url: String,
+                              activityHeading: String
                             )
 
 object CapabilityDetails {
 
   implicit val format: Format[CapabilityDetails] = Json.format[CapabilityDetails]
+
+}
+
+case class ActionDetails(
+                          nino: Nino,
+                          date: LocalDate,
+                          descriptionContent: String,
+                          actionDescription: String,
+                          url: String,
+                          activityHeading: String
+                        )
+
+object ActionDetails {
+
+  implicit val format: Format[ActionDetails] = Json.format[ActionDetails]
 
 }
 

@@ -16,8 +16,8 @@
 
 package services
 
-import connectors.CapabilityConnector
-import models.integrationframework.CapabilityDetails
+import connectors.ActionsConnector
+import models.integrationframework.Actions
 import play.api.Logging
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
@@ -25,10 +25,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CapabilityService @Inject()(connector: CapabilityConnector)(implicit ec: ExecutionContext) extends Logging {
+class ActionsService @Inject()(connector: ActionsConnector)(implicit ec: ExecutionContext) extends Logging {
 
 
-  def getCapabilityDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[Seq[CapabilityDetails]] = {
-    connector.getCapabilityDetails(nino)
+  def getActions(nino: Nino)(implicit hc: HeaderCarrier): Future[Actions] = {
+    connector.getActions(nino)
   }
 }

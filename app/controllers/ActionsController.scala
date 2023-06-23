@@ -16,27 +16,31 @@
 
 package controllers
 
-
 import com.google.inject.Inject
+import controllers.actions.{AuthAction, IFAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CapabilityService
+import services.ActionsService
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.CapabilityDetailsView
+import views.html.ActionsView
 
 import scala.concurrent.ExecutionContext
 
-class CapabilityDetailsController @Inject()(
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val capabilityService: CapabilityService,
-                                             view: CapabilityDetailsView
-                                           )(implicit executionContext: ExecutionContext)
+
+class ActionsController @Inject()(
+  val controllerComponents: MessagesControllerComponents,
+  val actionsService: ActionsService,
+  authenticate: AuthAction,
+  getUserDetails: IFAction,
+  view: ActionsView
+)(implicit executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    capabilityService.getCapabilityDetails(Nino("GG012345C")).map { capabilityDetails =>
-      Ok(view(capabilityDetails))
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) async { implicit request =>
+    val nino = request.authenticatedRequest.nino
+    actionsService.getActions(Nino("GG012345C")).map { actions =>
+      Ok(view(actions))
     }
   }
 }

@@ -31,6 +31,10 @@ label.message = Message
 label.sorry_theres_been_a_technical_problem_retrieving_your_messages=Sorry, there has been a technical problem retrieving your messages
 label.sorry_theres_been_a_technical_problem_retrieving_your_message=Sorry, there has been a technical problem retrieving your message
 
+activities.yourRecentAccountUpdates = Your recent account activity
+activities.yourRecentAccountActivity = Your recent account activity
+actions.thingsForYouToDo = Things for you to do
+
 site.back = Back
 site.remove = Remove
 site.change = Change
