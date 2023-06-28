@@ -10,11 +10,11 @@ This is a testing repo for stubbing API calls to backend HOD API's or other MDTP
 
 * To run the service locally you need to start the SCA profile from service manager:
 * 
-* sm2 --start SCA_FUTURES_ALL
+* `sm2 --start SCA_FUTURES_ALL`
 * 
 * Then stop the SCA frontend using the service manager and start is locally:
-* sm2 --stop SINGLE_CUSTOMER_ACCOUNT_FRONTEND
-* Sbt run
+* `sm2 --stop SINGLE_CUSTOMER_ACCOUNT_FRONTEND`
+* `sbt run`
 
 ### **Using the application**
 
