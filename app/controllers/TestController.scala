@@ -35,7 +35,6 @@ class TestController @Inject()(
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
     val name = request.ifData.details.name.fold("null"){ name => s"${name.firstForename.getOrElse("null")} ${name.surname.getOrElse("null")}"}
     val ifUrl = frontendAppConfig.integrationFrameworkUrl
-    val messageUrl = frontendAppConfig.messageFrontendUrl
-    Ok(view(name, Some(request.ifData), ifUrl, messageUrl) )
+    Ok(view(name, Some(request.ifData), ifUrl) )
   }
 }
