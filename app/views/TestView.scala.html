@@ -22,7 +22,7 @@
 @this(
         layout: Layout
 )
-@(name: String, personalDetailsResponse: Option[PersonalDetailsResponse], ifUrl: String, messagesUrl: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(name: String, personalDetailsResponse: Option[PersonalDetailsResponse], ifUrl: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(
     pageTitle    = messages("service.name"),
@@ -34,7 +34,6 @@
     <h1 class="govuk-heading-xl" id="name">@name</h1>
 
     <p>IF url: @ifUrl</p>
-    <p>message url: @messagesUrl</p>
 
     @if(personalDetailsResponse.isDefined){
         @defining(personalDetailsResponse.get) { details =>
