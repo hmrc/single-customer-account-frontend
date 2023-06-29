@@ -7,9 +7,6 @@ GET         /                                            controllers.HomeControl
 GET         /test                                        controllers.TestController.onPageLoad
 GET         /taxes-and-benefits                          controllers.YourTaxesAndBenefitsController.onPageLoad
 
-GET         /messages                                    controllers.MessageController.messageList
-GET         /messages/:messageToken                      controllers.MessageController.messageDetail(messageToken: String)
-
 GET         /activities                                  controllers.ActivitiesController.onPageLoad
 GET         /actions                                     controllers.ActionsController.onPageLoad
 
