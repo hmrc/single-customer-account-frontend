@@ -21,6 +21,7 @@ import fixtures.SpecBase
 import models.integrationframework.{Activities, CapabilityDetails}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.mockito.MockitoSugar.when
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status.OK
 import play.api.test.FakeRequest
@@ -42,7 +43,7 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
 
   lazy val controller: ActivitiesController = new ActivitiesController(messagesControllerComponents, mockActivitiesService, authActionInstance, ifActionInstance, view)
 
-  private def viewAsString(Activities: Activities) = view(Activities)(fakeRequest, messages).toString
+  private def viewAsString(Activities: Seq[Seq[CapabilityDetails]]) = view(Activities)(fakeRequest, messages).toString
 
   "ActivitiesController" must {
     "Return the activities page successfully with correct data" in {
@@ -59,7 +60,9 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
           descriptionContent = "Desc-2",
           url = "url-2",
           activityHeading = "Your Tax calculation")
-      ), Seq.empty, Seq.empty, Seq.empty)
+      ), None, Seq.empty, Seq.empty)
+
+      val activitiesConverted = Seq(activities.taxCalc,activities.taxCode.toSeq,activities.childBenefit,activities.payeIncome)
 
       when(mockActivitiesService.getActivities(any())(any())).thenReturn(Future.successful(activities))
 
@@ -67,7 +70,7 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
 
       status(result) mustBe OK
 
-      contentAsString(result).replace("%2F", "") mustBe viewAsString(activities).replace("%2F", "")
+      contentAsString(result).replace("%2F", "") mustBe viewAsString(activitiesConverted).replace("%2F", "")
     }
   }
 }

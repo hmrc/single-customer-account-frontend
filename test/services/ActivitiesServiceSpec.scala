@@ -63,7 +63,7 @@ class ActivitiesServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
           url = "url-2",
           activityHeading = "Your Tax code has changed")
         ),
-        Seq.empty,
+        None,
         Seq.empty,
         Seq.empty)
 
@@ -79,10 +79,10 @@ class ActivitiesServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
 
       val nino = domain.Nino("GG012345C")
 
-      when(mockActivitiesConnector.getActivities(nino)).thenReturn(Future.successful(Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)))
+      when(mockActivitiesConnector.getActivities(nino)).thenReturn(Future.successful(Activities(Seq.empty, None, Seq.empty, Seq.empty)))
 
       service.getActivities(nino).map(res =>
-        res mustBe Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)
+        res mustBe Activities(Seq.empty, None, Seq.empty, Seq.empty)
       )
     }
   }
