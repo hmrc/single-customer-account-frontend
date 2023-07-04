@@ -20,7 +20,7 @@ import play.api.libs.json.{Format, Json}
 
 case class Activities(
   taxCalc: Seq[CapabilityDetails],
-  taxCode: Seq[CapabilityDetails],
+  taxCode: Option[CapabilityDetails],
   childBenefit: Seq[CapabilityDetails],
   payeIncome: Seq[CapabilityDetails]
 )
