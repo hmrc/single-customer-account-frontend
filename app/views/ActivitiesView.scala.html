@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.integrationframework.Activities
+@import models.integrationframework.CapabilityDetails
 @import views.html.templates.Layout
 
 @this(
@@ -22,15 +22,15 @@
     dateHelper: DateHelper
 )
 
-@(activities: Activities)(implicit request: Request[_], messages: Messages)
+@(activities: Seq[Seq[CapabilityDetails]])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("activities.yourRecentAccountUpdates"))) {
 
 <h1 class="govuk-heading-l">@messages("activities.yourRecentAccountActivity")</h1>
 
-@for(category <- Seq((activities.taxCalc), (activities.taxCode), (activities.childBenefit), (activities.payeIncome))) {
+@for(category <- activities) {
 
-    @if(category.length > 0){
+    @if(category.nonEmpty){
 
         <dl class="govuk-summary-list" id="activitiesList">
             <h2 class="govuk-heading-m" style="width: max-content;">@category.head.activityHeading</h2>

@@ -35,8 +35,8 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
 
   val nino = domain.Nino("GG012345C")
   val ninoT = Nino(hasNino = true, Some("GG012345C"))
-  
-  
+
+
   private lazy val activityModel = Activities(
     taxCalc = Seq(
       CapabilityDetails(
@@ -44,27 +44,15 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
         date = LocalDate.now.minusMonths(2).minusDays(1),
         descriptionContent = "Your tax calculation for the 2022-2023 is now available",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-      activityHeading = "Your tax calculation")
+        activityHeading = "Your tax calculation")
     ),
-    taxCode = Seq(
+    taxCode = Some(
       CapabilityDetails(
         nino = ninoT,
         date = LocalDate.now.minusMonths(1).minusDays(1),
         descriptionContent = "Your tax code has changed - 1",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-        activityHeading = "Latest Tax code change"),
-      CapabilityDetails(
-        nino = ninoT,
-        date = LocalDate.now.minusMonths(2),
-        descriptionContent = "Your tax code has changed - 2",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-        activityHeading = "Latest Tax code change"),
-      CapabilityDetails(
-        nino = ninoT,
-        date = LocalDate.now,
-        descriptionContent = "Your tax code has changed - 7",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-        activityHeading = "Latest Tax code change"),
+        activityHeading = "Latest Tax code change")
     ),
     childBenefit = Seq(
       CapabilityDetails(
@@ -72,31 +60,31 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
         date = LocalDate.now.minusMonths(1).minusDays(1),
         descriptionContent = "HMRC paid you Child Benefit",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
-      , activityHeading = "Recent Child Benefit payments"),
+        , activityHeading = "Recent Child Benefit payments"),
       CapabilityDetails(
         nino = ninoT,
         date = LocalDate.now.minusMonths(2),
         descriptionContent = "HMRC paid you Child Benefit",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
-      , activityHeading = "Recent Child Benefit payments"),
+        , activityHeading = "Recent Child Benefit payments"),
       CapabilityDetails(
         nino = ninoT,
         date = LocalDate.now.minusMonths(3).plusDays(1),
         descriptionContent = "HMRC paid you Child Benefit",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
-      , activityHeading = "Recent Child Benefit payments"),
+        , activityHeading = "Recent Child Benefit payments"),
       CapabilityDetails(
         nino = ninoT,
         date = LocalDate.now.withMonth(4).withDayOfMonth(5),
         descriptionContent = "HMRC paid you Child Benefit",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
-      , activityHeading = "Recent Child Benefit payments"),
+        , activityHeading = "Recent Child Benefit payments"),
       CapabilityDetails(
         nino = ninoT,
         date = LocalDate.now.withMonth(4).withDayOfMonth(6),
         descriptionContent = "HMRC paid you Child Benefit",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison"
-      , activityHeading = "Recent Child Benefit payments"),
+        , activityHeading = "Recent Child Benefit payments"),
     ),
     payeIncome = Seq(
       CapabilityDetails(
@@ -108,18 +96,24 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
     )
   )
 
+  private lazy val activityModelConverted = Seq(activityModel.taxCalc, Seq(activityModel.taxCode.get), activityModel.childBenefit, activityModel.payeIncome)
+
+
   private lazy val emptyActivityModel = Activities(
     taxCalc = Seq.empty,
-    taxCode = Seq.empty,
+    taxCode = None,
     childBenefit = Seq.empty,
     payeIncome = Seq.empty
   )
 
+  private lazy val emptyActivityModelConverted = Seq(emptyActivityModel.taxCalc, emptyActivityModel.taxCode.toSeq, emptyActivityModel.childBenefit, emptyActivityModel.payeIncome)
+
   private val template: ActivitiesView = inject[ActivitiesView]
   implicit val request: Request[_] = FakeRequest()
 
-  def activitiesView: Html = template(activityModel)(request, messages)
-  def emptyActivitiesView: Html = template(emptyActivityModel)(request, messages)
+  def activitiesView: Html = template(activityModelConverted)(request, messages)
+
+  def emptyActivitiesView: Html = template(emptyActivityModelConverted)(request, messages)
 
   private lazy val activitiesDoc = Jsoup.parse(activitiesView.toString())
   private lazy val emptyActivitiesDoc = Jsoup.parse(emptyActivitiesView.toString())
@@ -134,7 +128,7 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
         activitiesDoc must haveH2HeadingWithText("Recent Child Benefit payments")
         activitiesDoc must haveH2HeadingWithText("Your PAYE income for the current tax year")
         activitiesDoc must haveClassWithText(
-          "Your PAYE income for the current tax year","govuk-heading-m"
+          "Your PAYE income for the current tax year", "govuk-heading-m"
         )
       }
     }
@@ -148,9 +142,9 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
         activitiesDoc must haveLinkWithText("Central Perk Coffee Ltd paid you PAYE income")
         activitiesDoc must haveStrongWithText(
           LocalDate.now.minusMonths(2).minusDays(18).format(dateTimeFormatter))
-        activitiesDoc must haveElementAtPathWithClass("div","govuk-summary-list__row")
-        activitiesDoc must haveElementAtPathWithClass("dt","govuk-summary-list__key")
-        activitiesDoc must haveElementAtPathWithClass("dd","govuk-summary-list__value")
+        activitiesDoc must haveElementAtPathWithClass("div", "govuk-summary-list__row")
+        activitiesDoc must haveElementAtPathWithClass("dt", "govuk-summary-list__key")
+        activitiesDoc must haveElementAtPathWithClass("dd", "govuk-summary-list__value")
       }
     }
 
@@ -163,9 +157,9 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
         emptyActivitiesDoc mustNot haveLinkWithText("Central Perk Coffee Ltd paid you PAYE income")
         emptyActivitiesDoc mustNot haveStrongWithText(
           LocalDate.now.minusMonths(2).minusDays(14).format(dateTimeFormatter))
-        emptyActivitiesDoc mustNot haveElementAtPathWithClass("div","govuk-summary-list__row")
-        emptyActivitiesDoc mustNot haveElementAtPathWithClass("dt","govuk-summary-list__key")
-        emptyActivitiesDoc mustNot haveElementAtPathWithClass("dd","govuk-summary-list__value")
+        emptyActivitiesDoc mustNot haveElementAtPathWithClass("div", "govuk-summary-list__row")
+        emptyActivitiesDoc mustNot haveElementAtPathWithClass("dt", "govuk-summary-list__key")
+        emptyActivitiesDoc mustNot haveElementAtPathWithClass("dd", "govuk-summary-list__value")
       }
     }
   }
