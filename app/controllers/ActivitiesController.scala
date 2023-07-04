@@ -29,18 +29,21 @@ import scala.concurrent.ExecutionContext
 
 
 class ActivitiesController @Inject()(
-  val controllerComponents: MessagesControllerComponents,
-  val activitiesService: ActivitiesService,
-  authenticate: AuthAction,
-  getUserDetails: IFAction,
-  view: ActivitiesView
-)(implicit executionContext: ExecutionContext)
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val activitiesService: ActivitiesService,
+                                      authenticate: AuthAction,
+                                      getUserDetails: IFAction,
+                                      view: ActivitiesView
+                                    )(implicit executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) async { implicit request =>
     val nino = request.authenticatedRequest.nino
     activitiesService.getActivities(Nino("GG012345C")).map { activities =>
-      Ok(view(activities))
+      val taxCodeChange = if (activities.taxCode.isDefined) Seq(activities.taxCode.get) else Seq.empty
+      val uniformActivities = Seq(activities.taxCalc, taxCodeChange, activities.childBenefit, activities.payeIncome)
+
+      Ok(view(uniformActivities))
     }
   }
 }
