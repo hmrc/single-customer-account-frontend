@@ -46,25 +46,13 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
       activityHeading = "Your tax calculation")
     ),
-    taxCode = Seq(
+    taxCode = Some(
       CapabilityDetails(
         nino = ninoT,
         date = LocalDate.now.minusMonths(1).minusDays(1),
         descriptionContent = "Your tax code has changed - 1",
         url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-        activityHeading = "Latest Tax code change"),
-      CapabilityDetails(
-        nino = ninoT,
-        date = LocalDate.now.minusMonths(2),
-        descriptionContent = "Your tax code has changed - 2",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-        activityHeading = "Latest Tax code change"),
-      CapabilityDetails(
-        nino = ninoT,
-        date = LocalDate.now,
-        descriptionContent = "Your tax code has changed - 7",
-        url = "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
-        activityHeading = "Latest Tax code change"),
+        activityHeading = "Latest Tax code change")
     ),
     childBenefit = Seq(
       CapabilityDetails(
@@ -108,18 +96,23 @@ class ActivitiesViewSpec extends SpecBase with ViewSpecHelpers {
     )
   )
 
+  private lazy val activityModelConverted = Seq(activityModel.taxCalc,Seq(activityModel.taxCode.get),activityModel.childBenefit,activityModel.payeIncome)
+
+
   private lazy val emptyActivityModel = Activities(
     taxCalc = Seq.empty,
-    taxCode = Seq.empty,
+    taxCode = None,
     childBenefit = Seq.empty,
     payeIncome = Seq.empty
   )
 
+  private lazy val emptyActivityModelConverted = Seq(emptyActivityModel.taxCalc,emptyActivityModel.taxCode.toSeq,emptyActivityModel.childBenefit,emptyActivityModel.payeIncome)
+
   private val template: ActivitiesView = inject[ActivitiesView]
   implicit val request: Request[_] = FakeRequest()
 
-  def activitiesView: Html = template(activityModel)(request, messages)
-  def emptyActivitiesView: Html = template(emptyActivityModel)(request, messages)
+  def activitiesView: Html = template(activityModelConverted)(request, messages)
+  def emptyActivitiesView: Html = template(emptyActivityModelConverted)(request, messages)
 
   private lazy val activitiesDoc = Jsoup.parse(activitiesView.toString())
   private lazy val emptyActivitiesDoc = Jsoup.parse(emptyActivitiesView.toString())

@@ -182,7 +182,7 @@ object ActivitiesConnectorSpec {
       "Your tax calculation for the 2022 to 2023 is now available",
       "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
       "Your tax calculation")),
-    Seq(CapabilityDetails(
+    Some(CapabilityDetails(
       ninoT,
       LocalDate.now.minusMonths(2).minusDays(1),
       "Your tax code has changed",
@@ -209,7 +209,7 @@ object ActivitiesConnectorSpec {
       "www.tax.service.gov.uk/check-income-tax/tax-code-change/tax-code-comparison",
       "Your PAYE income for the current tax year")))
 
-  val emptyExpectedDetails = Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)
+  val emptyExpectedDetails = Activities(Seq.empty, None, Seq.empty, Seq.empty)
 
 
   private val activitiesUrl = s"/single-customer-account-capabilities/activities/$nino"
