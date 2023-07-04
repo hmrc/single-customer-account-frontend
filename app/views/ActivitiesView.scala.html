@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models.integrationframework.Activities
 @import models.integrationframework.CapabilityDetails
 @import views.html.templates.Layout
 
@@ -31,7 +30,7 @@
 
 @for(category <- activities) {
 
-    @if(category.length > 0){
+    @if(category.nonEmpty){
 
         <dl class="govuk-summary-list" id="activitiesList">
             <h2 class="govuk-heading-m" style="width: max-content;">@category.head.activityHeading</h2>

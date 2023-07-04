@@ -20,7 +20,6 @@ import controllers.actions.AuthActionImpl
 import fixtures.SpecBase
 import models.integrationframework.{Activities, CapabilityDetails}
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
 import org.mockito.MockitoSugar.when
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status.OK
@@ -62,7 +61,7 @@ class ActivitiesControllerSpec extends SpecBase with BeforeAndAfter {
           activityHeading = "Your Tax calculation")
       ), None, Seq.empty, Seq.empty)
 
-      val activitiesConverted = Seq(activities.taxCalc,activities.taxCode.toSeq,activities.childBenefit,activities.payeIncome)
+      val activitiesConverted = Seq(activities.taxCalc, activities.taxCode.toSeq, activities.childBenefit, activities.payeIncome)
 
       when(mockActivitiesService.getActivities(any())(any())).thenReturn(Future.successful(activities))
 

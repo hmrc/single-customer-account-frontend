@@ -40,9 +40,7 @@ class ActivitiesController @Inject()(
   def onPageLoad: Action[AnyContent] = (authenticate andThen getUserDetails) async { implicit request =>
     val nino = request.authenticatedRequest.nino
     activitiesService.getActivities(Nino("GG012345C")).map { activities =>
-      val taxCodeChange = if (activities.taxCode.isDefined) Seq(activities.taxCode.get) else Seq.empty
-      val uniformActivities = Seq(activities.taxCalc, taxCodeChange, activities.childBenefit, activities.payeIncome)
-
+      val uniformActivities = Seq(activities.taxCalc, activities.taxCode.toSeq, activities.childBenefit, activities.payeIncome)
       Ok(view(uniformActivities))
     }
   }
