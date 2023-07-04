@@ -51,14 +51,14 @@ class ActivitiesConnector @Inject()(
         response.json.as[Activities]
       case response if response.status == NOT_FOUND =>
         logger.info("[ActivitiesConnector][getActivities] IF returned code 404 NOT FOUND")
-        Activities(Seq.empty,None,Seq.empty,Seq.empty)
+        Activities(Seq.empty, None, Seq.empty, Seq.empty)
       case response =>
         logger.warn(s"[ActivitiesConnector][getActivities] IF returned unknown code: ${response.status}")
-        Activities(Seq.empty,None,Seq.empty,Seq.empty)
+        Activities(Seq.empty, None, Seq.empty, Seq.empty)
     }.recover {
       case ex: Exception =>
         logger.error(s"[ActivitiesConnector][getActivities] exception: ${ex.getMessage}")
-        Activities(Seq.empty,None,Seq.empty,Seq.empty)
+        Activities(Seq.empty, None, Seq.empty, Seq.empty)
     }
   }
 

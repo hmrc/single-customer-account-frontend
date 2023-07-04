@@ -56,12 +56,12 @@ class ActivitiesServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
           descriptionContent = "Desc-1",
           url = "url-1",
           activityHeading = "Your Tax code has changed"),
-        CapabilityDetails(
-          nino = Nino(true, Some("GG012345C")),
-          date = LocalDate.of(2023, 4, 9),
-          descriptionContent = "Desc-2",
-          url = "url-2",
-          activityHeading = "Your Tax code has changed")
+          CapabilityDetails(
+            nino = Nino(true, Some("GG012345C")),
+            date = LocalDate.of(2023, 4, 9),
+            descriptionContent = "Desc-2",
+            url = "url-2",
+            activityHeading = "Your Tax code has changed")
         ),
         None,
         Seq.empty,
