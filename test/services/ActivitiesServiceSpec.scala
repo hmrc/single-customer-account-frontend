@@ -56,14 +56,14 @@ class ActivitiesServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
           descriptionContent = "Desc-1",
           url = "url-1",
           activityHeading = "Your Tax code has changed"),
-        CapabilityDetails(
-          nino = Nino(true, Some("GG012345C")),
-          date = LocalDate.of(2023, 4, 9),
-          descriptionContent = "Desc-2",
-          url = "url-2",
-          activityHeading = "Your Tax code has changed")
+          CapabilityDetails(
+            nino = Nino(true, Some("GG012345C")),
+            date = LocalDate.of(2023, 4, 9),
+            descriptionContent = "Desc-2",
+            url = "url-2",
+            activityHeading = "Your Tax code has changed")
         ),
-        Seq.empty,
+        None,
         Seq.empty,
         Seq.empty)
 
@@ -79,10 +79,10 @@ class ActivitiesServiceSpec extends SpecBase with ScalaFutures with BeforeAndAft
 
       val nino = domain.Nino("GG012345C")
 
-      when(mockActivitiesConnector.getActivities(nino)).thenReturn(Future.successful(Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)))
+      when(mockActivitiesConnector.getActivities(nino)).thenReturn(Future.successful(Activities(Seq.empty, None, Seq.empty, Seq.empty)))
 
       service.getActivities(nino).map(res =>
-        res mustBe Activities(Seq.empty, Seq.empty, Seq.empty, Seq.empty)
+        res mustBe Activities(Seq.empty, None, Seq.empty, Seq.empty)
       )
     }
   }
