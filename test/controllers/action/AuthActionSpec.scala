@@ -20,8 +20,8 @@ import controllers.action.AuthActionSpec.{Harness, authRetrievals, emptyAuthRetr
 import controllers.actions.{AuthAction, AuthActionImpl}
 import fixtures.RetrievalOps.Ops
 import fixtures.SpecBase
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
 import play.api.mvc._
 import play.api.test.Helpers._
