@@ -1,7 +1,7 @@
 # microservice specific routes
 
 ->          /hmrc-frontend                               hmrcfrontend.Routes
-->          /pta-frontend                                ptafrontend.Routes
+->          /sca                                         sca.Routes
 
 GET         /                                            controllers.HomeController.onPageLoad
 GET         /test                                        controllers.TestController.onPageLoad

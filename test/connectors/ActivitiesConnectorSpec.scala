@@ -24,12 +24,12 @@ import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.Nino
 import uk.gov.hmrc.domain
-import uk.gov.hmrc.http.test.HttpClientSupport
+import uk.gov.hmrc.http.test.HttpClientV2Support
 
 import java.time.LocalDate
 
 
-class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClientSupport {
+class ActivitiesConnectorSpec extends SpecBase with WireMockHelper with HttpClientV2Support {
 
   import ActivitiesConnectorSpec._
 
