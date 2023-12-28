@@ -22,3 +22,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-uglify" % "2.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.4")
 
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.3")
+
+addSbtPlugin("org.scalastyle" % "scalastyle-sbt-plugin" % "1.0.0" exclude("org.scala-lang.modules", "scala-xml_2.12"))
+
