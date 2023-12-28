@@ -30,8 +30,6 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 import uk.gov.hmrc.auth.core._
 
 import scala.concurrent.Future
-import scala.language.postfixOps
-
 
 class AuthActionSpec extends SpecBase {
 

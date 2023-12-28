@@ -97,14 +97,6 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
         stubbedRetrievalResult.map(_.asInstanceOf[A])(ec)
     }
 
-  private val enrolmentSA = Enrolment(
-    key = "IR-SA",
-    identifiers = Seq(EnrolmentIdentifier(key = "UTR", value = "11111111")),
-    state = "Activated",
-    delegatedAuthRule = None
-  )
-
-
   val authRetrievals = Future.successful(
     Some(nino) ~
       Individual ~
