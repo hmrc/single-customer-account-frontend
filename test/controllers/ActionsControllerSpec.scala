@@ -42,8 +42,6 @@ class ActionsControllerSpec extends SpecBase with BeforeAndAfter {
 
   lazy val controller: ActionsController = new ActionsController(messagesControllerComponents, mockActionsService, authActionInstance, ifActionInstance, view)
 
-  private def viewAsString(Actions: Actions) = view(Actions)(fakeRequest, messages).toString
-
   "ActionsController" must {
     "Return the actions page successfully with correct data" in {
       val actions: Actions = Actions(Seq(

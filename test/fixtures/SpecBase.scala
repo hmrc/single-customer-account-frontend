@@ -16,11 +16,11 @@
 
 package fixtures
 
-import akka.actor.ActorSystem
-import akka.stream.Materializer
 import config.FrontendAppConfig
 import controllers.actions.{AuthAction, IFAction}
 import handlers.ErrorHandler
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.Materializer
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar

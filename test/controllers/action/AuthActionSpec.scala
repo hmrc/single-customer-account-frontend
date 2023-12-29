@@ -20,8 +20,8 @@ import controllers.action.AuthActionSpec.{Harness, authRetrievals, emptyAuthRetr
 import controllers.actions.{AuthAction, AuthActionImpl}
 import fixtures.RetrievalOps.Ops
 import fixtures.SpecBase
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
 import play.api.mvc._
 import play.api.test.Helpers._
@@ -96,14 +96,6 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
         stubbedRetrievalResult.map(_.asInstanceOf[A])(ec)
     }
-
-  private val enrolmentSA = Enrolment(
-    key = "IR-SA",
-    identifiers = Seq(EnrolmentIdentifier(key = "UTR", value = "11111111")),
-    state = "Activated",
-    delegatedAuthRule = None
-  )
-
 
   val authRetrievals = Future.successful(
     Some(nino) ~
