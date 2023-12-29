@@ -23,20 +23,19 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.sca.services.WrapperService
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 
 class AuthController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 config: FrontendAppConfig,
                                 wrapperService: WrapperService
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                              ) extends FrontendBaseController with I18nSupport {
 
-  def signOut(): Action[AnyContent] = Action { implicit request =>
+  def signOut(): Action[AnyContent] = Action { _ =>
     wrapperService.safeSignoutUrl().fold(BadRequest("no origin set")){ url => Redirect(url).withNewSession}
   }
 
-  def signOutNoSurvey(): Action[AnyContent] = Action { implicit request =>
+  def signOutNoSurvey(): Action[AnyContent] = Action { _ =>
       Redirect(config.signOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad.url))).withNewSession
   }
 }

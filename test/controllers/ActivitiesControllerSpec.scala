@@ -20,7 +20,7 @@ import controllers.actions.AuthActionImpl
 import fixtures.SpecBase
 import models.integrationframework.{Activities, CapabilityDetails}
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar.when
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfter
 import play.api.http.Status.OK
 import play.api.test.FakeRequest
