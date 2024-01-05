@@ -3,12 +3,8 @@
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 ->          /sca                                         sca.Routes
 
-GET         /                                            controllers.HomeController.onPageLoad
-GET         /test                                        controllers.TestController.onPageLoad
-GET         /taxes-and-benefits                          controllers.YourTaxesAndBenefitsController.onPageLoad
-
-GET         /activities                                  controllers.ActivitiesController.onPageLoad
-GET         /actions                                     controllers.ActionsController.onPageLoad
+GET         /                                            controllers.HomeController.newWrapperLayout
+GET         /oldLayout                                   controllers.HomeController.oldWrapperLayout
 
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 

@@ -23,7 +23,7 @@ import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.ws.WSClient
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames}
+import uk.gov.hmrc.http.HeaderNames
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,7 +49,7 @@ class IFConnector @Inject()(
     ("CorrelationId" -> UUID.randomUUID().toString)
   )
 
-  def getDesignatoryDetails(nino: Option[Nino])(implicit hc: HeaderCarrier): Future[Option[IfDesignatoryDetails]] = {
+  def getDesignatoryDetails(nino: Option[Nino]): Future[Option[IfDesignatoryDetails]] = {
     nino match {
       case None => logger.info("[IFConnector][getDesignatoryDetails] No NINO supplied, defaulting to None")
         Future.successful(None)
