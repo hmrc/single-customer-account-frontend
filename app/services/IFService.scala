@@ -20,7 +20,6 @@ import connectors.IFConnector
 import models.integrationframework._
 import play.api.Logging
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -63,7 +62,7 @@ class IFService @Inject()(connector: IFConnector)(implicit ec: ExecutionContext)
     }
   }
 
-  def getPersonalDetails(nino: Option[Nino])(implicit hc: HeaderCarrier): Future[PersonalDetailsResponse] = {
+  def getPersonalDetails(nino: Option[Nino]): Future[PersonalDetailsResponse] = {
     for {
       designatoryDetails <- connector.getDesignatoryDetails(nino)
       contactDetails <- connector.getContactDetails(nino)
