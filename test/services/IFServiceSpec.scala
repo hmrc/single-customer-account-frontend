@@ -56,7 +56,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
      )))
      val contactDetailsResponse = IFContactDetails(None)
 
-     when(mockIfConnector.getDesignatoryDetails(any())(any()))
+     when(mockIfConnector.getDesignatoryDetails(any()))
        .thenReturn(Future.successful(expectedObj))
 
      when(mockIfConnector.getContactDetails(any()))
@@ -98,7 +98,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
 
     val contactDetailsResponse = IFContactDetails(None)
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -140,7 +140,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
 
     val contactDetailsResponse = IFContactDetails(None)
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -169,7 +169,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
 
     val contactDetailsResponse = IFContactDetails(None)
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -210,7 +210,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
 
     val contactDetailsResponse = IFContactDetails(None)
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -242,7 +242,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
      )
     ))
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -273,7 +273,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
      )
     ))
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -303,7 +303,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
      )
     ))
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -335,7 +335,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
      )
     ))
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -365,7 +365,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
      )
     ))
 
-    when(mockIfConnector.getDesignatoryDetails(any())(any()))
+    when(mockIfConnector.getDesignatoryDetails(any()))
       .thenReturn(Future.successful(designatoryDetailsResponse))
 
     when(mockIfConnector.getContactDetails(any()))
@@ -385,7 +385,7 @@ class IFServiceSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach{
   "must return empty respone" in {
 
 
-   when(mockIfConnector.getDesignatoryDetails(any())(any()))
+   when(mockIfConnector.getDesignatoryDetails(any()))
      .thenReturn(Future.successful(None))
 
    when(mockIfConnector.getContactDetails(any()))
