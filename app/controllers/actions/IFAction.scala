@@ -32,7 +32,6 @@ class IFActionImpl @Inject()(
                             (implicit val executionContext: ExecutionContext) extends IFAction with Logging {
 
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[AuthenticatedIFRequest[A]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     ifService.getPersonalDetails(request.nino).map { res =>
       logger.info(s"[IFActionImpl][transform] Successful IF Action request")
       AuthenticatedIFRequest[A](request, res)

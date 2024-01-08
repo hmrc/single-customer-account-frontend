@@ -28,12 +28,16 @@ class HomeControllerSpec extends SpecBase {
   lazy val controller: HomeController = new HomeController(messagesControllerComponents, authActionInstance, ifActionInstance, homeView, wrapperService)
 
   "HomeController" must {
-    "Return the Home page" in {
+    "Return the Home page using deprecated library call" in {
+      whenReady(controller.oldWrapperLayout(fakeRequest)) { result =>
+        result.header.status shouldBe 200
+      }
+    }
 
-      whenReady(controller.onPageLoad(fakeRequest)) { result =>
+    "Return the Home page using library call" in {
+      whenReady(controller.newWrapperLayout(fakeRequest)) { result =>
         result.header.status shouldBe 200
       }
     }
   }
-
 }
