@@ -24,6 +24,7 @@ To log in using the Authority Wizard please click the link below:
 * Use the below credentials to login :
 * Confidence Level: 200
 * Redirect url local : http://localhost:8420/single-customer-account
+* Redirect url local for testing deprecated layout method: http://localhost:8420/single-customer-account/oldLayout
 * Redirect url QA :  /single-customer-account
 * NINO: Pick one of the following
 - AA999999A
