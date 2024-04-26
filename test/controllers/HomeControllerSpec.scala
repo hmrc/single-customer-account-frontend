@@ -25,7 +25,7 @@ class HomeControllerSpec extends SpecBase {
   lazy val wrapperService = injector.instanceOf[WrapperService]
 
   lazy val homeView: HomeViewWrapperVersion = injector.instanceOf[HomeViewWrapperVersion]
-  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authActionInstance, ifActionInstance, homeView, wrapperService)
+  lazy val controller: HomeController = new HomeController(messagesControllerComponents, authActionInstance, homeView, wrapperService)
 
   "HomeController" must {
     "Return the Home page using deprecated library call" in {

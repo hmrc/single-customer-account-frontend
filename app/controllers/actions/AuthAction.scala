@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import controllers.routes
-import models.auth
 import models.auth.AuthenticatedRequest
 import play.api.Logging
 import play.api.mvc.Results.Redirect
@@ -71,7 +70,7 @@ class AuthActionImpl @Inject()(
           }
           .asInstanceOf[Request[A]]
 
-        val authenticatedRequest = auth.AuthenticatedRequest[A](
+        val authenticatedRequest = AuthenticatedRequest[A](
           trustedHelper.fold(nino.map(domain.Nino))(helper => Some(domain.Nino(helper.principalNino))),
           credentials,
           confidenceLevel,
