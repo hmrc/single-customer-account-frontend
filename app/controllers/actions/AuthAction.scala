@@ -32,11 +32,14 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(
-                                override val authConnector: AuthConnector,
-                                appConfig: FrontendAppConfig,
-                                val parser: BodyParsers.Default)
-                              (implicit val executionContext: ExecutionContext) extends AuthorisedFunctions with AuthAction with Logging {
+class AuthActionImpl @Inject() (
+  override val authConnector: AuthConnector,
+  appConfig: FrontendAppConfig,
+  val parser: BodyParsers.Default
+)(implicit val executionContext: ExecutionContext)
+    extends AuthorisedFunctions
+    with AuthAction
+    with Logging {
 
   object GTOE200 {
     def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
@@ -55,18 +58,17 @@ class AuthActionImpl @Inject()(
         Retrievals.credentialStrength and
         Retrievals.confidenceLevel and
         Retrievals.name and
-        Retrievals.trustedHelper and
-        Retrievals.profile
+        Retrievals.trustedHelper
     ) {
       case nino ~ _ ~ Enrolments(enrolments) ~ Some(credentials) ~ Some(CredentialStrength.strong) ~
-        GTOE200(confidenceLevel) ~ name ~ trustedHelper ~ profile =>
+          GTOE200(confidenceLevel) ~ name ~ trustedHelper =>
         val trimmedRequest: Request[A] = request
           .map {
             case AnyContentAsFormUrlEncoded(data) =>
               AnyContentAsFormUrlEncoded(data.map { case (key, vals) =>
                 (key, vals.map(_.trim))
               })
-            case b => b
+            case b                                => b
           }
           .asInstanceOf[Request[A]]
 
@@ -82,19 +84,20 @@ class AuthActionImpl @Inject()(
         )
         logger.info(s"[AuthActionImpl][invokeBlock] Successful Auth request")
         block(authenticatedRequest)
-      case _ => logger.info(s"[AuthActionImpl][invokeBlock] Unauthorised request")
+      case _ =>
+        logger.info(s"[AuthActionImpl][invokeBlock] Unauthorised request")
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
     }
-  }.recover {
-    case authException =>
-      logger.error(s"[AuthActionImpl][invokeBlock] exception: ${authException.getMessage}")
-      Redirect(
+  }.recover { case authException =>
+    logger.error(s"[AuthActionImpl][invokeBlock] exception: ${authException.getMessage}")
+    Redirect(
       appConfig.loginUrl,
-      Map("continue" -> Seq(appConfig.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend")))
+      Map("continue" -> Seq(appConfig.loginContinueUrl), "origin" -> Seq("single-customer-account-frontend"))
+    )
   }
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction
-  extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest] {
-}
+    extends ActionBuilder[AuthenticatedRequest, AnyContent]
+    with ActionFunction[Request, AuthenticatedRequest] {}

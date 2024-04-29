@@ -76,10 +76,10 @@ trait JsoupMatchers {
   }
 
   class TagWithIdAndTextMatcher(expectedContent: String, tag: String, id: String)
-    extends CssSelectorWithTextMatcher(expectedContent, s"$tag[id=$id]")
+      extends CssSelectorWithTextMatcher(expectedContent, s"$tag[id=$id]")
 
   class CssSelectorWithAttributeValueMatcher(attributeName: String, attributeValue: String, selector: String)
-    extends Matcher[Document] {
+      extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
       val attributes: List[Attributes] =
         left
@@ -175,7 +175,7 @@ trait JsoupMatchers {
 
   class IdSelectorWithUrlAndTextMatcher(id: String, url: String, text: String) extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
-      val element = left.getElementById(id)
+      val element           = left.getElementById(id)
       val hrefFound: String = element.attr("href")
       val textFound: String = element.text
 
@@ -199,7 +199,7 @@ trait JsoupMatchers {
 
   class ElementWithAttributeValueMatcher(expectedContent: String, attribute: String) extends Matcher[Element] {
     def apply(left: Element): MatchResult = {
-      val attribVal = left.attr(attribute)
+      val attribVal  = left.attr(attribute)
       val attributes = left.attributes().asList().mkString("\t", "\n\t", "")
 
       MatchResult(
@@ -213,7 +213,7 @@ trait JsoupMatchers {
 
   class ElementWithClassMatcher(expectedClass: String) extends Matcher[Element] {
     def apply(left: Element): MatchResult = {
-      val classes = left.classNames.toList
+      val classes    = left.classNames.toList
       val classNames = classes.mkString("\t", "\n\t", "")
 
       MatchResult(

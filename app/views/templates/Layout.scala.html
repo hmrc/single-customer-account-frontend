@@ -21,12 +21,9 @@
 @this(
     appConfig: FrontendAppConfig,
     govukLayout: GovukLayout,
-    govukBackLink: GovukBackLink,
     hmrcHead: HmrcHead,
     hmrcStandardHeader: HmrcStandardHeader,
     hmrcStandardFooter: HmrcStandardFooter,
-    hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
-    hmrcLanguageSelect: HmrcLanguageSelect,
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
@@ -34,7 +31,7 @@
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper
 )
 
-@(pageTitle: String, showBackLink: Boolean = false, timeout: Boolean = true, showSignOut: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String, timeout: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @head = {
 
@@ -52,16 +49,14 @@
             )))
         } else None
     )
-    <link href='@controllers.routes.Assets.versioned("stylesheets/tile.css")' rel="stylesheet" />
 }
 
 @additionalScripts = {
-    <script src='@controllers.routes.Assets.versioned("javascripts/application.min.js")'></script>
 }
 
 @beforeContent = {
 
-@defining(request.uri) { uri =>
+@defining(request.uri) { _ =>
     <div class="govuk-width-container">
             <!-- ACCOUNT MENU -->
 
@@ -89,12 +84,12 @@
 }
 
 @govukLayout(
-    pageTitle   = None,
+    pageTitle   = Some(pageTitle),
     headBlock   = Some(head),
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(routes.HomeController.newWrapperLayout.url),
         signOutUrl  = Some("/logout"),
-        phaseBanner = Some(alphaBanner(appConfig.feedbackUrl))
+        phaseBanner = Some(alphaBanner("feedback-url"))
     )),
     beforeContentBlock = Some(beforeContent),
     footerBlock        = Some(hmrcStandardFooter()),

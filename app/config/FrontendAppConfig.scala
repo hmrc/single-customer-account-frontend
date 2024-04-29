@@ -19,23 +19,11 @@ package config
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
+class FrontendAppConfig @Inject() (configuration: Configuration) {
 
-  val host: String    = configuration.get[String]("sca-wrapper.host")
   val appName: String = configuration.get[String]("appName")
-
-  val integrationFrameworkUrl: String = servicesConfig.baseUrl(serviceName = "integration-framework")
-  val integrationFrameworkAuthToken: String = configuration.get[String]("microservice.services.integration-framework.authorization-token")
-  val integrationFrameworkEnvironment: String = configuration.get[String]("microservice.services.integration-framework.environment")
-
-  val nispBaseUrl: String = configuration.get[String]("microservice.services.nisp-frontend.url")
-  val niRecordUrl : String = s"$nispBaseUrl/check-your-state-pension/account/nirecord"
-  val spSummaryUrl : String = s"$nispBaseUrl/check-your-state-pension/account"
 
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
@@ -46,12 +34,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     "cy" -> Lang("cy")
   )
 
-  lazy private val exitSurveyServiceName = "single-customer-account-frontend"
-  lazy private val contactBaseUrl: String = configuration.get[String]("microservice.services.contact-frontend.url")
-
-  def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactBaseUrl/contact/beta-feedback?service=$exitSurveyServiceName&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
-
-  val timeout: Int = configuration.get[Int]("sca-wrapper.timeout-dialog.timeout")
+  val timeout: Int   = configuration.get[Int]("sca-wrapper.timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("sca-wrapper.timeout-dialog.countdown")
 }
