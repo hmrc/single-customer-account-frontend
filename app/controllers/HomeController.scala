@@ -17,9 +17,10 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{AuthAction, IFAction}
+import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -32,45 +33,38 @@ import scala.concurrent.ExecutionContext
 class HomeController @Inject()(
                                 val controllerComponents: MessagesControllerComponents,
                                 authenticate: AuthAction,
-                                getUserDetails: IFAction,
                                 view: HomeViewWrapperVersion,
                                 wrapperService: WrapperService
                               )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
-  def oldWrapperLayout: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
+  def oldWrapperLayout: Action[AnyContent] = authenticate { implicit request =>
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
-
     Ok(
       wrapperService.layout(
-        content = view(name),
+        content = view(""),
         pageTitle = Some(Messages("page.title")),
         serviceNameUrl = Some(routes.HomeController.oldWrapperLayout.url),
-        showSignOutInHeader = false,
         hideMenuBar = false,
-        // showBackLinkJS = true,
-        optTrustedHelper = request.authenticatedRequest.trustedHelper
+        signoutUrl = Some("/logout"),
+        optTrustedHelper = request.trustedHelper
       )
     )
   }
 
-  def newWrapperLayout: Action[AnyContent] = (authenticate andThen getUserDetails) { implicit request =>
+  def newWrapperLayout: Action[AnyContent] = authenticate { implicit request =>
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    val name = request.ifData.details.name.fold("") { name => s"${name.firstForename.getOrElse("")} ${name.surname.getOrElse("")}" }
-
     Ok(
       wrapperService.standardScaLayout(
-        content = view(name),
+        content = view(""),
+        serviceURLs = ServiceURLs(signOutUrl = Some("/logout")),
         pageTitle = Some(Messages("page.title")),
-        showSignOutInHeader = false,
         hideMenuBar = false,
-        // showBackLinkJS = true,
-        optTrustedHelper = request.authenticatedRequest.trustedHelper
+        optTrustedHelper = request.trustedHelper
       )
     )
   }
