@@ -25,12 +25,13 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeAuthAction @Inject()(override val authConnector: AuthConnector,
-                               config: FrontendAppConfig,
-                               override val parser: BodyParsers.Default)(implicit ec: ExecutionContext) extends AuthActionImpl(authConnector, config, parser) {
+class FakeAuthAction @Inject() (
+  override val authConnector: AuthConnector,
+  config: FrontendAppConfig,
+  override val parser: BodyParsers.Default
+)(implicit ec: ExecutionContext)
+    extends AuthActionImpl(authConnector, config, parser) {
 
-  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
     block(TestData.Requests.authenticatedRequest(request))
-  }
 }
-

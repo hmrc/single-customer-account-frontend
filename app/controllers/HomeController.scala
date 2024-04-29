@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,18 +27,16 @@ import uk.gov.hmrc.sca.services.WrapperService
 import views.html.HomeViewWrapperVersion
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
-class HomeController @Inject()(
-                                val controllerComponents: MessagesControllerComponents,
-                                authenticate: AuthAction,
-                                view: HomeViewWrapperVersion,
-                                wrapperService: WrapperService
-                              )(implicit frontendAppConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendBaseController with I18nSupport {
+class HomeController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  authenticate: AuthAction,
+  view: HomeViewWrapperVersion,
+  wrapperService: WrapperService
+) extends FrontendBaseController
+    with I18nSupport {
 
   def oldWrapperLayout: Action[AnyContent] = authenticate { implicit request =>
-
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     Ok(
@@ -55,9 +52,6 @@ class HomeController @Inject()(
   }
 
   def newWrapperLayout: Action[AnyContent] = authenticate { implicit request =>
-
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
     Ok(
       wrapperService.standardScaLayout(
         content = view(""),

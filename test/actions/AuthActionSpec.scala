@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class AuthActionSpec extends SpecBase {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  val nino = "AA999999A"
+  val nino                             = "AA999999A"
 
   class Harness(authAction: AuthAction) extends InjectedController {
     def onPageLoad: Action[AnyContent] = authAction { request: AuthenticatedRequest[AnyContent] =>
@@ -46,27 +46,25 @@ class AuthActionSpec extends SpecBase {
   }
 
   def retrievals(
-                  nino: Option[String] = None,
-                  affinityGroup: AffinityGroup = Individual,
-                  enrolments: Enrolments = Enrolments(Set.empty),
-                  credentials: Option[Credentials] = Some(Credentials("id","type")),
-                  credentialStrength: Option[String] = Some(CredentialStrength.strong),
-                  confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200,
-                  name: Option[Name] = None,
-                  trustedHelper: Option[TrustedHelper] = None,
-                  profileUrl: Option[String] = None
-                ): Harness = {
+    nino: Option[String] = None,
+    affinityGroup: AffinityGroup = Individual,
+    enrolments: Enrolments = Enrolments(Set.empty),
+    credentials: Option[Credentials] = Some(Credentials("id", "type")),
+    credentialStrength: Option[String] = Some(CredentialStrength.strong),
+    confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200,
+    name: Option[Name] = None,
+    trustedHelper: Option[TrustedHelper] = None
+  ): Harness = {
 
     when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.successful(
-        nino ~
+      nino ~
         affinityGroup ~
         enrolments ~
         credentials ~
         credentialStrength ~
         confidenceLevel ~
         name ~
-        trustedHelper ~
-        profileUrl
+        trustedHelper
     )
 
     val action = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
@@ -77,14 +75,14 @@ class AuthActionSpec extends SpecBase {
   "AuthAction" must {
     "allow an authenticated user into SCA with a NINO and Confidence Level 200" in {
       val controller = retrievals(nino = Some(nino))
-      val result = controller.onPageLoad()(fakeRequest)
+      val result     = controller.onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
     }
 
     "extract an SA UTR" in {
       val controller = retrievals(nino = Some(nino), enrolments = Enrolments(fakeSaEnrolments("11111111", "Activated")))
-      val result = controller.onPageLoad()(fakeRequest)
+      val result     = controller.onPageLoad()(fakeRequest)
 
       contentAsString(result) must include("11111111")
     }
