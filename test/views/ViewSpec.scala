@@ -23,7 +23,6 @@ import org.scalatest.compatible.Assertion
 
 trait ViewSpec extends SpecBase {
 
-
   def assertContainsText(doc: Document, text: String): Assertion =
     assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
 
