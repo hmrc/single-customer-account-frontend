@@ -22,7 +22,7 @@ import views.html.UnauthorisedView
 
 class UnauthorisedControllerSpec extends SpecBase {
 
-  lazy val view: UnauthorisedView = injector.instanceOf[UnauthorisedView]
+  lazy val view: UnauthorisedView             = injector.instanceOf[UnauthorisedView]
   lazy val controller: UnauthorisedController = new UnauthorisedController(messagesControllerComponents, view)
 
   "UnauthorisedController" must {

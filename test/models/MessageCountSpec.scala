@@ -16,6 +16,4 @@
 
 package models
 
-class MessageCountSpec {
-
-}
+class MessageCountSpec {}

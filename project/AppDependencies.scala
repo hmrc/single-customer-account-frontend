@@ -6,7 +6,7 @@ object AppDependencies {
   val bootstrapVersion =  "8.5.0"
 
   val compile = Seq(
-    "uk.gov.hmrc"       %% "sca-wrapper-play-30"                % "1.7.0"
+    "uk.gov.hmrc"       %% s"sca-wrapper-$playVersion"                % "1.7.0"
   )
 
   val test = Seq(

@@ -21,7 +21,7 @@
 @import scala.concurrent.ExecutionContext
 
 @this()
-@(name: String)(implicit request: AuthenticatedRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
+@(name: String)(implicit messages: Messages)
 
 
     <p class="hmrc-caption govuk-caption-xl">@messages("index.heading")</p>

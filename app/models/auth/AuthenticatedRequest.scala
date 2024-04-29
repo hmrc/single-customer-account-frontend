@@ -23,12 +23,12 @@ import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment}
 import uk.gov.hmrc.domain.Nino
 
 case class AuthenticatedRequest[A](
-                                    nino: Option[Nino],
-                                    credentials: Credentials,
-                                    confidenceLevel: ConfidenceLevel,
-                                    name: Option[Name],
-                                    trustedHelper: Option[TrustedHelper],
-                                    profile: Option[String],
-                                    enrolments: Set[Enrolment],
-                                    request: Request[A]
-                                  ) extends WrappedRequest[A](request)
+  nino: Option[Nino],
+  credentials: Credentials,
+  confidenceLevel: ConfidenceLevel,
+  name: Option[Name],
+  trustedHelper: Option[TrustedHelper],
+  profile: Option[String],
+  enrolments: Set[Enrolment],
+  request: Request[A]
+) extends WrappedRequest[A](request)
