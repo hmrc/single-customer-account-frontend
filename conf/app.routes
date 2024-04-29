@@ -12,9 +12,4 @@ GET         /language/:lang                              controllers.LanguageSwi
 
 GET         /refresh-session                             controllers.KeepAliveController.keepAlive
 
-GET         /sign-out-survey                             controllers.auth.AuthController.signOut
-GET         /sign-out                                    controllers.auth.AuthController.signOutNoSurvey
-GET         /signed-out                                  controllers.auth.SignedOutController.onPageLoad
-GET         /signin                                      controllers.auth.SignedOutController.onTimeOut
-
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad

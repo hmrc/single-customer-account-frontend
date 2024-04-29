@@ -15,13 +15,13 @@
  *@
 
 @import config.FrontendAppConfig
-@import models.auth.AuthenticatedIFRequest
+@import models.auth.AuthenticatedRequest
 @import uk.gov.hmrc.http.HeaderCarrier
 
 @import scala.concurrent.ExecutionContext
 
 @this()
-@(name: String)(implicit request: AuthenticatedIFRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
+@(name: String)(implicit request: AuthenticatedRequest[_], messages: Messages, appConfig: FrontendAppConfig, hc: HeaderCarrier, ec: ExecutionContext)
 
 
     <p class="hmrc-caption govuk-caption-xl">@messages("index.heading")</p>

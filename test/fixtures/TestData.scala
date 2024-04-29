@@ -16,8 +16,7 @@
 
 package fixtures
 
-import models.auth.{AuthenticatedIFRequest, AuthenticatedRequest}
-import models.integrationframework.{IfName, Name, PersonalDetails, PersonalDetailsResponse}
+import models.auth.AuthenticatedRequest
 import play.api.mvc.Request
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
@@ -39,19 +38,6 @@ object TestData {
       profile = Some("profile"),
       enrolments = Set(Enrolment("key", Seq(EnrolmentIdentifier("key", "value")), "state", None)),
       request = request
-    )
-
-    def authenticatedDetailsRequest[A](authenticatedRequest: AuthenticatedRequest[A]): AuthenticatedIFRequest[A] = AuthenticatedIFRequest(
-      authenticatedRequest = authenticatedRequest,
-      ifData = IFData.personalDetailsResponse
-    )
-  }
-
-  object IFData {
-    val personalDetailsResponse: PersonalDetailsResponse = PersonalDetailsResponse(
-      details = PersonalDetails(
-        name = Some(Name(IfName(firstForename = Some("chaz"), surname = Some("dingle"))))
-      )
     )
   }
 

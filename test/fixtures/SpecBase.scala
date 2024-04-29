@@ -17,8 +17,7 @@
 package fixtures
 
 import config.FrontendAppConfig
-import controllers.actions.{AuthAction, IFAction}
-import handlers.ErrorHandler
+import controllers.actions.AuthAction
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -64,10 +63,8 @@ trait SpecBase
     SessionKeys.sessionId -> "foo").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
   lazy val messagesApiInstance: MessagesApi = injector.instanceOf[MessagesApi]
   lazy val messages: Messages = messagesApiInstance.preferred(fakeRequest)
-  lazy val errorHandlerInstance: ErrorHandler = injector.instanceOf[ErrorHandler]
   lazy val messagesControllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
   lazy val authActionInstance: AuthAction = injector.instanceOf[AuthAction]
-  lazy val ifActionInstance: IFAction = injector.instanceOf[IFAction]
   lazy val bodyParserInstance: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
 
   type AuthRetrievals =
@@ -79,7 +76,6 @@ trait SpecBase
   protected def applicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[IFAction].to[FakeIFAction],
         bind[AuthAction].to[FakeAuthAction]
       )
 
