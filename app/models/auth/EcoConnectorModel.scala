@@ -73,9 +73,9 @@ package models.auth
     }]
   }]
 }
-*/
+ */
 
 case class EcoConnectorModel(
-                             generationmix: Seq[String],
-                             intensity: String
-                             )
+  generationmix: Seq[String],
+  intensity: String
+)

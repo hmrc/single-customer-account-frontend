@@ -17,11 +17,19 @@
 package connectors
 
 import models.auth.EcoConnectorModel
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.Inject
 
-class EcoConnector @Inject()(httpClientV2: HttpClientV2) {
+//api.carbonintensity.org.uk/regional/intensity/{from}/{to}/postcode/{postcode}
+
+class EcoConnector @Inject() (httpClientV2: HttpClientV2) {
 //  ISO8601 format YYYY-MM-DDThh:mmZ e.g. 2017-08-25T12:35Z
-  def get(start: String, end: String, postcode: String): EcoConnectorModel = EcoConnectorModel(Nil, "moderate")
+  def get(start: String, end: String, postcode: String)(implicit hc: HeaderCarrier): EcoConnectorModel = {
+    httpClientV2.get(
+      url"api.carbonintensity.org.uk/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
+    )
+    EcoConnectorModel(Nil, "moderate")
+  }
 }

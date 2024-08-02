@@ -16,6 +16,7 @@
 
 package connectors
 
+import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, getRequestedFor, urlEqualTo}
 import fixtures.WireMockHelper
 import models.auth.EcoConnectorModel
 import org.scalatest.matchers.must.Matchers
@@ -24,15 +25,28 @@ import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Injecting
+import uk.gov.hmrc.http.HeaderCarrier
 
 class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMockHelper {
   protected def localGuiceApplicationBuilder(): GuiceApplicationBuilder =
     GuiceApplicationBuilder()
-  implicit lazy val app: Application = localGuiceApplicationBuilder().build()
+      .configure(
+        "microservices.services.carbonintensity" -> server.baseUrl()
+      )
+
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit lazy val app: Application     = localGuiceApplicationBuilder().build()
   "get" must {
     "assert xxx" in {
       val ec = app.injector.instanceOf[EcoConnector]
-      ec.get("2017-08-25T12:35Z", "2017-08-25T12:35Z", "NE3 4PL") mustBe EcoConnectorModel(Nil, "moderate")
+      ec.get("2017-08-25T12:35Z", "2017-08-25T12:35Z", "NE34PL") mustBe EcoConnectorModel(Nil, "moderate")
+      server.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "api.carbonintensity.org.uk/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
+          )
+        )
+      )
     }
   }
 }
