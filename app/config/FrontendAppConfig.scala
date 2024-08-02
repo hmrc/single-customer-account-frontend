@@ -28,6 +28,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String       = configuration.get[String]("urls.signOut")
+  val ecoBaseUrl: String       = configuration.get[String]("microservice.services.carbonintensityBaseUrl")
 
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),

@@ -16,9 +16,11 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, getRequestedFor, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, getRequestedFor, ok, urlEqualTo}
 import fixtures.WireMockHelper
 import models.auth.EcoConnectorModel
+import org.scalatest.concurrent.Futures.whenReady
+import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.PlaySpec
@@ -27,26 +29,102 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Injecting
 import uk.gov.hmrc.http.HeaderCarrier
 
-class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMockHelper {
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, ok, post, urlEqualTo}
+
+class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMockHelper with PatienceConfiguration {
   protected def localGuiceApplicationBuilder(): GuiceApplicationBuilder =
     GuiceApplicationBuilder()
       .configure(
-        "microservices.services.carbonintensity" -> server.baseUrl()
+        "microservice.services.carbonintensityBaseUrl" -> server.baseUrl()
       )
+
+  private val jsonResponse =
+    """
+      |{
+      |  "data":[
+      |  {
+      |    "regionid": 3,
+      |    "dnoregion": "Electricity North West",
+      |    "shortname": "North West England",
+      |    "postcode": "RG10",
+      |    "data":[
+      |    {
+      |      "from": "2018-01-20T12:00Z",
+      |      "to": "2018-01-20T12:30Z",
+      |      "intensity": {
+      |        "forecast": 266,
+      |        "index": "moderate"
+      |      },
+      |      "generationmix": [
+      |      {
+      |        "fuel": "gas",
+      |        "perc": 43.6
+      |      },
+      |      {
+      |        "fuel": "coal",
+      |        "perc": 0.7
+      |      },
+      |      {
+      |        "fuel": "biomass",
+      |        "perc": 4.2
+      |      },
+      |      {
+      |        "fuel": "nuclear",
+      |        "perc": 17.6
+      |      },
+      |      {
+      |        "fuel": "hydro",
+      |        "perc": 2.2
+      |      },
+      |      {
+      |        "fuel": "imports",
+      |        "perc": 6.5
+      |      },
+      |      {
+      |        "fuel": "other",
+      |        "perc": 0.3
+      |      },
+      |      {
+      |        "fuel": "wind",
+      |        "perc": 6.8
+      |      },
+      |      {
+      |        "fuel": "solar",
+      |        "perc": 18.1
+      |      }
+      |      ]
+      |    }]
+      |  }]
+      |}
+      |""".stripMargin
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit lazy val app: Application     = localGuiceApplicationBuilder().build()
   "get" must {
     "assert xxx" in {
-      val ec = app.injector.instanceOf[EcoConnector]
-      ec.get("2017-08-25T12:35Z", "2017-08-25T12:35Z", "NE34PL") mustBe EcoConnectorModel(Nil, "moderate")
+      val ec     = app.injector.instanceOf[EcoConnector]
+      val expUrl = "/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
+
+      server.stubFor(
+        get(urlEqualTo(expUrl)).willReturn(
+          ok(jsonResponse)
+        )
+      )
+      val result = Await.result(ec.get("2017-08-25T12:35Z", "2017-08-25T12:35Z", "NE34PL"), Duration.Inf)
+
+      result mustBe EcoConnectorModel(Nil, "moderate")
       server.verify(
         getRequestedFor(
           urlEqualTo(
-            "api.carbonintensity.org.uk/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
+            expUrl
           )
         )
       )
+
+      // result mustBe EcoConnectorModel(Nil, "moderate")
+
     }
   }
 }
