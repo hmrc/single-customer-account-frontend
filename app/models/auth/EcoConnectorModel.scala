@@ -16,6 +16,8 @@
 
 package models.auth
 
+import play.api.libs.json.{Format, Json}
+
 /*
 {
   "data":[
@@ -75,7 +77,75 @@ package models.auth
 }
  */
 
-case class EcoConnectorModel(
-  generationmix: Seq[String],
-  intensity: String
+/*
+
+"data":[
+  {
+    "regionid": 3,
+    "dnoregion": "Electricity North West",
+    "shortname": "North West England",
+    "postcode": "RG10",
+    "data":[
+    {
+      "from": "2018-01-20T12:00Z",
+      "to": "2018-01-20T12:30Z",
+      "intensity": {
+        "forecast": 266,
+        "index": "moderate"
+      },
+      "generationmix": [
+      {
+        "fuel": "gas",
+        "perc": 43.6
+      },
+      {
+        "fuel": "coal",
+        "perc": 0.7
+      }
+      ]
+    }]
+  }]
+
+ */
+
+
+case class Intensity(
+  forecast: Int,
+  index: String
 )
+
+object Intensity {
+  implicit val formats: Format[Intensity] = Json.format[Intensity]
+}
+
+case class GenerationMix(
+  fuel: String,
+  perc: BigDecimal
+)
+
+object GenerationMix {
+  implicit val formats: Format[GenerationMix] = Json.format[GenerationMix]
+}
+
+case class EcoConnectorModel(
+  regionid: Int,
+  dnoregion: String,
+  shortname: String,
+  postcode: String,
+  data: Seq[Data]
+)
+
+object EcoConnectorModel {
+  implicit val formats: Format[EcoConnectorModel] = Json.format[EcoConnectorModel]
+}
+
+case class Data(
+  from: String,
+  to: String,
+  intensity: Intensity,
+  generationmix: Seq[GenerationMix]
+)
+
+object Data {
+  implicit val formats: Format[Data] = Json.format[Data]
+}

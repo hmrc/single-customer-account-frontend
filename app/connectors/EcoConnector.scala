@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class EcoConnector @Inject() (httpClientV2: HttpClientV2, appConfig: FrontendAppConfig) {
   //  ISO8601 format YYYY-MM-DDThh:mmZ e.g. 2017-08-25T12:35
   def get(start: String, end: String, postcode: String)(implicit hc: HeaderCarrier): Future[EcoConnectorModel] = {
-    val apiUrl                  = s"${appConfig.ecoBaseUrl}/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
+    val apiUrl                  = s"${appConfig.ecoBaseUrl}/regional/intensity/$start/$end/postcode/$postcode"
     println("\n ****** " + apiUrl)
     val x: Future[HttpResponse] = httpClientV2
       .get(
@@ -38,8 +38,13 @@ class EcoConnector @Inject() (httpClientV2: HttpClientV2, appConfig: FrontendApp
       )
       .execute
     x.map { r =>
-      println("\n ***** JSON: " + r.json)
-      EcoConnectorModel(Nil, "moderate")
+      val a = r.json \ "data"
+      println("\n ***** JSON: " + a)
+
+      (r.json \ "data").as[EcoConnectorModel]
+
+      // ([{"regionid":3,"dnoregion":"Electricity North West","shortname":"North West England","postcode":"RG10","data":[{"from":"2018-01-20T12:00Z","to":"2018-01-20T12:30Z","intensity":{"forecast":266,"index":"moderate"},"generationmix":[{"fuel":"gas","perc":43.6},{"fuel":"coal","perc":0.7}]}]}])
+
     }
 
   }
