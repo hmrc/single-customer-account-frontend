@@ -108,7 +108,6 @@ import play.api.libs.json.{Format, Json}
 
  */
 
-
 case class Intensity(
   forecast: Int,
   index: String

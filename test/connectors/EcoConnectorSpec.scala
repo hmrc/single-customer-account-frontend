@@ -16,24 +16,22 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, getRequestedFor, ok, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import fixtures.WireMockHelper
 import models.auth.{Data, EcoConnectorModel, GenerationMix, Intensity}
-import org.scalatest.concurrent.Futures.whenReady
 import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Injecting
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, ok, post, urlEqualTo}
+import scala.concurrent.{Await, ExecutionContext}
 
 class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMockHelper with PatienceConfiguration {
+  implicit lazy val exContext: ExecutionContext                         = scala.concurrent.ExecutionContext.global
   protected def localGuiceApplicationBuilder(): GuiceApplicationBuilder =
     GuiceApplicationBuilder()
       .configure(
@@ -76,29 +74,55 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
   implicit lazy val app: Application     = localGuiceApplicationBuilder().build()
 
   "get" must {
-//    "assert xxx" in {
-//      val ec     = app.injector.instanceOf[EcoConnector]
-//      val expUrl = "/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
-//
-//      server.stubFor(
-//        get(urlEqualTo(expUrl)).willReturn(
-//          ok(jsonResponse)
-//        )
-//      )
-//      val result = Await.result(ec.get("2017-08-25T12:35Z", "2017-08-25T12:35Z", "NE34PL"), Duration.Inf)
-//
-//      result mustBe EcoConnectorModel(Nil, "moderate")
-//      server.verify(
-//        getRequestedFor(
-//          urlEqualTo(
-//            expUrl
-//          )
-//        )
-//      )
-//
-//      // result mustBe EcoConnectorModel(Nil, "moderate")
-//
-//    }
+    "pass with valid start/end date and postcode - first set of dates" in {
+      val ec     = app.injector.instanceOf[EcoConnector]
+      val expUrl = "/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
+
+      server.stubFor(
+        get(urlEqualTo(expUrl)).willReturn(
+          ok(jsonResponse)
+        )
+      )
+      val result = Await.result(ec.get("2017-08-25T12:35Z", "2017-08-25T12:35Z", "NE34PL"), Duration.Inf)
+      server.verify(
+        getRequestedFor(
+          urlEqualTo(
+            expUrl
+          )
+        )
+      )
+      result mustBe Right(
+        Seq(
+          EcoConnectorModel(
+            regionid = 3,
+            dnoregion = "Electricity North West",
+            shortname = "North West England",
+            postcode = "RG10",
+            data = Seq(
+              Data(
+                from = "2018-01-20T12:00Z",
+                to = "2018-01-20T12:30Z",
+                intensity = Intensity(
+                  forecast = 266,
+                  index = "moderate"
+                ),
+                generationmix = Seq(
+                  GenerationMix(
+                    fuel = "gas",
+                    perc = BigDecimal(43.6)
+                  ),
+                  GenerationMix(
+                    fuel = "coal",
+                    perc = BigDecimal(0.7)
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+
+    }
 
     "pass with valid start/end date and postcode" in {
       val ec     = app.injector.instanceOf[EcoConnector]
@@ -111,27 +135,31 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
       )
       val result = Await.result(ec.get("2019-08-25T12:35Z", "2020-08-25T12:35Z", "NE164TQ"), Duration.Inf)
 
-      result mustBe EcoConnectorModel(
-        regionid = 3,
-        dnoregion = "Electricity North West",
-        shortname = "North West England",
-        postcode = "RG10",
-        data = Seq(
-          Data(
-            from = "2018-01-20T12:00Z",
-            to = "2018-01-20T12:30Z",
-            intensity = Intensity(
-              forecast = 266,
-              index = "moderate"
-            ),
-            generationmix = Seq(
-              GenerationMix(
-                fuel = "gas",
-                perc = BigDecimal(43.6)
-              ),
-              GenerationMix(
-                fuel = "coal",
-                perc = BigDecimal(0.7)
+      result mustBe Right(
+        Seq(
+          EcoConnectorModel(
+            regionid = 3,
+            dnoregion = "Electricity North West",
+            shortname = "North West England",
+            postcode = "RG10",
+            data = Seq(
+              Data(
+                from = "2018-01-20T12:00Z",
+                to = "2018-01-20T12:30Z",
+                intensity = Intensity(
+                  forecast = 266,
+                  index = "moderate"
+                ),
+                generationmix = Seq(
+                  GenerationMix(
+                    fuel = "gas",
+                    perc = BigDecimal(43.6)
+                  ),
+                  GenerationMix(
+                    fuel = "coal",
+                    perc = BigDecimal(0.7)
+                  )
+                )
               )
             )
           )
@@ -144,20 +172,30 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
           )
         )
       )
-
-      //  "regionid": 3,
-      //   "dnoregion": "Electricity North West",
-      //   "shortname": "North West England",
-      //  "postcode": "RG10",
-      //   "data":[
-//      "fuel": "gas",
-//      "perc": 43.6
-//    },
-//    {
-//      "fuel": "coal",
-//      "perc": 0.7
-//    },
-
     }
+
+    "fail correctly" in {
+      val ec     = app.injector.instanceOf[EcoConnector]
+      val expUrl = "/regional/intensity/2019-08-25T12:35Z/2020-08-25T12:35Z/postcode/NE164TQ"
+
+      server.stubFor(
+        get(urlEqualTo(expUrl)).willReturn(
+          serverError()
+        )
+      )
+      val result = Await.result(ec.get("2019-08-25T12:35Z", "2020-08-25T12:35Z", "NE164TQ"), Duration.Inf)
+
+      result.isLeft mustBe true
+      result.swap.map(_.statusCode) mustBe Right(500)
+
+      server.verify(
+        getRequestedFor(
+          urlEqualTo(
+            expUrl
+          )
+        )
+      )
+    }
+
   }
 }

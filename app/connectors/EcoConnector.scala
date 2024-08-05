@@ -18,33 +18,37 @@ package connectors
 
 import config.FrontendAppConfig
 import models.auth.EcoConnectorModel
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.HttpReads.Implicits.{readEitherOf, readRaw}
 import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 //api.carbonintensity.org.uk/regional/intensity/{from}/{to}/postcode/{postcode}
 
 class EcoConnector @Inject() (httpClientV2: HttpClientV2, appConfig: FrontendAppConfig) {
   //  ISO8601 format YYYY-MM-DDThh:mmZ e.g. 2017-08-25T12:35
-  def get(start: String, end: String, postcode: String)(implicit hc: HeaderCarrier): Future[EcoConnectorModel] = {
-    val apiUrl                  = s"${appConfig.ecoBaseUrl}/regional/intensity/$start/$end/postcode/$postcode"
+  def get(start: String, end: String, postcode: String)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Either[UpstreamErrorResponse, Seq[EcoConnectorModel]]] = {
+    val apiUrl                                                 = s"${appConfig.ecoBaseUrl}/regional/intensity/$start/$end/postcode/$postcode"
     println("\n ****** " + apiUrl)
-    val x: Future[HttpResponse] = httpClientV2
+    val x: Future[Either[UpstreamErrorResponse, HttpResponse]] = httpClientV2
       .get(
         url"$apiUrl"
       )
-      .execute
-    x.map { r =>
-      val a = r.json \ "data"
-      println("\n ***** JSON: " + a)
+      .execute[Either[UpstreamErrorResponse, HttpResponse]](readEitherOf(readRaw), ec)
 
-      (r.json \ "data").as[EcoConnectorModel]
-
-      // ([{"regionid":3,"dnoregion":"Electricity North West","shortname":"North West England","postcode":"RG10","data":[{"from":"2018-01-20T12:00Z","to":"2018-01-20T12:30Z","intensity":{"forecast":266,"index":"moderate"},"generationmix":[{"fuel":"gas","perc":43.6},{"fuel":"coal","perc":0.7}]}]}])
-
+    x.map {
+      case ri @ Right(_) =>
+        ri.map { r =>
+          (r.json \ "data").as[Seq[EcoConnectorModel]]
+        }
+      case Left(errorResponse) =>
+        val either: Either[UpstreamErrorResponse, Seq[EcoConnectorModel]] = Left(errorResponse)
+        either
     }
 
   }
