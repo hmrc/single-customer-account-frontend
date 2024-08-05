@@ -1,0 +1,101 @@
+{
+  "data": {
+    "regionid": 5,
+    "shortname": "Yorkshire",
+    "postcode": "LS2",
+    "data": [
+      {
+        "from": "2018-05-15T11:30Z",
+        "to": "2018-05-15T12:00Z",
+        "intensity": {
+          "forecast": 291,
+          "index": "high"
+        },
+        "generationmix": [
+          {
+            "fuel": "biomass",
+            "perc": 34.5
+          },
+          {
+            "fuel": "coal",
+            "perc": 6.4
+          },
+          {
+            "fuel": "imports",
+            "perc": 0
+          },
+          {
+            "fuel": "gas",
+            "perc": 47.9
+          },
+          {
+            "fuel": "nuclear",
+            "perc": 0
+          },
+          {
+            "fuel": "other",
+            "perc": 0
+          },
+          {
+            "fuel": "hydro",
+            "perc": 0
+          },
+          {
+            "fuel": "solar",
+            "perc": 6.9
+          },
+          {
+            "fuel": "wind",
+            "perc": 4.3
+          }
+        ]
+      },
+      {
+        "from": "2018-05-16T11:30Z",
+        "to": "2018-05-16T12:00Z",
+        "intensity": {
+          "forecast": 275,
+          "index": "moderate"
+        },
+        "generationmix": [
+          {
+            "fuel": "biomass",
+            "perc": 31.9
+          },
+          {
+            "fuel": "coal",
+            "perc": 6.5
+          },
+          {
+            "fuel": "imports",
+            "perc": 0
+          },
+          {
+            "fuel": "gas",
+            "perc": 44.7
+          },
+          {
+            "fuel": "nuclear",
+            "perc": 0
+          },
+          {
+            "fuel": "other",
+            "perc": 0
+          },
+          {
+            "fuel": "hydro",
+            "perc": 0
+          },
+          {
+            "fuel": "solar",
+            "perc": 3.4
+          },
+          {
+            "fuel": "wind",
+            "perc": 13.5
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val appName: String = configuration.get[String]("appName")
 
-  val loginUrl: String         = configuration.get[String]("urls.login")
-  val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  val signOutUrl: String       = configuration.get[String]("urls.signOut")
+  val loginUrl: String               = configuration.get[String]("urls.login")
+  val loginContinueUrl: String       = configuration.get[String]("urls.loginContinue")
+  val signOutUrl: String             = configuration.get[String]("urls.signOut")
+  val carbonIntensityBaseUrl: String = configuration.get[String]("urls.carbon-intensity.base")
 
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en"),
