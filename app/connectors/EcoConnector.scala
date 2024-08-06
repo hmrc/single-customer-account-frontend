@@ -32,28 +32,20 @@ class EcoConnector @Inject() (httpClientV2: HttpClientV2, appConfig: FrontendApp
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Either[UpstreamErrorResponse, Seq[EcoConnectorModel]]] = {
+    val (startAsString, endAsString) = {
+      val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+      (start.format(formatter) + "Z", end.format(formatter) + "Z")
+    }
 
-    val formatter     = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
-    val startAsString = start.format(formatter) + "Z"
-    val endAsString   = end.format(formatter) + "Z"
-
-    val apiUrl                                                 = s"${appConfig.ecoBaseUrl}/regional/intensity/$startAsString/$endAsString/postcode/$postcode"
+    val apiUrl       = s"${appConfig.ecoBaseUrl}/regional/intensity/$startAsString/$endAsString/postcode/$postcode"
     println("\n ****** " + apiUrl)
-    val futureEither: Future[Either[UpstreamErrorResponse, HttpResponse]] = httpClientV2
-      .get(
-        url"$apiUrl"
-      )
+    val futureEither = httpClientV2
+      .get(url"$apiUrl")
       .execute[Either[UpstreamErrorResponse, HttpResponse]](readEitherOf(readRaw), ec)
 
     futureEither.map {
-      case ri @ Right(_)       =>
-        ri.map { r =>
-          (r.json \ "data").as[Seq[EcoConnectorModel]]
-        }
-      case Left(errorResponse) =>
-        val either: Either[UpstreamErrorResponse, Seq[EcoConnectorModel]] = Left(errorResponse)
-        either
+      case ri @ Right(_)       => ri.map(httpResponse => (httpResponse.json \ "data").as[Seq[EcoConnectorModel]])
+      case Left(errorResponse) => Left(errorResponse)
     }
-
   }
 }

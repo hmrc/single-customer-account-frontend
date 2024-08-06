@@ -72,6 +72,35 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
       |}
       |""".stripMargin
 
+  private val seqEcoConnectorModel = Seq(
+    EcoConnectorModel(
+      regionid = 3,
+      dnoregion = "Electricity North West",
+      shortname = "North West England",
+      postcode = "RG10",
+      data = Seq(
+        Data(
+          from = LocalDateTime.parse("2018-01-20T12:00Z", ISO_DATE_TIME),
+          to = LocalDateTime.parse("2018-01-20T12:30Z", ISO_DATE_TIME),
+          intensity = Intensity(
+            forecast = 266,
+            index = "moderate"
+          ),
+          generationmix = Seq(
+            GenerationMix(
+              fuel = "gas",
+              perc = BigDecimal(43.6)
+            ),
+            GenerationMix(
+              fuel = "coal",
+              perc = BigDecimal(0.7)
+            )
+          )
+        )
+      )
+    )
+  )
+
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit lazy val app: Application     = localGuiceApplicationBuilder().build()
 
@@ -94,36 +123,7 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
         Duration.Inf
       )
 
-      result mustBe Right(
-        Seq(
-          EcoConnectorModel(
-            regionid = 3,
-            dnoregion = "Electricity North West",
-            shortname = "North West England",
-            postcode = "RG10",
-            data = Seq(
-              Data(
-                from = LocalDateTime.parse("2018-01-20T12:00Z", ISO_DATE_TIME),
-                to = LocalDateTime.parse("2018-01-20T12:30Z", ISO_DATE_TIME),
-                intensity = Intensity(
-                  forecast = 266,
-                  index = "moderate"
-                ),
-                generationmix = Seq(
-                  GenerationMix(
-                    fuel = "gas",
-                    perc = BigDecimal(43.6)
-                  ),
-                  GenerationMix(
-                    fuel = "coal",
-                    perc = BigDecimal(0.7)
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
+      result mustBe Right(seqEcoConnectorModel)
       server.verify(
         getRequestedFor(
           urlEqualTo(
@@ -151,36 +151,7 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
         Duration.Inf
       )
 
-      result mustBe Right(
-        Seq(
-          EcoConnectorModel(
-            regionid = 3,
-            dnoregion = "Electricity North West",
-            shortname = "North West England",
-            postcode = "RG10",
-            data = Seq(
-              Data(
-                from = LocalDateTime.parse("2018-01-20T12:00Z", ISO_DATE_TIME),
-                to = LocalDateTime.parse("2018-01-20T12:30Z", ISO_DATE_TIME),
-                intensity = Intensity(
-                  forecast = 266,
-                  index = "moderate"
-                ),
-                generationmix = Seq(
-                  GenerationMix(
-                    fuel = "gas",
-                    perc = BigDecimal(43.6)
-                  ),
-                  GenerationMix(
-                    fuel = "coal",
-                    perc = BigDecimal(0.7)
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
+      result mustBe Right(seqEcoConnectorModel)
       server.verify(
         getRequestedFor(
           urlEqualTo(
@@ -190,7 +161,7 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
       )
     }
 
-    "fail correctly" in {
+    "return a left when 5xx returned" in {
       val ec     = app.injector.instanceOf[EcoConnector]
       val expUrl = "/regional/intensity/2019-08-25T12:35Z/2020-08-25T12:35Z/postcode/NE164TQ"
 
