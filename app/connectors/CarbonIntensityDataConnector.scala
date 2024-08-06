@@ -17,13 +17,15 @@
 package connectors
 
 import cats.data.EitherT
-import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.carbonintensity.CarbonIntensityDetails
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
+
+import javax.inject.Inject
 
 class CarbonIntensityDataConnector @Inject() (
   val httpClientV2: HttpClientV2,
@@ -37,13 +39,19 @@ class CarbonIntensityDataConnector @Inject() (
     fromDate: String,
     toDate: String,
     postcode: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): EitherT[Future, UpstreamErrorResponse, HttpResponse] = {
-
+  )(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): EitherT[Future, UpstreamErrorResponse, Seq[CarbonIntensityDetails]] = {
     val url                                                              = s"$carbonIntensityBaseUrl/regional/intensity/$fromDate/$toDate/postcode/$postcode"
     val apiResponse: Future[Either[UpstreamErrorResponse, HttpResponse]] = httpClientV2
       .get(url"$url")
       .execute[Either[UpstreamErrorResponse, HttpResponse]](readEitherOf(readRaw), ec)
 
-    httpClientResponse.read(apiResponse)
+    httpClientResponse
+      .read(apiResponse)
+      .map { response =>
+        (response.json \ "data").as[Seq[CarbonIntensityDetails]]
+      }
   }
 }

@@ -27,11 +27,9 @@ import scala.util.{Failure, Success, Try}
 
 class HttpClientResponse @Inject() (implicit ec: ExecutionContext) extends Logging {
   private val logErrorResponsesMain: PartialFunction[Try[Either[UpstreamErrorResponse, HttpResponse]], Unit] = {
-    case Success(Left(error)) if error.statusCode == NOT_FOUND   =>
-      logger.info(error.message)
     case Success(Left(error)) if error.statusCode == BAD_REQUEST =>
       logger.warn(error.message)
-    case Success(Left(error)) if error.statusCode >= 499         =>
+    case Success(Left(error)) if error.statusCode >= 500         =>
       logger.error(error.message)
     case Failure(exception: HttpException)                       =>
       logger.error(exception.message)
@@ -39,7 +37,7 @@ class HttpClientResponse @Inject() (implicit ec: ExecutionContext) extends Loggi
 
   private val recoverHttpException: PartialFunction[Throwable, Either[UpstreamErrorResponse, HttpResponse]] = {
     case exception: HttpException =>
-      Left(UpstreamErrorResponse(exception.message, BAD_GATEWAY, BAD_GATEWAY))
+      Left(UpstreamErrorResponse(exception.message, exception.responseCode, exception.responseCode))
   }
 
   def read(
