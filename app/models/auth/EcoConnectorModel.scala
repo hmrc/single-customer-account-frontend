@@ -16,66 +16,11 @@
 
 package models.auth
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json._
 
-/*
-{
-  "data":[
-  {
-    "regionid": 3,
-    "dnoregion": "Electricity North West",
-    "shortname": "North West England",
-    "postcode": "RG10",
-    "data":[
-    {
-      "from": "2018-01-20T12:00Z",
-      "to": "2018-01-20T12:30Z",
-      "intensity": {
-        "forecast": 266,
-        "index": "moderate"
-      }
-      "generationmix": [
-      {
-        "fuel": "gas",
-        "perc": 43.6
-      },
-      {
-        "fuel": "coal",
-        "perc": 0.7
-      },
-      {
-        "fuel": "biomass",
-        "perc": 4.2
-      },
-      {
-        "fuel": "nuclear",
-        "perc": 17.6
-      },
-      {
-        "fuel": "hydro",
-        "perc": 2.2
-      },
-      {
-        "fuel": "imports",
-        "perc": 6.5
-      },
-      {
-        "fuel": "other",
-        "perc": 0.3
-      },
-      {
-        "fuel": "wind",
-        "perc": 6.8
-      },
-      {
-        "fuel": "solar",
-        "perc": 18.1
-      }
-      ]
-    }]
-  }]
-}
- */
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter.ISO_DATE_TIME
+import scala.util.{Failure, Success, Try}
 
 /*
 
@@ -139,12 +84,24 @@ object EcoConnectorModel {
 }
 
 case class Data(
-  from: String,
-  to: String,
+  from: LocalDateTime,
+  to: LocalDateTime,
   intensity: Intensity,
   generationmix: Seq[GenerationMix]
 )
 
 object Data {
+  implicit val localDateTimeRead: Reads[LocalDateTime] = {
+    case JsString(s) =>
+      Try(LocalDateTime.parse(s, ISO_DATE_TIME)) match {
+        case Failure(e) =>
+          JsError(
+            s"Could not parse $s as a LocalDateTime : ${e.getMessage}"
+          )
+        case Success(v) => JsSuccess(v)
+      }
+    case json        => JsError(s"Expected value to be a string, was actually ${json.toString}")
+  }
+
   implicit val formats: Format[Data] = Json.format[Data]
 }

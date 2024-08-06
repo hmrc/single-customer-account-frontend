@@ -22,27 +22,31 @@ import uk.gov.hmrc.http.HttpReads.Implicits.{readEitherOf, readRaw}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-//api.carbonintensity.org.uk/regional/intensity/{from}/{to}/postcode/{postcode}
-
 class EcoConnector @Inject() (httpClientV2: HttpClientV2, appConfig: FrontendAppConfig) {
-  //  ISO8601 format YYYY-MM-DDThh:mmZ e.g. 2017-08-25T12:35
-  def get(start: String, end: String, postcode: String)(implicit
+  def get(start: LocalDateTime, end: LocalDateTime, postcode: String)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Either[UpstreamErrorResponse, Seq[EcoConnectorModel]]] = {
-    val apiUrl                                                 = s"${appConfig.ecoBaseUrl}/regional/intensity/$start/$end/postcode/$postcode"
+
+    val formatter     = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+    val startAsString = start.format(formatter) + "Z"
+    val endAsString   = end.format(formatter) + "Z"
+
+    val apiUrl                                                 = s"${appConfig.ecoBaseUrl}/regional/intensity/$startAsString/$endAsString/postcode/$postcode"
     println("\n ****** " + apiUrl)
-    val x: Future[Either[UpstreamErrorResponse, HttpResponse]] = httpClientV2
+    val futureEither: Future[Either[UpstreamErrorResponse, HttpResponse]] = httpClientV2
       .get(
         url"$apiUrl"
       )
       .execute[Either[UpstreamErrorResponse, HttpResponse]](readEitherOf(readRaw), ec)
 
-    x.map {
-      case ri @ Right(_) =>
+    futureEither.map {
+      case ri @ Right(_)       =>
         ri.map { r =>
           (r.json \ "data").as[Seq[EcoConnectorModel]]
         }

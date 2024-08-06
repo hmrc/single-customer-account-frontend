@@ -27,6 +27,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Injecting
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter.ISO_DATE_TIME
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
 
@@ -74,7 +76,7 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
   implicit lazy val app: Application     = localGuiceApplicationBuilder().build()
 
   "get" must {
-    "pass with valid start/end date and postcode - first set of dates" in {
+    "pass with valid start/end date and postcode - first set of dates/ postcode" in {
       val ec     = app.injector.instanceOf[EcoConnector]
       val expUrl = "/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
 
@@ -83,14 +85,15 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
           ok(jsonResponse)
         )
       )
-      val result = Await.result(ec.get("2017-08-25T12:35Z", "2017-08-25T12:35Z", "NE34PL"), Duration.Inf)
-      server.verify(
-        getRequestedFor(
-          urlEqualTo(
-            expUrl
-          )
-        )
+      val result = Await.result(
+        ec.get(
+          start = LocalDateTime.parse("2017-08-25T12:35Z", ISO_DATE_TIME),
+          end = LocalDateTime.parse("2017-08-25T12:35Z", ISO_DATE_TIME),
+          postcode = "NE34PL"
+        ),
+        Duration.Inf
       )
+
       result mustBe Right(
         Seq(
           EcoConnectorModel(
@@ -100,8 +103,8 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
             postcode = "RG10",
             data = Seq(
               Data(
-                from = "2018-01-20T12:00Z",
-                to = "2018-01-20T12:30Z",
+                from = LocalDateTime.parse("2018-01-20T12:00Z", ISO_DATE_TIME),
+                to = LocalDateTime.parse("2018-01-20T12:30Z", ISO_DATE_TIME),
                 intensity = Intensity(
                   forecast = 266,
                   index = "moderate"
@@ -121,10 +124,16 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
           )
         )
       )
-
+      server.verify(
+        getRequestedFor(
+          urlEqualTo(
+            expUrl
+          )
+        )
+      )
     }
 
-    "pass with valid start/end date and postcode" in {
+    "pass with valid start/end date and postcode - second set of dates/ postcode" in {
       val ec     = app.injector.instanceOf[EcoConnector]
       val expUrl = "/regional/intensity/2019-08-25T12:35Z/2020-08-25T12:35Z/postcode/NE164TQ"
 
@@ -133,7 +142,14 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
           ok(jsonResponse)
         )
       )
-      val result = Await.result(ec.get("2019-08-25T12:35Z", "2020-08-25T12:35Z", "NE164TQ"), Duration.Inf)
+      val result = Await.result(
+        ec.get(
+          start = LocalDateTime.parse("2019-08-25T12:35Z", ISO_DATE_TIME),
+          end = LocalDateTime.parse("2020-08-25T12:35Z", ISO_DATE_TIME),
+          postcode = "NE164TQ"
+        ),
+        Duration.Inf
+      )
 
       result mustBe Right(
         Seq(
@@ -144,8 +160,8 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
             postcode = "RG10",
             data = Seq(
               Data(
-                from = "2018-01-20T12:00Z",
-                to = "2018-01-20T12:30Z",
+                from = LocalDateTime.parse("2018-01-20T12:00Z", ISO_DATE_TIME),
+                to = LocalDateTime.parse("2018-01-20T12:30Z", ISO_DATE_TIME),
                 intensity = Intensity(
                   forecast = 266,
                   index = "moderate"
@@ -183,7 +199,14 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
           serverError()
         )
       )
-      val result = Await.result(ec.get("2019-08-25T12:35Z", "2020-08-25T12:35Z", "NE164TQ"), Duration.Inf)
+      val result = Await.result(
+        ec.get(
+          start = LocalDateTime.parse("2019-08-25T12:35Z", ISO_DATE_TIME),
+          end = LocalDateTime.parse("2020-08-25T12:35Z", ISO_DATE_TIME),
+          postcode = "NE164TQ"
+        ),
+        Duration.Inf
+      )
 
       result.isLeft mustBe true
       result.swap.map(_.statusCode) mustBe Right(500)
