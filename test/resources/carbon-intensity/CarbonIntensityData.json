@@ -1,101 +1,60 @@
 {
-  "data": {
-    "regionid": 5,
-    "shortname": "Yorkshire",
-    "postcode": "LS2",
-    "data": [
-      {
-        "from": "2018-05-15T11:30Z",
-        "to": "2018-05-15T12:00Z",
-        "intensity": {
-          "forecast": 291,
-          "index": "high"
-        },
-        "generationmix": [
-          {
-            "fuel": "biomass",
-            "perc": 34.5
+  "data":[
+    {
+      "regionid": 3,
+      "dnoregion": "Electricity North West",
+      "shortname": "North West England",
+      "postcode": "RG10",
+      "data":[
+        {
+          "from": "2018-01-20T12:00Z",
+          "to": "2018-01-20T12:30Z",
+          "intensity": {
+            "forecast": 266,
+            "index": "moderate"
           },
-          {
-            "fuel": "coal",
-            "perc": 6.4
-          },
-          {
-            "fuel": "imports",
-            "perc": 0
-          },
-          {
-            "fuel": "gas",
-            "perc": 47.9
-          },
-          {
-            "fuel": "nuclear",
-            "perc": 0
-          },
-          {
-            "fuel": "other",
-            "perc": 0
-          },
-          {
-            "fuel": "hydro",
-            "perc": 0
-          },
-          {
-            "fuel": "solar",
-            "perc": 6.9
-          },
-          {
-            "fuel": "wind",
-            "perc": 4.3
-          }
-        ]
-      },
-      {
-        "from": "2018-05-16T11:30Z",
-        "to": "2018-05-16T12:00Z",
-        "intensity": {
-          "forecast": 275,
-          "index": "moderate"
-        },
-        "generationmix": [
-          {
-            "fuel": "biomass",
-            "perc": 31.9
-          },
-          {
-            "fuel": "coal",
-            "perc": 6.5
-          },
-          {
-            "fuel": "imports",
-            "perc": 0
-          },
-          {
-            "fuel": "gas",
-            "perc": 44.7
-          },
-          {
-            "fuel": "nuclear",
-            "perc": 0
-          },
-          {
-            "fuel": "other",
-            "perc": 0
-          },
-          {
-            "fuel": "hydro",
-            "perc": 0
-          },
-          {
-            "fuel": "solar",
-            "perc": 3.4
-          },
-          {
-            "fuel": "wind",
-            "perc": 13.5
-          }
-        ]
-      }
-    ]
-  }
+          "generationmix":[
+            {
+              "fuel": "gas",
+              "perc": 41.6
+            },
+            {
+              "fuel": "coal",
+              "perc": 0.7
+            },
+            {
+              "fuel": "biomass",
+              "perc": 3.4
+            },
+            {
+              "fuel": "nuclear",
+              "perc": 17.6
+            },
+            {
+              "fuel": "hydro",
+              "perc": 1.2
+            },
+            {
+              "fuel": "storage",
+              "perc": 0.8
+            },
+            {
+              "fuel": "imports",
+              "perc": 6.5
+            },
+            {
+              "fuel": "other",
+              "perc": 0.3
+            },
+            {
+              "fuel": "wind",
+              "perc": 6.9
+            },
+            {
+              "fuel": "solar",
+              "perc": 20.9
+            }
+          ]
+        }]
+    }]
 }
