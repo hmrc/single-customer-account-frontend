@@ -44,8 +44,14 @@ class EcoConnector @Inject() (httpClientV2: HttpClientV2, appConfig: FrontendApp
       .execute[Either[UpstreamErrorResponse, HttpResponse]](readEitherOf(readRaw), ec)
 
     futureEither.map {
-      case ri @ Right(_)       => ri.map(httpResponse => (httpResponse.json \ "data").as[Seq[EcoConnectorModel]])
-      case Left(errorResponse) => Left(errorResponse)
+      case ri @ Right(_)       =>
+        println("\nOK:" + ri.value.json)
+        //{"data":{"postcode":"NE7","data":[]}}
+        ri.map(httpResponse => (httpResponse.json \ "data").as[Seq[EcoConnectorModel]])
+      case Left(errorResponse) =>
+        println("\n\n***ERROR:" + errorResponse.statusCode)
+        println("\n\n***ERROR:" + errorResponse.getMessage())
+        Left(errorResponse)
     }
   }
 }

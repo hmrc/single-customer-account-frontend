@@ -107,7 +107,7 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
   "get" must {
     "pass with valid start/end date and postcode - first set of dates/ postcode" in {
       val ec     = app.injector.instanceOf[EcoConnector]
-      val expUrl = "/regional/intensity/2017-08-25T12:35Z/2017-08-25T12:35Z/postcode/NE34PL"
+      val expUrl = "/regional/intensity/2017-08-15T12:35Z/2017-08-25T12:35Z/postcode/NE3"
 
       server.stubFor(
         get(urlEqualTo(expUrl)).willReturn(
@@ -116,9 +116,9 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
       )
       val result = Await.result(
         ec.get(
-          start = LocalDateTime.parse("2017-08-25T12:35Z", ISO_DATE_TIME),
+          start = LocalDateTime.parse("2017-08-15T12:35Z", ISO_DATE_TIME),
           end = LocalDateTime.parse("2017-08-25T12:35Z", ISO_DATE_TIME),
-          postcode = "NE34PL"
+          postcode = "NE3"
         ),
         Duration.Inf
       )
@@ -135,7 +135,7 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
 
     "pass with valid start/end date and postcode - second set of dates/ postcode" in {
       val ec     = app.injector.instanceOf[EcoConnector]
-      val expUrl = "/regional/intensity/2019-08-25T12:35Z/2020-08-25T12:35Z/postcode/NE164TQ"
+      val expUrl = "/regional/intensity/2020-08-14T12:35Z/2020-08-25T12:35Z/postcode/NE7"
 
       server.stubFor(
         get(urlEqualTo(expUrl)).willReturn(
@@ -144,9 +144,9 @@ class EcoConnectorSpec extends PlaySpec with Matchers with Injecting with WireMo
       )
       val result = Await.result(
         ec.get(
-          start = LocalDateTime.parse("2019-08-25T12:35Z", ISO_DATE_TIME),
+          start = LocalDateTime.parse("2020-08-14T12:35Z", ISO_DATE_TIME),
           end = LocalDateTime.parse("2020-08-25T12:35Z", ISO_DATE_TIME),
-          postcode = "NE164TQ"
+          postcode = "NE7"
         ),
         Duration.Inf
       )
