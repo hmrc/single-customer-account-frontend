@@ -16,9 +16,10 @@
 
 package models.carbonintensity
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json._
 
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 case class CarbonIntensityData(
   from: LocalDateTime,
@@ -28,5 +29,19 @@ case class CarbonIntensityData(
 )
 
 object CarbonIntensityData {
+
+  implicit val localDateTimeReads: Reads[LocalDateTime] = new Reads[LocalDateTime] {
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm'Z'")
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] = json match {
+      case JsString(str) =>
+        try JsSuccess(LocalDateTime.parse(str, formatter))
+        catch {
+          case e: Exception => JsError(s"Error while parsing $str : " + e.getMessage)
+        }
+      case _             => JsError("String value expected")
+    }
+  }
+
   implicit val formats: Format[CarbonIntensityData] = Json.format[CarbonIntensityData]
 }

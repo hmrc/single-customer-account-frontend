@@ -25,6 +25,8 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class CarbonIntensityDataConnector @Inject() (
@@ -33,17 +35,28 @@ class CarbonIntensityDataConnector @Inject() (
   val httpClientResponse: HttpClientResponse
 ) {
 
-  private lazy val carbonIntensityBaseUrl: String = frontendAppConfig.carbonIntensityBaseUrl
+  private lazy val carbonIntensityBaseUrl: String  = frontendAppConfig.carbonIntensityBaseUrl
+  private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm'Z'")
 
   def getCarbonIntensityData(
-    fromDate: String,
-    toDate: String,
+    fromDate: LocalDateTime,
+    toDate: LocalDateTime,
     postcode: String
   )(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): EitherT[Future, UpstreamErrorResponse, Seq[CarbonIntensityDetails]] = {
-    val url                                                              = s"$carbonIntensityBaseUrl/regional/intensity/$fromDate/$toDate/postcode/$postcode"
+
+    val from: String = fromDate.format(dateTimeFormatter)
+    val to: String   = toDate.format(dateTimeFormatter)
+
+    //TODO: HANDLE FULLPOST CODE - API returns 200 with null when full postcode is passed. use regex ?
+    val outwardPostcode: String = postcode.split(" ").head
+
+    val url: String = s"$carbonIntensityBaseUrl/regional/intensity/$from/$to/postcode/$outwardPostcode"
+
+    println("\n \n URL : " + url)
+
     val apiResponse: Future[Either[UpstreamErrorResponse, HttpResponse]] = httpClientV2
       .get(url"$url")
       .execute[Either[UpstreamErrorResponse, HttpResponse]](readEitherOf(readRaw), ec)
