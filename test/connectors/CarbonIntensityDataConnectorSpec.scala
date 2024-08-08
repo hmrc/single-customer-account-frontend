@@ -1,84 +1,164 @@
+/*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package connectors
 
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
-import play.api.test.Helpers._
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
-import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
-import scala.concurrent.{ExecutionContext, Future}
-import cats.data.EitherT
+import scala.concurrent.ExecutionContext
 import fixtures.WireMockHelper
+import models.carbonintensity.{CarbonIntensityData, CarbonIntensityDetails, GenerationMix, Intensity}
+import org.scalatestplus.play.PlaySpec
+import play.api.http.Status.{BAD_REQUEST, IM_A_TEAPOT, INTERNAL_SERVER_ERROR}
 
-class CarbonIntensityDataConnectorSpec extends AnyWordSpec with Matchers with ScalaFutures with WireMockHelper {
+import java.time.LocalDateTime
 
-//  override lazy val app: Application = new GuiceApplicationBuilder()
-//    .configure("microservice.services.carbon-intensity.port" -> server.port())
-//    .build()
+class CarbonIntensityDataConnectorSpec extends PlaySpec with Matchers with ScalaFutures with WireMockHelper {
+  protected def localGuiceApplicationBuilder(): GuiceApplicationBuilder =
+    GuiceApplicationBuilder().configure("urls.carbon-intensity.base" -> server.baseUrl())
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit lazy val app: Application                                    = localGuiceApplicationBuilder().build()
+
+  implicit val hc: HeaderCarrier    = HeaderCarrier()
   implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
 
-  val fromDate: String = "2023-05-15T12:00Z"
-  val toDate: String = "2023-05-16T12:00Z"
-  val postcode: String = "LS2" // HANDLE FULLPOST CODE - API returns 200 with null when full postcode is passed
+  lazy val carbonIntensityDataConnector: CarbonIntensityDataConnector =
+    app.injector.instanceOf[CarbonIntensityDataConnector]
+
+  val fromDate: String           = "2024-03-20T12:00Z"
+  val toDate: String             = "2024-03-20T12:30Z"
+  val postcode: String           = "RG10"
   val carbonIntensityUrl: String = s"/regional/intensity/$fromDate/$toDate/postcode/$postcode"
 
-  lazy val carbonIntensityDataConnector: CarbonIntensityDataConnector = {
-    val httpClient: HttpClientV2 = inject[HttpClientV2]
-    val httpClientResponse: HttpClientResponse = inject[HttpClientResponse]
-    new CarbonIntensityDataConnector(httpClient, appConfig, httpClientResponse)
-  }
+  private val jsonResponse: String =
+    """
+      |{
+      |  "data":[
+      |  {
+      |    "regionid": 3,
+      |    "dnoregion": "Electricity North West",
+      |    "shortname": "North West England",
+      |    "postcode": "RG10",
+      |    "data":[
+      |    {
+      |      "from": "2024-03-20T12:00Z",
+      |      "to": "2024-03-20T12:30Z",
+      |      "intensity": {
+      |        "forecast": 266,
+      |        "index": "moderate"
+      |      },
+      |      "generationmix": [
+      |      {
+      |        "fuel": "gas",
+      |        "perc": 43.6
+      |      },
+      |      {
+      |        "fuel": "coal",
+      |        "perc": 0.7
+      |      },
+      |      {
+      |        "fuel": "biomass",
+      |        "perc": 3.4
+      |      },
+      |      {
+      |        "fuel": "nuclear",
+      |        "perc": 17.6
+      |      }
+      |      ]
+      |    }]
+      |  }]
+      |}
+      |""".stripMargin
 
-  def stubGet(url: String, responseStatus: Int, responseBody: Option[String]): StubMapping = server.stubFor {
-    val baseResponse = aResponse().withStatus(responseStatus).withHeader(CONTENT_TYPE, JSON)
-    val response = responseBody.fold(baseResponse)(body => baseResponse.withBody(body))
-    get(url).willReturn(response)
-  }
+  "getCarbonIntensityData" must {
+    "return Seq[CarbonIntensityDetails] when called with valid fromDate, toDate and postcode" in {
 
-  // TODO: WIP
-  "Calling getCarbonIntensityData" must {
+      val fromDate: LocalDateTime = LocalDateTime.of(2024, 3, 20, 12, 0)
+      val toDate: LocalDateTime   = LocalDateTime.of(2024, 3, 20, 12, 30)
 
-    "return OK when called with valid parameters" in {
-      val responseBody = Json.obj("data" -> "test").toString()
-      stubGet(carbonIntensityUrl, OK, Some(responseBody))
+      val expectedCarbonIntensityData: Seq[CarbonIntensityDetails] = Seq(
+        CarbonIntensityDetails(
+          regionid = 3,
+          dnoregion = "Electricity North West",
+          shortname = "North West England",
+          postcode = "RG10",
+          data = Seq(
+            CarbonIntensityData(
+              from = LocalDateTime.of(2024, 3, 20, 12, 0),
+              to = LocalDateTime.of(2024, 3, 20, 12, 30),
+              intensity = Intensity(
+                forecast = 266,
+                index = "moderate"
+              ),
+              generationmix = Seq(
+                GenerationMix(fuel = "gas", perc = BigDecimal(43.6)),
+                GenerationMix(fuel = "coal", perc = BigDecimal(0.7)),
+                GenerationMix(fuel = "biomass", perc = BigDecimal(3.4)),
+                GenerationMix(fuel = "nuclear", perc = BigDecimal(17.6))
+              )
+            )
+          )
+        )
+      )
 
-      val result: Either[UpstreamErrorResponse, HttpResponse] =
-        carbonIntensityDataConnector.getCarbonIntensityData(fromDate, toDate, postcode).value.futureValue
+      server.stubFor(
+        get(urlEqualTo(carbonIntensityUrl)).willReturn(ok(jsonResponse))
+      )
 
-      result mustBe a[Right[_, _]]
-      result.getOrElse(HttpResponse(BAD_REQUEST, "")).status mustBe OK
+      val result = carbonIntensityDataConnector.getCarbonIntensityData(fromDate, toDate, postcode).value.futureValue
+
+      result mustBe a[Right[_, Seq[CarbonIntensityDetails]]]
+      result.getOrElse(Seq.empty[CarbonIntensityDetails]) mustBe expectedCarbonIntensityData
+
+      server.verify(getRequestedFor(urlEqualTo(carbonIntensityUrl)))
     }
 
-    "return NOT_FOUND when data is not found for given parameters" in {
-      stubGet(carbonIntensityUrl, NOT_FOUND, None)
+    "return Left(UpstreamErrorResponse) when API returns 400 for longer date range " in {
 
-      val result = carbonIntensityDataConnector
-        .getCarbonIntensityData(fromDate, toDate, postcode)
-        .value
-        .futureValue
+      val from: LocalDateTime = LocalDateTime.of(2024, 1, 1, 10, 30)
+      val to: LocalDateTime   = LocalDateTime.of(2024, 6, 28, 10, 45)
 
-      result mustBe a[Left[_, _]]
-      result.swap.getOrElse(UpstreamErrorResponse("", OK)).statusCode mustBe NOT_FOUND
+      server.stubFor(
+        get(urlEqualTo(carbonIntensityUrl)).willReturn(aResponse().withStatus(BAD_REQUEST))
+      )
+
+      val result = carbonIntensityDataConnector.getCarbonIntensityData(from, to, postcode).value.futureValue
+
+      result mustBe a[Left[UpstreamErrorResponse, _]]
+      result.swap.getOrElse(UpstreamErrorResponse("", IM_A_TEAPOT)).statusCode mustBe BAD_REQUEST
     }
 
-    "return given status code when an unexpected status is returned" in {
-      stubGet(carbonIntensityUrl, IM_A_TEAPOT, None)
+    "return Left(UpstreamErrorResponse) when API returns 500" in {
 
-      val result = carbonIntensityDataConnector
-        .getCarbonIntensityData(fromDate, toDate, postcode)
-        .value
-        .futureValue
+      val from: LocalDateTime = LocalDateTime.of(2024, 3, 20, 12, 0)
+      val to: LocalDateTime   = LocalDateTime.of(2024, 3, 20, 12, 30)
 
-      result mustBe a[Left[_, _]]
-      result.swap.getOrElse(UpstreamErrorResponse("", OK)).statusCode mustBe IM_A_TEAPOT
+      server.stubFor(
+        get(urlEqualTo(carbonIntensityUrl)).willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
+      )
+
+      val result = carbonIntensityDataConnector.getCarbonIntensityData(from, to, postcode).value.futureValue
+
+      result mustBe a[Left[UpstreamErrorResponse, _]]
+      result.swap.getOrElse(UpstreamErrorResponse("", IM_A_TEAPOT)).statusCode mustBe INTERNAL_SERVER_ERROR
     }
   }
 }
