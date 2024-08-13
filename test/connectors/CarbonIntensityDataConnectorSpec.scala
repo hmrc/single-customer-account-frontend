@@ -32,13 +32,13 @@ import play.api.http.Status.{BAD_REQUEST, IM_A_TEAPOT, INTERNAL_SERVER_ERROR}
 import java.time.LocalDateTime
 
 class CarbonIntensityDataConnectorSpec extends PlaySpec with Matchers with ScalaFutures with WireMockHelper {
+
+  implicit lazy val exContext: ExecutionContext                         = scala.concurrent.ExecutionContext.global
+  implicit val hc: HeaderCarrier                                        = HeaderCarrier()
   protected def localGuiceApplicationBuilder(): GuiceApplicationBuilder =
     GuiceApplicationBuilder().configure("urls.carbon-intensity.base" -> server.baseUrl())
 
   implicit lazy val app: Application                                    = localGuiceApplicationBuilder().build()
-
-  implicit val hc: HeaderCarrier    = HeaderCarrier()
-  implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
 
   lazy val carbonIntensityDataConnector: CarbonIntensityDataConnector =
     app.injector.instanceOf[CarbonIntensityDataConnector]
