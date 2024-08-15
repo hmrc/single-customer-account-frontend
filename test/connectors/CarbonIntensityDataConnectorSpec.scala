@@ -133,11 +133,12 @@ class CarbonIntensityDataConnectorSpec extends PlaySpec with Matchers with Scala
 
     "return Left(UpstreamErrorResponse) when API returns 400 for longer date range " in {
 
-      val from: LocalDateTime = LocalDateTime.of(2024, 1, 1, 10, 30)
-      val to: LocalDateTime   = LocalDateTime.of(2024, 6, 28, 10, 45)
+      val from: LocalDateTime        = LocalDateTime.of(2024, 1, 1, 10, 30)
+      val to: LocalDateTime          = LocalDateTime.of(2024, 6, 28, 10, 45)
+      val urlWithLongerRange: String = "/regional/intensity/2024-01-01T10:30Z/2024-06-28T10:45Z/postcode/RG10"
 
       server.stubFor(
-        get(urlEqualTo(carbonIntensityUrl)).willReturn(aResponse().withStatus(BAD_REQUEST))
+        get(urlEqualTo(urlWithLongerRange)).willReturn(aResponse().withStatus(BAD_REQUEST))
       )
 
       val result = carbonIntensityDataConnector.getCarbonIntensityData(from, to, postcode).value.futureValue
