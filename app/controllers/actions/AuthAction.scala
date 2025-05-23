@@ -21,9 +21,9 @@ import config.FrontendAppConfig
 import controllers.routes
 import models.auth.AuthenticatedRequest
 import play.api.Logging
+import play.api.mvc.*
 import play.api.mvc.Results.Redirect
-import play.api.mvc._
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.domain
@@ -41,7 +41,7 @@ class AuthActionImpl @Inject() (
     with AuthAction
     with Logging {
 
-  object GTOE200 {
+  private object GTOE200 {
     def unapply(confLevel: ConfidenceLevel): Option[ConfidenceLevel] =
       if (confLevel.level >= ConfidenceLevel.L200.level) Some(confLevel) else None
   }
