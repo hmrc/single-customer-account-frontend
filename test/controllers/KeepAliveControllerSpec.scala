@@ -17,18 +17,16 @@
 package controllers
 
 import fixtures.SpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 
 class KeepAliveControllerSpec extends SpecBase {
 
   lazy val controller: KeepAliveController = new KeepAliveController(messagesControllerComponents, authActionInstance)
 
   "KeepAliveController" must {
-    "Return the Home page" in {
-
+    "Return the Home page" in
       whenReady(controller.keepAlive(fakeRequest)) { result =>
         result.header.status shouldBe 200
       }
-    }
   }
 }

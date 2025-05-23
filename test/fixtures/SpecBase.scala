@@ -71,8 +71,8 @@ trait SpecBase
   lazy val bodyParserInstance: BodyParsers.Default                    = injector.instanceOf[BodyParsers.Default]
 
   type AuthRetrievals =
-    Option[String] ~ AffinityGroup ~ Enrolments ~ Option[Credentials] ~ Option[String] ~
-      ConfidenceLevel ~ Option[Name] ~ Option[TrustedHelper]
+    Option[String] ~ AffinityGroup ~ Enrolments ~ Option[Credentials] ~ Option[String] ~ ConfidenceLevel ~
+      Option[Name] ~ Option[TrustedHelper]
 
   def fakeSaEnrolments(utr: String, enrolmentState: String): Set[Enrolment] = Set(
     Enrolment("IR-SA", Seq(EnrolmentIdentifier("UTR", utr)), enrolmentState)

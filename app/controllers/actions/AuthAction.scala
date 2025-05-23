@@ -73,7 +73,7 @@ class AuthActionImpl @Inject() (
           .asInstanceOf[Request[A]]
 
         val authenticatedRequest = AuthenticatedRequest[A](
-          trustedHelper.fold(nino.map(domain.Nino))(helper => Some(domain.Nino(helper.principalNino))),
+          trustedHelper.flatMap(_.principalNino).orElse(nino).map(domain.Nino),
           credentials,
           confidenceLevel,
           Some(trustedHelper.fold(name.getOrElse(Name(None, None)))(helper => Name(Some(helper.principalName), None))),

@@ -23,13 +23,13 @@ import fixtures.SpecBase
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
-import play.api.mvc._
-import play.api.test.Helpers._
+import play.api.mvc.*
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, Retrieval, ~}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -109,15 +109,18 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
         stubbedRetrievalResult.map(_.asInstanceOf[A])(ec)
     }
 
-  val authRetrievals = Future.successful(
+  val authRetrievals: Future[
+    Some[String] ~ Some[AffinityGroup] ~ Enrolments ~ Some[Credentials] ~ Some[String] ~ ConfidenceLevel.L200.type ~
+      Some[Name] ~ Some[TrustedHelper]
+  ] = Future.successful(
     Some(nino) ~
-      Individual ~
+      Some(Individual) ~
       Enrolments(fakeSaEnrolments("11111111", "Activated")) ~
       Some(Credentials("id", "type")) ~
       Some(CredentialStrength.strong) ~
       ConfidenceLevel.L200 ~
       Some(Name(Some("chaz"), Some("dingle"))) ~
-      Some(TrustedHelper("name", "name", "link", "AA999999A"))
+      Some(TrustedHelper("name", "name", "link", Some("AA999999A")))
   )
 
   private def emptyAuthRetrievals: Future[Some[String] ~ Enrolments] =
