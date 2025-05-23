@@ -17,17 +17,17 @@
 package actions
 
 import controllers.actions.{AuthAction, AuthActionImpl}
-import fixtures.RetrievalOps._
+import fixtures.RetrievalOps.*
 import fixtures.SpecBase
 import models.auth.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.mvc._
-import play.api.test.Helpers._
+import play.api.mvc.*
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
-import uk.gov.hmrc.auth.core._
 
 import scala.concurrent.Future
 
@@ -37,7 +37,7 @@ class AuthActionSpec extends SpecBase {
   val nino                             = "AA999999A"
 
   class Harness(authAction: AuthAction) extends InjectedController {
-    def onPageLoad: Action[AnyContent] = authAction { request: AuthenticatedRequest[AnyContent] =>
+    def onPageLoad: Action[AnyContent] = authAction { (request: AuthenticatedRequest[AnyContent]) =>
       Ok(
         s"Nino: ${request.nino.getOrElse("fail").toString}, Enrolments: ${request.enrolments.toString}," +
           s"trustedHelper: ${request.trustedHelper}, profileUrl: ${request.profile}"
@@ -47,7 +47,7 @@ class AuthActionSpec extends SpecBase {
 
   def retrievals(
     nino: Option[String] = None,
-    affinityGroup: AffinityGroup = Individual,
+    affinityGroup: Option[AffinityGroup] = Some(Individual),
     enrolments: Enrolments = Enrolments(Set.empty),
     credentials: Option[Credentials] = Some(Credentials("id", "type")),
     credentialStrength: Option[String] = Some(CredentialStrength.strong),

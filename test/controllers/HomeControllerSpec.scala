@@ -17,28 +17,26 @@
 package controllers
 
 import fixtures.SpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import uk.gov.hmrc.sca.services.WrapperService
 import views.html.HomeViewWrapperVersion
 
 class HomeControllerSpec extends SpecBase {
-  lazy val wrapperService = injector.instanceOf[WrapperService]
+  lazy val wrapperService: WrapperService = injector.instanceOf[WrapperService]
 
   lazy val homeView: HomeViewWrapperVersion = injector.instanceOf[HomeViewWrapperVersion]
   lazy val controller: HomeController       =
     new HomeController(messagesControllerComponents, authActionInstance, homeView, wrapperService)
 
   "HomeController" must {
-    "Return the Home page using deprecated library call" in {
+    "Return the Home page using deprecated library call" in
       whenReady(controller.oldWrapperLayout(fakeRequest)) { result =>
         result.header.status shouldBe 200
       }
-    }
 
-    "Return the Home page using library call" in {
+    "Return the Home page using library call" in
       whenReady(controller.newWrapperLayout(fakeRequest)) { result =>
         result.header.status shouldBe 200
       }
-    }
   }
 }

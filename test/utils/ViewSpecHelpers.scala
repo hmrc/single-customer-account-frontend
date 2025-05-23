@@ -18,7 +18,7 @@ package utils
 
 trait ViewSpecHelpers extends JsoupMatchers {
 
-  //document matchers
+  // document matchers
   def haveHeadingH1WithText(expectedText: String)                  = new TagWithTextMatcher(expectedText, "h1")
   def haveHeadingH2WithText(expectedText: String)                  = new TagWithTextMatcher(expectedText, "h2")
   def haveHeadingH3WithText(expectedText: String)                  = new TagWithTextMatcher(expectedText, "h3")
@@ -95,7 +95,7 @@ trait ViewSpecHelpers extends JsoupMatchers {
   def haveLinkWithUrlWithClass(classes: String, expectedURL: String) =
     new ClassSelectorWithUrlMatcher(expectedURL, classes)
 
-  //element matchers
+  // element matchers
   def haveText(expectedText: String)   = new ElementWithTextMatcher(expectedText)
   def haveLinkURL(expectedUrl: String) = new ElementWithAttributeValueMatcher(expectedUrl, "href")
   def haveClass(expectedClass: String) = new ElementWithClassMatcher(expectedClass)
