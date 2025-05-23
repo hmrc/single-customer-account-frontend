@@ -1,8 +1,3 @@
-import play.sbt.routes.RoutesKeys
-import sbt.Def
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings
-import uk.gov.hmrc.DefaultBuildSettings.scalaSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "single-customer-account-frontend"
@@ -38,7 +33,7 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
-    PlayKeys.playDefaultPort := 9031,
+    PlayKeys.playDefaultPort := 8420,
     scoverageSettings,
     libraryDependencies ++= AppDependencies()
   )
