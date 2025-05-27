@@ -1,17 +1,24 @@
-import play.sbt.routes.RoutesKeys
-import sbt.Def
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings
-import uk.gov.hmrc.DefaultBuildSettings.scalaSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "single-customer-account-frontend"
 
-val scala2_13 = "2.13.12"
-
-ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := scala2_13
+ThisBuild / majorVersion := 1
+ThisBuild / scalaVersion := "3.3.6"
 ThisBuild / scalafmtOnCompile := true
+ThisBuild / scalacOptions ++= Seq(
+  "-unchecked",
+  "-feature",
+  "-Wvalue-discard",
+  "-Werror",
+  "-Wconf:msg=unused import&src=.*views/.*:s",
+  "-Wconf:msg=unused&src=.*RoutesPrefix\\.scala:s",
+  "-Wconf:msg=unused&src=.*Routes\\.scala:s",
+  "-Wconf:cat=deprecation&msg=.*method layout in class WrapperService is deprecated.*:s",
+  "-Wconf:cat=deprecation&msg=.*value name in trait Retrievals is deprecated.*:s",
+  "-language:noAutoTupling",
+  "-Wvalue-discard",
+  "-Wconf:msg=Flag.*repeatedly:s"
+)
 
 lazy val scoverageSettings = {
   import scoverage.ScoverageKeys
@@ -26,31 +33,13 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
-    PlayKeys.playDefaultPort := 9031,
+    PlayKeys.playDefaultPort := 8420,
     scoverageSettings,
-    scalaSettings,
     libraryDependencies ++= AppDependencies()
-  )
-  .settings(
-    scalacOptions ++= Seq(
-      "-unchecked",
-      "-feature",
-      "-Xlint:_",
-      "-Wdead-code",
-      "-Wunused:_",
-      "-Wextra-implicit",
-      "-Wvalue-discard",
-      "-Werror",
-      "-Wconf:cat=unused-imports&site=.*views\\.html.*:s",
-      "-Wconf:cat=unused&src=.*views\\.html.*:s",
-      "-Wconf:cat=unused&src=.*Routes\\.scala:s",
-      "-Wconf:cat=deprecation&msg=.*method layout in class WrapperService is deprecated.*:s"
-    )
   )
 
 Test / Keys.fork := true
 Test / parallelExecution := true
-Test / scalacOptions --= Seq("-Wdead-code", "-Wvalue-discard")
 
 TwirlKeys.templateImports ++= Seq(
   "uk.gov.hmrc.govukfrontend.views.html.components._",
