@@ -34,7 +34,7 @@ object TestData {
       ),
       confidenceLevel = ConfidenceLevel.L250,
       name = Some(uk.gov.hmrc.auth.core.retrieve.Name(Some("John"), Some("Smith"))),
-      trustedHelper = Some(TrustedHelper("principalName", "attorneyName", "returnLinkUrl", "principalNino")),
+      trustedHelper = Some(TrustedHelper("principalName", "attorneyName", "returnLinkUrl", Some("principalNino"))),
       profile = Some("profile"),
       enrolments = Set(Enrolment("key", Seq(EnrolmentIdentifier("key", "value")), "state", None)),
       request = request

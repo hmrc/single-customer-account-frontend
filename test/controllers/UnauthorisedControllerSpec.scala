@@ -17,7 +17,7 @@
 package controllers
 
 import fixtures.SpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import views.html.UnauthorisedView
 
 class UnauthorisedControllerSpec extends SpecBase {
@@ -26,11 +26,9 @@ class UnauthorisedControllerSpec extends SpecBase {
   lazy val controller: UnauthorisedController = new UnauthorisedController(messagesControllerComponents, view)
 
   "UnauthorisedController" must {
-    "Return the unauthorised page" in {
-
+    "Return the unauthorised page" in
       whenReady(controller.onPageLoad(fakeRequest)) { result =>
         result.header.status shouldBe 200
       }
-    }
   }
 }

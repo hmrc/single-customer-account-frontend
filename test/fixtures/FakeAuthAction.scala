@@ -19,7 +19,7 @@ package fixtures
 import config.FrontendAppConfig
 import controllers.actions.AuthActionImpl
 import models.auth.AuthenticatedRequest
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.auth.core.AuthConnector
 
 import javax.inject.Inject
