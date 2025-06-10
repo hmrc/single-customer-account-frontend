@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, AuthActionImpl}
 import fixtures.RetrievalOps.Ops
 import fixtures.SpecBase
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
@@ -62,6 +62,8 @@ class AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar 
 
       val result = controller.onPageLoad()(fakeRequest)
       status(result) mustBe OK
+      contentAsString(result).contains("AA999999A") mustBe true
+      verify(mockFandFConnector, times(1)).getTrustedHelper()(any())
     }
   }
   "the user has valid credentials and no trusted helper" must {
@@ -79,6 +81,8 @@ class AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar 
 
       val result = controller.onPageLoad()(fakeRequest)
       status(result) mustBe OK
+      contentAsString(result).isEmpty mustBe true
+      verify(mockFandFConnector, times(1)).getTrustedHelper()(any())
     }
   }
 
@@ -157,11 +161,6 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
         stubbedRetrievalResult.map(_.asInstanceOf[A])(ec)
     }
 
-  /*
- ~
-      Some(TrustedHelper("name", "name", "link", Some("AA999999A")))
-   */
-
   val authRetrievals: Future[
     Some[String] ~ Some[AffinityGroup] ~ Enrolments ~ Some[Credentials] ~ Some[String] ~ ConfidenceLevel.L200.type ~
       Some[Name]
@@ -185,7 +184,8 @@ object AuthActionSpec extends SpecBase with MockitoSugar {
     authAction: AuthAction,
     val controllerComponents: MessagesControllerComponents = messagesControllerComponents
   ) extends BaseController {
-    def onPageLoad(): Action[AnyContent] = authAction.apply(_ => Ok)
+    def onPageLoad(): Action[AnyContent] =
+      authAction.apply(e => Ok(s"${e.trustedHelper.map(_.principalNino.getOrElse("")).getOrElse("")}"))
   }
 
   private val parser: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
