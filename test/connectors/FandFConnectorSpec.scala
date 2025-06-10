@@ -31,7 +31,7 @@ class FandFConnectorSpec extends ConnectorBaseSpec with WireMockHelper {
   override protected def localGuiceApplicationBuilder(): GuiceApplicationBuilder = GuiceApplicationBuilder()
     .configure(
       "microservice.services.fandf.port" -> server.port(),
-      "microservice.services.fandf.host"                  -> "127.0.0.1"
+      "microservice.services.fandf.host" -> "127.0.0.1"
     )
 
   override implicit lazy val app: Application = localGuiceApplicationBuilder().build()
