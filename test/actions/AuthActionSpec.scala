@@ -16,6 +16,7 @@
 
 package actions
 
+import connectors.FandFConnector
 import controllers.actions.{AuthAction, AuthActionImpl}
 import fixtures.RetrievalOps.*
 import fixtures.SpecBase
@@ -32,9 +33,9 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 import scala.concurrent.Future
 
 class AuthActionSpec extends SpecBase {
-
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  val nino                             = "AA999999A"
+  private val mockFandFConnector: FandFConnector = mock[FandFConnector]
+  val mockAuthConnector: AuthConnector           = mock[AuthConnector]
+  val nino                                       = "AA999999A"
 
   class Harness(authAction: AuthAction) extends InjectedController {
     def onPageLoad: Action[AnyContent] = authAction { (request: AuthenticatedRequest[AnyContent]) =>
@@ -63,17 +64,18 @@ class AuthActionSpec extends SpecBase {
         credentials ~
         credentialStrength ~
         confidenceLevel ~
-        name ~
-        trustedHelper
+        name
     )
 
-    val action = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
+    val action =
+      new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance, mockFandFConnector)
 
     new Harness(action)
   }
 
   "AuthAction" must {
     "allow an authenticated user into SCA with a NINO and Confidence Level 200" in {
+      when(mockFandFConnector.getTrustedHelper()(any())).thenReturn(Future.successful(None))
       val controller = retrievals(nino = Some(nino))
       val result     = controller.onPageLoad()(fakeRequest)
 
