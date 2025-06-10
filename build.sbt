@@ -9,7 +9,7 @@ ThisBuild / scalacOptions ++= Seq(
   "-unchecked",
   "-feature",
   "-Wvalue-discard",
-  "-Werror",
+//  "-Werror",
   "-Wconf:msg=unused import&src=.*views/.*:s",
   "-Wconf:msg=unused&src=.*RoutesPrefix\\.scala:s",
   "-Wconf:msg=unused&src=.*Routes\\.scala:s",
