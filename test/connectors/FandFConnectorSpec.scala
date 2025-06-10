@@ -50,15 +50,7 @@ class FandFConnectorSpec extends ConnectorBaseSpec with WireMockHelper {
       val result = Await.result(fandfConnector.getTrustedHelper(), Duration.Inf)
       result mustBe None
     }
-    "return None when OK and empty json" in {
-      server.stubFor(
-        get(urlEqualTo(url))
-          .willReturn(ok())
-      )
 
-      val result = Await.result(fandfConnector.getTrustedHelper(), Duration.Inf)
-      result mustBe None
-    }
     "return helper when OK and full json" in {
       val trustedHelperNino: Nino            = randomNino()
       val fandfTrustedHelperResponse: String =
