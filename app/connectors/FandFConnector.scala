@@ -43,7 +43,8 @@ class FandFConnector @Inject() (
         httpResponse.status match {
           case NOT_FOUND                       =>
             None
-          case OK if httpResponse.body.isEmpty => None
+          case OK if httpResponse.body.isEmpty =>
+            None
           case OK                              =>
             Try(httpResponse.json.as[TrustedHelper](uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper.reads)) match {
               case Success(trustedHelper) => Some(trustedHelper)

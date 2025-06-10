@@ -53,7 +53,7 @@ class FandFConnectorSpec extends ConnectorBaseSpec with WireMockHelper {
     "return None when OK and empty json" in {
       server.stubFor(
         get(urlEqualTo(url))
-          .willReturn(ok("{}"))
+          .willReturn(ok())
       )
 
       val result = Await.result(fandfConnector.getTrustedHelper(), Duration.Inf)
