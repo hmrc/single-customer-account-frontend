@@ -18,6 +18,7 @@ package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
+import connectors.FandFConnector
 import controllers.routes
 import models.auth.AuthenticatedRequest
 import play.api.Logging
@@ -35,7 +36,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject() (
   override val authConnector: AuthConnector,
   appConfig: FrontendAppConfig,
-  val parser: BodyParsers.Default
+  val parser: BodyParsers.Default,
+  fandFConnector: FandFConnector
 )(implicit val executionContext: ExecutionContext)
     extends AuthorisedFunctions
     with AuthAction
@@ -49,7 +51,6 @@ class AuthActionImpl @Inject() (
   def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
     authorised().retrieve(
       Retrievals.nino and
         Retrievals.affinityGroup and
@@ -57,11 +58,10 @@ class AuthActionImpl @Inject() (
         Retrievals.credentials and
         Retrievals.credentialStrength and
         Retrievals.confidenceLevel and
-        Retrievals.name and
-        Retrievals.trustedHelper
+        Retrievals.name
     ) {
       case nino ~ _ ~ Enrolments(enrolments) ~ Some(credentials) ~ Some(CredentialStrength.strong) ~
-          GTOE200(confidenceLevel) ~ name ~ trustedHelper =>
+          GTOE200(confidenceLevel) ~ name =>
         val trimmedRequest: Request[A] = request
           .map {
             case AnyContentAsFormUrlEncoded(data) =>
@@ -71,19 +71,23 @@ class AuthActionImpl @Inject() (
             case b                                => b
           }
           .asInstanceOf[Request[A]]
+        fandFConnector.getTrustedHelper().flatMap { trustedHelper =>
+          val authenticatedRequest = AuthenticatedRequest[A](
+            trustedHelper.flatMap(_.principalNino).orElse(nino).map(domain.Nino),
+            credentials,
+            confidenceLevel,
+            Some(
+              trustedHelper.fold(name.getOrElse(Name(None, None)))(helper => Name(Some(helper.principalName), None))
+            ),
+            trustedHelper,
+            None,
+            enrolments,
+            trimmedRequest
+          )
+          logger.info(s"[AuthActionImpl][invokeBlock] Successful Auth request")
+          block(authenticatedRequest)
+        }
 
-        val authenticatedRequest = AuthenticatedRequest[A](
-          trustedHelper.flatMap(_.principalNino).orElse(nino).map(domain.Nino),
-          credentials,
-          confidenceLevel,
-          Some(trustedHelper.fold(name.getOrElse(Name(None, None)))(helper => Name(Some(helper.principalName), None))),
-          trustedHelper,
-          None,
-          enrolments,
-          trimmedRequest
-        )
-        logger.info(s"[AuthActionImpl][invokeBlock] Successful Auth request")
-        block(authenticatedRequest)
       case _ =>
         logger.info(s"[AuthActionImpl][invokeBlock] Unauthorised request")
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))

@@ -19,9 +19,10 @@ package config
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
   val appName: String = configuration.get[String]("appName")
 
@@ -36,4 +37,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   val timeout: Int   = configuration.get[Int]("sca-wrapper.timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("sca-wrapper.timeout-dialog.countdown")
+
+  lazy val fandfHost: String = servicesConfig.baseUrl("fandf")
 }
