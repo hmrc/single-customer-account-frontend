@@ -16,12 +16,14 @@
 
 package actions
 
+import connectors.FandFConnector
 import controllers.actions.{AuthAction, AuthActionImpl}
 import fixtures.RetrievalOps.*
 import fixtures.SpecBase
 import models.auth.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.*
+import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.*
 import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.*
@@ -31,10 +33,10 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 
 import scala.concurrent.Future
 
-class AuthActionSpec extends SpecBase {
-
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  val nino                             = "AA999999A"
+class AuthActionSpec extends SpecBase with BeforeAndAfterEach {
+  private val mockFandFConnector: FandFConnector = mock[FandFConnector]
+  val mockAuthConnector: AuthConnector           = mock[AuthConnector]
+  val nino                                       = "AA999999A"
 
   class Harness(authAction: AuthAction) extends InjectedController {
     def onPageLoad: Action[AnyContent] = authAction { (request: AuthenticatedRequest[AnyContent]) =>
@@ -63,27 +65,61 @@ class AuthActionSpec extends SpecBase {
         credentials ~
         credentialStrength ~
         confidenceLevel ~
-        name ~
-        trustedHelper
+        name
     )
 
-    val action = new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance)
+    val action =
+      new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance, mockFandFConnector)
 
     new Harness(action)
   }
 
+  override def beforeEach(): Unit = {
+    reset(mockFandFConnector)
+    reset(mockAuthConnector)
+    ()
+  }
+
   "AuthAction" must {
     "allow an authenticated user into SCA with a NINO and Confidence Level 200" in {
+      when(mockFandFConnector.getTrustedHelper()(any())).thenReturn(Future.successful(None))
       val controller = retrievals(nino = Some(nino))
       val result     = controller.onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
+      verify(mockFandFConnector, times(1)).getTrustedHelper()(any())
+    }
+    "not get trusted helper when unauthorised" in {
+      when(mockFandFConnector.getTrustedHelper()(any())).thenReturn(Future.successful(None))
+
+      when(mockAuthConnector.authorise[AuthRetrievals](any(), any())(any(), any())) thenReturn Future.failed(
+        MissingBearerToken("error")
+      )
+
+      val action =
+        new AuthActionImpl(mockAuthConnector, frontendAppConfigInstance, bodyParserInstance, mockFandFConnector)
+
+      val controller = new Harness(action)
+
+      val result = controller.onPageLoad()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      verify(mockFandFConnector, never()).getTrustedHelper()(any())
+    }
+
+    "allow an authenticated user into SCA with a NINO and Confidence Level 50 - don't call fandf connector" in {
+      when(mockFandFConnector.getTrustedHelper()(any())).thenReturn(Future.successful(None))
+      val controller = retrievals(nino = Some(nino), confidenceLevel = ConfidenceLevel.L50)
+      val result     = controller.onPageLoad()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      verify(mockFandFConnector, never()).getTrustedHelper()(any())
     }
 
     "extract an SA UTR" in {
+      when(mockFandFConnector.getTrustedHelper()(any())).thenReturn(Future.successful(None))
       val controller = retrievals(nino = Some(nino), enrolments = Enrolments(fakeSaEnrolments("11111111", "Activated")))
       val result     = controller.onPageLoad()(fakeRequest)
-
       contentAsString(result) must include("11111111")
     }
   }
