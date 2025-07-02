@@ -19,6 +19,7 @@ package controllers
 import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.hmrcfrontend.config.AccessibilityStatementConfig
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -32,7 +33,8 @@ class HomeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   authenticate: AuthAction,
   view: HomeViewWrapperVersion,
-  wrapperService: WrapperService
+  wrapperService: WrapperService,
+  accessibilityStatementConfig: AccessibilityStatementConfig
 ) extends FrontendBaseController
     with I18nSupport {
 
@@ -55,7 +57,10 @@ class HomeController @Inject() (
     Ok(
       wrapperService.standardScaLayout(
         content = view(""),
-        serviceURLs = ServiceURLs(signOutUrl = Some("/logout")),
+        serviceURLs = ServiceURLs(
+          signOutUrl = Some("/logout"),
+          accessibilityStatementUrl = accessibilityStatementConfig.url
+        ),
         pageTitle = Some(Messages("page.title")),
         hideMenuBar = false,
         optTrustedHelper = request.trustedHelper
