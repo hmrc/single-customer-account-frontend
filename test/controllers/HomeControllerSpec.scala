@@ -18,15 +18,22 @@ package controllers
 
 import fixtures.SpecBase
 import org.scalatest.matchers.should.Matchers.shouldBe
+import uk.gov.hmrc.hmrcfrontend.config.AccessibilityStatementConfig
 import uk.gov.hmrc.sca.services.WrapperService
 import views.html.HomeViewWrapperVersion
 
 class HomeControllerSpec extends SpecBase {
-  lazy val wrapperService: WrapperService = injector.instanceOf[WrapperService]
-
-  lazy val homeView: HomeViewWrapperVersion = injector.instanceOf[HomeViewWrapperVersion]
-  lazy val controller: HomeController       =
-    new HomeController(messagesControllerComponents, authActionInstance, homeView, wrapperService)
+  private lazy val wrapperService: WrapperService   = injector.instanceOf[WrapperService]
+  private lazy val accessibilityStatementConfig     = injector.instanceOf[AccessibilityStatementConfig]
+  private lazy val homeView: HomeViewWrapperVersion = injector.instanceOf[HomeViewWrapperVersion]
+  private lazy val controller: HomeController       =
+    new HomeController(
+      messagesControllerComponents,
+      authActionInstance,
+      homeView,
+      wrapperService,
+      accessibilityStatementConfig
+    )
 
   "HomeController" must {
     "Return the Home page using deprecated library call" in
