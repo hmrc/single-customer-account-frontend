@@ -17,7 +17,7 @@
 package controllers
 
 import fixtures.SpecBase
-import org.scalatest.matchers.should.Matchers.shouldBe
+import play.api.test.Helpers.*
 import uk.gov.hmrc.hmrcfrontend.config.AccessibilityStatementConfig
 import uk.gov.hmrc.sca.services.WrapperService
 import views.html.HomeViewWrapperVersion
@@ -36,14 +36,16 @@ class HomeControllerSpec extends SpecBase {
     )
 
   "HomeController" must {
-    "Return the Home page using deprecated library call" in
-      whenReady(controller.oldWrapperLayout(fakeRequest)) { result =>
-        result.header.status shouldBe 200
-      }
+    "Return the Home page using deprecated library call" in {
+      val result = controller.oldWrapperLayout(fakeRequest)
+      status(result) mustBe OK
+    }
 
-    "Return the Home page using library call" in
-      whenReady(controller.newWrapperLayout(fakeRequest)) { result =>
-        result.header.status shouldBe 200
-      }
+    "Return the Home page using library call and include trusted helper name" in {
+      val result  = controller.newWrapperLayout(fakeRequest)
+      status(result) mustBe OK
+      val content = contentAsString(result)
+      content.contains(testTrustedHelper.principalName) mustBe true
+    }
   }
 }

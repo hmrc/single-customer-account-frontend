@@ -32,13 +32,17 @@ import play.api.inject.{Injector, bind}
 import play.api.mvc.{AnyContentAsEmpty, BodyParsers, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.{FakeRequest, Injecting}
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.sca.models.{PtaMinMenuConfig, WrapperDataResponse}
+import uk.gov.hmrc.sca.utils.Keys
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{FiniteDuration, *}
+import scala.util.Random
 
 trait SpecBase
     extends PlaySpec
@@ -59,10 +63,31 @@ trait SpecBase
   implicit val ec: ExecutionContext                         = injector.instanceOf[ExecutionContext]
   implicit val frontendAppConfigInstance: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
-  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type]           = FakeRequest("", "")
+  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
     .withSession(SessionKeys.sessionId -> "foo")
     .withCSRFToken
     .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+
+  lazy val testTrustedHelper =
+    TrustedHelper("principalName", "attorneyName", "url", Some(new Generator(new Random).nextNino.nino))
+
+  lazy val fakeRequestWithTrustedHelper: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
+    .addAttr(
+      Keys.wrapperDataKey,
+      WrapperDataResponse(
+        Nil,
+        PtaMinMenuConfig("", ""),
+        Nil,
+        Nil,
+        Some(0),
+        Some(testTrustedHelper)
+      )
+    )
+    .withCSRFToken
+    .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+    .withSession(SessionKeys.sessionId -> "foo")
+    .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+
   lazy val messagesApiInstance: MessagesApi                           = injector.instanceOf[MessagesApi]
   lazy val messages: Messages                                         = messagesApiInstance.preferred(fakeRequest)
   lazy val messagesControllerComponents: MessagesControllerComponents =

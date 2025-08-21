@@ -17,7 +17,6 @@
 package fixtures
 
 import config.FrontendAppConfig
-import connectors.FandFConnector
 import controllers.actions.AuthActionImpl
 import models.auth.AuthenticatedRequest
 import play.api.mvc.*
@@ -29,10 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class FakeAuthAction @Inject() (
   override val authConnector: AuthConnector,
   config: FrontendAppConfig,
-  override val parser: BodyParsers.Default,
-  val fandFConnector: FandFConnector
+  override val parser: BodyParsers.Default
 )(implicit ec: ExecutionContext)
-    extends AuthActionImpl(authConnector, config, parser, fandFConnector) {
+    extends AuthActionImpl(authConnector, config, parser) {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
     block(TestData.Requests.authenticatedRequest(request))
