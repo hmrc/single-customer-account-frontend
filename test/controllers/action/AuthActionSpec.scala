@@ -16,13 +16,10 @@
 
 package controllers.action
 
-import connectors.FandFConnector
 import controllers.action.AuthActionSpec.{Harness, authRetrievals, emptyAuthRetrievals, erroneousRetrievals, fakeAuthConnector}
 import controllers.actions.{AuthAction, AuthActionImpl}
 import fixtures.RetrievalOps.Ops
 import fixtures.SpecBase
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
@@ -31,23 +28,15 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
-  private val mockFandFConnector: FandFConnector = mock[FandFConnector]
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     super.beforeEach()
-    reset(mockFandFConnector)
-    when(mockFandFConnector.getTrustedHelper()(any()))
-      .thenReturn(Future.successful(Some(TrustedHelper("name", "name", "link", Some("AA999999A")))))
-
-    ()
-  }
 
   "the user has valid credentials incl trusted helper"   must {
     "return OK" in {
@@ -55,34 +44,28 @@ class AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar 
         new AuthActionImpl(
           fakeAuthConnector(authRetrievals),
           frontendAppConfigInstance,
-          AuthActionSpec.parser,
-          mockFandFConnector
+          AuthActionSpec.parser
         )
       val controller = new Harness(authAction)
 
-      val result = controller.onPageLoad()(fakeRequest)
+      val result = controller.onPageLoad()(fakeRequestWithTrustedHelper)
       status(result) mustBe OK
-      contentAsString(result).contains("AA999999A") mustBe true
-      verify(mockFandFConnector, times(1)).getTrustedHelper()(any())
+      contentAsString(result).contains(testTrustedHelper.principalNino.get) mustBe true
     }
   }
   "the user has valid credentials and no trusted helper" must {
     "return OK" in {
-      when(mockFandFConnector.getTrustedHelper()(any()))
-        .thenReturn(Future.successful(None))
       val authAction =
         new AuthActionImpl(
           fakeAuthConnector(authRetrievals),
           frontendAppConfigInstance,
-          AuthActionSpec.parser,
-          mockFandFConnector
+          AuthActionSpec.parser
         )
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(fakeRequest)
       status(result) mustBe OK
       contentAsString(result).isEmpty mustBe true
-      verify(mockFandFConnector, times(1)).getTrustedHelper()(any())
     }
   }
 
@@ -92,8 +75,7 @@ class AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar 
         new AuthActionImpl(
           fakeAuthConnector(emptyAuthRetrievals),
           frontendAppConfigInstance,
-          AuthActionSpec.parser,
-          mockFandFConnector
+          AuthActionSpec.parser
         )
       val controller = new Harness(authAction)
 
@@ -107,8 +89,7 @@ class AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar 
         new AuthActionImpl(
           fakeAuthConnector(erroneousRetrievals),
           frontendAppConfigInstance,
-          AuthActionSpec.parser,
-          mockFandFConnector
+          AuthActionSpec.parser
         )
       val controller = new Harness(authAction)
 
@@ -122,8 +103,7 @@ class AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar 
       val authAction = new AuthActionImpl(
         fakeAuthConnector(Future.failed(new MissingBearerToken)),
         frontendAppConfigInstance,
-        AuthActionSpec.parser,
-        mockFandFConnector
+        AuthActionSpec.parser
       )
       val controller = new Harness(authAction)
       val result     = controller.onPageLoad()(fakeRequest)
@@ -137,8 +117,7 @@ class AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar 
       val authAction = new AuthActionImpl(
         fakeAuthConnector(Future.failed(new BearerTokenExpired)),
         frontendAppConfigInstance,
-        AuthActionSpec.parser,
-        mockFandFConnector
+        AuthActionSpec.parser
       )
       val controller = new Harness(authAction)
       val result     = controller.onPageLoad()(fakeRequest)
