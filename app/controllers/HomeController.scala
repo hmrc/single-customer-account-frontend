@@ -16,7 +16,6 @@
 
 package controllers
 
-import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.hmrcfrontend.config.AccessibilityStatementConfig
@@ -25,20 +24,20 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.sca.services.WrapperService
+import uk.gov.hmrc.sca.utils.Keys.getTrustedHelperFromRequest
 import views.html.HomeViewWrapperVersion
 
 import javax.inject.Inject
 
 class HomeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  authenticate: AuthAction,
   view: HomeViewWrapperVersion,
   wrapperService: WrapperService,
   accessibilityStatementConfig: AccessibilityStatementConfig
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def oldWrapperLayout: Action[AnyContent] = authenticate { implicit request =>
+  def oldWrapperLayout: Action[AnyContent] = Action { implicit request =>
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     Ok(
@@ -48,12 +47,12 @@ class HomeController @Inject() (
         serviceNameUrl = Some(routes.HomeController.oldWrapperLayout.url),
         hideMenuBar = false,
         signoutUrl = Some("/logout"),
-        optTrustedHelper = request.trustedHelper
+        optTrustedHelper = getTrustedHelperFromRequest(request)
       )
     )
   }
 
-  def newWrapperLayout: Action[AnyContent] = authenticate { implicit request =>
+  def newWrapperLayout: Action[AnyContent] = Action { implicit request =>
     Ok(
       wrapperService.standardScaLayout(
         content = view(""),
@@ -63,7 +62,7 @@ class HomeController @Inject() (
         ),
         pageTitle = Some(Messages("page.title")),
         hideMenuBar = false,
-        optTrustedHelper = request.trustedHelper
+        optTrustedHelper = getTrustedHelperFromRequest(request)
       )
     )
   }
