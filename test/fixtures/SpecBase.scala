@@ -17,7 +17,6 @@
 package fixtures
 
 import config.FrontendAppConfig
-import controllers.actions.AuthAction
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -27,14 +26,15 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.inject.{Injector, bind}
 import play.api.mvc.{AnyContentAsEmpty, BodyParsers, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper.CSRFFRequestHeader
 import play.api.test.{FakeRequest, Injecting}
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.TrustedHelper
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
+import uk.gov.hmrc.domain
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.sca.models.{PtaMinMenuConfig, WrapperDataResponse}
@@ -92,7 +92,6 @@ trait SpecBase
   lazy val messages: Messages                                         = messagesApiInstance.preferred(fakeRequest)
   lazy val messagesControllerComponents: MessagesControllerComponents =
     injector.instanceOf[MessagesControllerComponents]
-  lazy val authActionInstance: AuthAction                             = injector.instanceOf[AuthAction]
   lazy val bodyParserInstance: BodyParsers.Default                    = injector.instanceOf[BodyParsers.Default]
 
   type AuthRetrievals =
@@ -105,9 +104,6 @@ trait SpecBase
 
   protected def applicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
-      .overrides(
-        bind[AuthAction].to[FakeAuthAction]
-      )
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 }

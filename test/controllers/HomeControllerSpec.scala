@@ -29,7 +29,6 @@ class HomeControllerSpec extends SpecBase {
   private lazy val controller: HomeController       =
     new HomeController(
       messagesControllerComponents,
-      authActionInstance,
       homeView,
       wrapperService,
       accessibilityStatementConfig
@@ -42,7 +41,7 @@ class HomeControllerSpec extends SpecBase {
     }
 
     "Return the Home page using library call and include trusted helper name" in {
-      val result  = controller.newWrapperLayout(fakeRequest)
+      val result  = controller.newWrapperLayout(fakeRequestWithTrustedHelper)
       status(result) mustBe OK
       val content = contentAsString(result)
       content.contains(testTrustedHelper.principalName) mustBe true

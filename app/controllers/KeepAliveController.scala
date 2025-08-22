@@ -16,15 +16,14 @@
 
 package controllers
 
-import controllers.actions.AuthAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class KeepAliveController @Inject() (val controllerComponents: MessagesControllerComponents, authenticate: AuthAction)
+class KeepAliveController @Inject() (val controllerComponents: MessagesControllerComponents)
     extends FrontendBaseController {
 
-  def keepAlive: Action[AnyContent] = authenticate.async(_ => Future.successful(Ok))
+  def keepAlive: Action[AnyContent] = Action.async(_ => Future.successful(Ok))
 }
