@@ -21,7 +21,7 @@ import org.scalatest.matchers.should.Matchers.shouldBe
 
 class KeepAliveControllerSpec extends SpecBase {
 
-  lazy val controller: KeepAliveController = new KeepAliveController(messagesControllerComponents, authActionInstance)
+  lazy val controller: KeepAliveController = new KeepAliveController(messagesControllerComponents)
 
   "KeepAliveController" must {
     "Return the Home page" in
