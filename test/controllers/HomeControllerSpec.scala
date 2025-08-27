@@ -35,11 +35,6 @@ class HomeControllerSpec extends SpecBase {
     )
 
   "HomeController" must {
-    "Return the Home page using deprecated library call" in {
-      val result = controller.oldWrapperLayout(fakeRequest)
-      status(result) mustBe OK
-    }
-
     "Return the Home page using library call and include trusted helper name" in {
       val result  = controller.newWrapperLayout(fakeRequestWithTrustedHelper)
       status(result) mustBe OK

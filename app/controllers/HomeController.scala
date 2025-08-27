@@ -20,9 +20,7 @@ import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.hmrcfrontend.config.AccessibilityStatementConfig
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.sca.services.WrapperService
 import uk.gov.hmrc.sca.utils.Keys.getTrustedHelperFromRequest
 import views.html.HomeViewWrapperVersion
@@ -36,21 +34,6 @@ class HomeController @Inject() (
   accessibilityStatementConfig: AccessibilityStatementConfig
 ) extends FrontendBaseController
     with I18nSupport {
-
-  def oldWrapperLayout: Action[AnyContent] = Action { implicit request =>
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
-    Ok(
-      wrapperService.layout(
-        content = view(""),
-        pageTitle = Some(Messages("page.title")),
-        serviceNameUrl = Some(routes.HomeController.oldWrapperLayout.url),
-        hideMenuBar = false,
-        signoutUrl = Some("/logout"),
-        optTrustedHelper = getTrustedHelperFromRequest(request)
-      )
-    )
-  }
 
   def newWrapperLayout: Action[AnyContent] = Action { implicit request =>
     Ok(
