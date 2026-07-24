@@ -1,0 +1,85 @@
+service.name = Single Customer Account
+home.name = Account Home
+page.title = Single Customer Account - GOVUK
+label.sign_in=Sign in
+label.youve_been_signed_out=For your security, we signed you out
+
+ytab.title = Your taxes and benefits for the current tax year
+ytab.title.description.1 = The current tax year is 6 April 2022 to 5 April 2023.
+ytab.title.description.2 = Your National Insurance number is
+ytab.sa = Self Assessment
+ytab.sa.description.1 = Your next Self Assessment tax return
+ytab.sa.description.2 = Your 2021 to 2022 tax return is due by
+ytab.sa.description.3 = 31 January 2023.
+ytab.bal= Your balance
+ytab.bal.description = Your account is up to date. You do not need to make any payments.
+ytab.sa.description.6 = Complete your tax return
+ytab.sa.description.7 = Check your Self Assessment record
+ytab.sa.description.8 = Your Self Assessment Unique Taxpayer Reference (UTR) is
+ytab.paye = Income from employment
+ytab.paye.1 = Your taxable income
+ytab.paye.amount = £7,524
+ytab.paye.description.1 = Your total taxable income reported to us from Dunder Mifflin is:
+ytab.paye.description.2 = Check your PAYE record
+ytab.nisp = Your State Pension
+ytab.nisp.description.1 = You''re forecast to receive the full State Pension when you reach State Pension age.
+ytab.nisp.description.2 = This is because there are no gaps in your National Insurance record.
+ytab.nisp.link.sp = Check your State Pension summary
+ytab.nisp.link.ni = Check your National Insurance record
+
+activities.yourRecentAccountUpdates = Your recent account activity
+activities.yourRecentAccountActivity = Your recent account activity
+actions.thingsForYouToDo = Things for you to do
+
+site.back = Back
+site.remove = Remove
+site.change = Change
+site.no = No
+site.yes = Yes
+site.continue = Continue
+site.start = Start now
+site.startAgain = Start again
+site.signIn = Sign in
+site.govuk = GOV.UK
+
+date.day = Day
+date.month = Month
+date.year = Year
+
+timeout.title = You’re about to be signed out
+timeout.message = For security reasons, you will be signed out of this service in
+timeout.keepAlive = Stay signed in
+timeout.signOut = Sign out
+
+error.browser.title.prefix = Error:
+error.boolean = Please give an answer
+error.invalid_date = Give a correct date
+error.date.day_blank = Enter a day
+error.date.day_invalid = Give a correct day using numbers 1 to 31
+error.date.month_blank = Enter a month
+error.date.month_invalid = Give a correct month using numbers 1 to 12
+error.date.year_blank = Enter a year
+error.date.year_invalid = Give a correct year
+error.integer = Give an answer in whole numbers
+error.non_numeric = Give a value using only numbers
+error.number = Please enter a valid number
+error.required = Please enter a value
+error.summary.title = There is a problem
+
+index.title = Account Home
+index.heading = Account Home
+index.guidance = Account Home
+
+nav.home = Home
+nav.your_details = Your details
+nav.account_settings = Account Settings
+nav.messages = Messages
+nav.taxes_and_benefits = Your taxes and benefits
+nav.signout = Sign out
+
+signedOut.title = For your security, we signed you out
+signedOut.heading = For your security, we signed you out
+signedOut.guidance = We did not save your answers.
+
+unauthorised.title = You can’t access this service with this account
+unauthorised.heading = You can’t access this service with this account
