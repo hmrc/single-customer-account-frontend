@@ -26,8 +26,7 @@
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
-    alphaBanner: StandardAlphaBanner,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper
+    alphaBanner: StandardAlphaBanner
 )
 
 @(pageTitle: String, timeout: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
@@ -60,7 +59,6 @@
             <!-- ACCOUNT MENU -->
 
             <!-- END ACCOUNT MENU -->
-        @hmrcLanguageSelectHelper()
     </div>
 }
 }
@@ -86,9 +84,10 @@
     pageTitle   = Some(pageTitle),
     headBlock   = Some(head),
     headerBlock = Some(hmrcStandardHeader(
-        serviceUrl  = Some(routes.HomeController.newWrapperLayout.url),
-        signOutUrl  = Some("/logout"),
-        phaseBanner = Some(alphaBanner("feedback-url"))
+        serviceUrl                  = Some(routes.HomeController.newWrapperLayout.url),
+        signOutUrl                  = Some("/logout"),
+        phaseBanner                 = Some(alphaBanner("feedback-url")),
+        isWelshTranslationAvailable = true
     )),
     beforeContentBlock = Some(beforeContent),
     footerBlock        = Some(hmrcStandardFooter()),
