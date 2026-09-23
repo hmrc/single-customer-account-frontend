@@ -12,3 +12,5 @@ GET         /language/:lang                              controllers.LanguageSwi
 GET         /refresh-session                             controllers.KeepAliveController.keepAlive
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET         /pertax-authorise                            controllers.PertaxController.authorise
