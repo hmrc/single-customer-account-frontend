@@ -31,7 +31,7 @@ class PertaxConnector @Inject() (
   httpClientV2: HttpClientV2,
   frontendAppConfig: FrontendAppConfig
 ) {
-  
+
   def authorise()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url = s"${frontendAppConfig.pertaxUrl}/pertax/authorise"
 
