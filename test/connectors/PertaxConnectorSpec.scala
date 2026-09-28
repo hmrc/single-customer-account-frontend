@@ -20,6 +20,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.*
 import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
+import play.api.test.FakeRequest
+import uk.gov.hmrc.play.partials.HtmlPartial
 
 class PertaxConnectorSpec extends ConnectorBaseSpec {
 
@@ -50,6 +52,40 @@ class PertaxConnectorSpec extends ConnectorBaseSpec {
 
       result.status mustBe OK
       result.body mustBe responseBody
+    }
+  }
+
+  "loadPartial" must {
+    "return the partial from pertax-backend" in {
+      server.stubFor(
+        get(urlEqualTo("/path/for/partial"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withHeader("Content-Type", "text/html")
+              .withHeader("X-Title", "Partial%20title")
+              .withBody("<p>Partial content</p>")
+          )
+      )
+
+      val result = connector.loadPartial("/path/for/partial")(FakeRequest(), ec).futureValue
+
+      result mustBe HtmlPartial.Success(Some("Partial title"), play.twirl.api.Html("<p>Partial content</p>"))
+    }
+
+    "return a failure partial when pertax-backend responds with an error" in {
+      server.stubFor(
+        get(urlEqualTo("/path/for/partial"))
+          .willReturn(
+            aResponse()
+              .withStatus(500)
+              .withBody("Partial unavailable")
+          )
+      )
+
+      val result = connector.loadPartial("/path/for/partial")(FakeRequest(), ec).futureValue
+
+      result mustBe a[HtmlPartial.Failure]
     }
   }
 }

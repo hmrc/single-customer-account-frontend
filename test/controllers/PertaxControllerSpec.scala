@@ -31,7 +31,11 @@ class PertaxControllerSpec extends SpecBase {
   private val mockPertaxConnector = mock[PertaxConnector]
 
   private lazy val controller: PertaxController =
-    new PertaxController(messagesControllerComponents, mockPertaxConnector)
+    new PertaxController(
+      messagesControllerComponents,
+      mockPertaxConnector,
+      injector.instanceOf[views.html.templates.Layout]
+    )
 
   "authorise" must {
     "return the status and body returned by the pertax connector" in {
@@ -42,6 +46,46 @@ class PertaxControllerSpec extends SpecBase {
 
       status(result) mustBe OK
       contentAsString(result) mustBe """{"code":"OK","message":"Access granted"}"""
+    }
+
+    "retrieve and render the partial when pertax returns an error view" in {
+      when(mockPertaxConnector.authorise()(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(
+          Future.successful(
+            HttpResponse(OK, """{"code":"INVALID_AFFINITY","errorView":{"url":"/path/for/partial","statusCode":401}}""")
+          )
+        )
+      when(mockPertaxConnector.loadPartial(any[String])(any(), any[ExecutionContext]))
+        .thenReturn(
+          Future.successful(
+            uk.gov.hmrc.play.partials.HtmlPartial.Success(
+              Some("Error title"),
+              play.twirl.api.Html("<p>Partial content</p>")
+            )
+          )
+        )
+
+      val result = controller.authorise(fakeRequest)
+
+      status(result) mustBe 401
+      contentAsString(result) must include("<p>Partial content</p>")
+    }
+
+    "return an internal server error when the partial cannot be retrieved" in {
+      when(mockPertaxConnector.authorise()(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(
+          Future.successful(
+            HttpResponse(OK, """{"code":"INVALID_AFFINITY","errorView":{"url":"/path/for/partial","statusCode":401}}""")
+          )
+        )
+      when(mockPertaxConnector.loadPartial(any[String])(any(), any[ExecutionContext]))
+        .thenReturn(
+          Future.successful(uk.gov.hmrc.play.partials.HtmlPartial.Failure(Some(500), "Partial unavailable"))
+        )
+
+      val result = controller.authorise(fakeRequest)
+
+      status(result) mustBe INTERNAL_SERVER_ERROR
     }
   }
 }

@@ -17,20 +17,25 @@
 package connectors
 
 import config.FrontendAppConfig
+import play.api.Logging
 import play.api.http.HeaderNames
+import play.api.mvc.RequestHeader
 
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, StringContextOps}
+import uk.gov.hmrc.play.partials.{HeaderCarrierForPartialsConverter, HtmlPartial}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 
 @Singleton
 class PertaxConnector @Inject() (
   httpClientV2: HttpClientV2,
-  frontendAppConfig: FrontendAppConfig
-) {
+  frontendAppConfig: FrontendAppConfig,
+  headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter
+) extends Logging {
 
   def authorise()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url = s"${frontendAppConfig.pertaxUrl}/pertax/authorise"
@@ -39,5 +44,29 @@ class PertaxConnector @Inject() (
       .post(url"$url")
       .setHeader(HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json")
       .execute[HttpResponse]
+  }
+
+  def loadPartial(partialPath: String)(implicit request: RequestHeader, ec: ExecutionContext): Future[HtmlPartial] = {
+    implicit val hc: HeaderCarrier =
+      headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)
+    val partialUrl                 = s"${frontendAppConfig.pertaxUrl}$partialPath"
+
+    httpClientV2
+      .get(url"$partialUrl")
+      .execute[HtmlPartial]
+      .map {
+        case partial: HtmlPartial.Success =>
+          partial
+        case partial: HtmlPartial.Failure =>
+          logger.error(s"Failed to load partial from $partialPath, partial info: $partial, body: ${partial.body}")
+          partial
+      }
+      .recover { case NonFatal(e) =>
+        logger.error(s"Failed to load partial from $partialPath", e)
+        e match {
+          case ex: HttpException => HtmlPartial.Failure(Some(ex.responseCode))
+          case _                 => HtmlPartial.Failure(None)
+        }
+      }
   }
 }
