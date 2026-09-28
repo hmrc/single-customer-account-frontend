@@ -39,4 +39,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val countdown: Int = configuration.get[Int]("sca-wrapper.timeout-dialog.countdown")
 
   lazy val fandfHost: String = servicesConfig.baseUrl("fandf")
+
+  lazy val pertaxUrl: String = servicesConfig.baseUrl("pertax")
 }
