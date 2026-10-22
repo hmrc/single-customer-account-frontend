@@ -15,4 +15,4 @@ GET         /unauthorised                                controllers.Unauthorise
 
 GET         /pertax-authorise                            controllers.PertaxController.authorise
 
-GET         /:nino/pertax-helper-authorise               controllers.PertaxController.checkHelpee(nino: String)
+GET         /:nino/pertax-helpee-authorise               controllers.PertaxController.checkHelpee(nino: String)
