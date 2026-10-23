@@ -51,6 +51,7 @@ class PertaxConnector @Inject() (
 
     httpClientV2
       .get(url"$url")
+      .setHeader(HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json")
       .execute[HttpResponse]
   }
 
