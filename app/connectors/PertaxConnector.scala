@@ -46,6 +46,15 @@ class PertaxConnector @Inject() (
       .execute[HttpResponse]
   }
 
+  def checkHelpee(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url = s"${frontendAppConfig.pertaxUrl}/pertax/$nino/check-helpee-citizen-details"
+
+    httpClientV2
+      .get(url"$url")
+      .setHeader(HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json")
+      .execute[HttpResponse]
+  }
+
   def loadPartial(partialPath: String)(implicit request: RequestHeader, ec: ExecutionContext): Future[HtmlPartial] = {
     implicit val hc: HeaderCarrier =
       headerCarrierForPartialsConverter.fromRequestWithEncryptedCookie(request)

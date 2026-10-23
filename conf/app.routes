@@ -14,3 +14,5 @@ GET         /refresh-session                             controllers.KeepAliveCo
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 GET         /pertax-authorise                            controllers.PertaxController.authorise
+
+GET         /:nino/pertax-helpee-authorise               controllers.PertaxController.checkHelpee(nino: String)
